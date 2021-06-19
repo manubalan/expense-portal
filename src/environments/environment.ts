@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
 
-  BASE_URL: 'http://localhost:4040'
+  BASE_URL: 'http://localhost:4040',
+  master_data: 'http://localhost:4040/assets/data/agreement.json'
 };
 
 /*

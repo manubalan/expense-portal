@@ -8,7 +8,9 @@ $nav-height: 70px;
   --#{$variable-prefix}-font-family: #{inspect($font-family-sans-serif)};
   --#{$variable-prefix}-font-monospace: #{inspect($font-family-monospace)};
   --primary: #3f51b5;
+  --primary-dark: #2a3156;
   --gray-300: #c5c8d4;
+  --gray-200: #b5b8bf;
 }
 
 ems-root {
@@ -65,7 +67,7 @@ ems-root {
     .main-wrap {
       padding: 112px 100px 0 100px;
 
-      ems-home{
+      ems-home {
         .screen {
           max-width: 100%;
           height: auto;
@@ -82,16 +84,56 @@ ems-root {
   .header-box {
     width: 100%;
     background-color: inherit;
-    color: #2a3156;
+    color: var(--primary-dark);
     display: flex;
     justify-content: space-between;
     align-items: center;
 
-    p{
+    p {
       margin-top: 15px;
       margin-bottom: 0;
-      color: #b5b8bf;
+      color: var(--gray-200);
       font-size: 1.25rem;
+    }
+  }
+}
+
+.form-pop-up {
+  header {
+    border-bottom: 1.5px solid var(--gray-200);
+    padding-bottom: 20px;
+  }
+
+  footer {
+    padding-top: 20px;
+    border-top: 1.5px solid var(--gray-200);
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 30px;
+
+    .add-button {
+      min-width: 150px;
+    }
+  }
+
+  section {
+    padding: 25px 0;
+    ul {
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: 30px;
+      list-style: none;
+      padding: 0;
+
+      li {
+        width: calc(33.3333% - 30px);
+
+        mat-form-field {
+          width: 100%;
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+        }
+      }
     }
   }
 }

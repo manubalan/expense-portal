@@ -9,6 +9,7 @@ import { ListAgreementComponent } from './components/list-agreement/list-agreeme
 import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/shared/material.module';
+import { MasterDataService } from './services/master-data.service';
 
 @NgModule({
   declarations: [
@@ -23,5 +24,6 @@ import { MaterialModule } from 'src/app/shared/material.module';
     ReactiveFormsModule,
     MaterialModule
   ],
+  providers: [MasterDataService]
 })
 export class AgreementModule {}

@@ -9,6 +9,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [],
@@ -22,6 +26,10 @@ import { MatMenuModule } from '@angular/material/menu';
     MatTabsModule,
     MatPaginatorModule,
     MatMenuModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatMomentDateModule,
+    MatSelectModule,
   ],
   exports: [
     MatExpansionModule,
@@ -32,6 +40,10 @@ import { MatMenuModule } from '@angular/material/menu';
     MatTabsModule,
     MatPaginatorModule,
     MatMenuModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatMomentDateModule,
+    MatSelectModule,
   ],
 })
 export class MaterialModule {}
