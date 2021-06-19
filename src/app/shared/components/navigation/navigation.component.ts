@@ -1,21 +1,19 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav/sidenav';
-// import { MatSidenav } from '@angular/material';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'ems-navigation',
   templateUrl: './navigation.component.html',
-  styleUrls: ['./navigation.component.scss']
+  styleUrls: ['./navigation.component.scss'],
 })
 export class NavigationComponent implements OnInit {
+  baseUrl = environment.BASE_URL;
 
   @Input()
   sidenav!: MatSidenav;
 
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

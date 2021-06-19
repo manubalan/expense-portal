@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { animateText, onSideNavChange } from '../../animations/animations';
 import { SidebarService } from './sidebar.service';
 interface Page {
@@ -24,7 +25,7 @@ export class SidebarComponent implements OnInit {
   ];
 
   constructor(private sidenavService: SidebarService) {}
-
+  baseUrl = environment.BASE_URL;
   ngOnInit(): void {}
 
   onSinenavToggle(): void {

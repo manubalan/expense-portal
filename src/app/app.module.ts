@@ -11,7 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import {MatListModule} from '@angular/material/list';
+import { MatListModule } from '@angular/material/list';
+import { APP_BASE_HREF, PlatformLocation } from '@angular/common';
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,9 +26,15 @@ import {MatListModule} from '@angular/material/list';
     MatMenuModule,
     MatDialogModule,
     MatSidenavModule,
-    MatListModule
+    MatListModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_BASE_HREF,
+      useFactory: (loc: PlatformLocation) => loc.getBaseHrefFromDOM(),
+      deps: [PlatformLocation],
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
