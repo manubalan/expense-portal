@@ -4,6 +4,9 @@
 
 $nav-height: 70px;
 
+$small: 480px;
+$medium: 900px;
+
 :root {
   --#{$variable-prefix}-font-family: #{inspect($font-family-sans-serif)};
   --#{$variable-prefix}-font-monospace: #{inspect($font-family-monospace)};
@@ -65,7 +68,12 @@ ems-root {
     background-color: #f6f8fa;
 
     .main-wrap {
-      padding: 112px 100px 0 100px;
+      @media screen and (max-width: $medium) {
+        padding: 62px 30px 0 30px;
+      }
+      @media screen and (min-width: $medium + 1) {
+        padding: 112px 100px 0 100px;
+      }
 
       ems-home {
         .screen {
@@ -88,6 +96,7 @@ ems-root {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 
     p {
       margin-top: 15px;
