@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 4040 -o",
-    "build": "ng build --prod --base-href 'https://manubalan.github.io/expense-portal/' ",
+    "build": "ng build --prod --base-href /expense-portal/ ",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
