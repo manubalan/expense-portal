@@ -1,0 +1,61 @@
+<nav class="main-nav">
+<div>Search</div>
+<div>Date</div>
+<div>
+  <div class="user-profile" [matMenuTriggerFor]="menu">
+    <img src="../../../../assets/image/user-profile.jpg" alt="">
+  </div>
+
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item>
+      <mat-icon>manage_accounts</mat-icon>
+      <span>My Account</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>settings</mat-icon>
+      <span>Settings</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>logout</mat-icon>
+      <span>Logout</span>
+    </button>
+  </mat-menu>
+</div>
+</nav>
+
+
+<!-- <mat-toolbar color="primary">
+  <div>
+    <button mat-icon-button aria-label="menu icon" (click)="sidenav.toggle();">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span>My App</span>
+  </div>
+
+  <div>
+    <span class="example-spacer"></span>
+    <button
+      mat-icon-button
+      class="example-icon favorite-icon"
+      aria-label="Example icon-button with heart icon"
+    >
+      <mat-icon>logout</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      class="example-icon"
+      aria-label="Example icon-button with share icon"
+    >
+      <mat-icon>share</mat-icon>
+    </button>
+  </div>
+</mat-toolbar> -->
+<!-- <div fxFlex="row" fxLayoutAlign="center center" fxLayoutGap="10px" class="header">
+  <button mat-icon-button (click)="sidenav.toggle();">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <span>Inbox</span>
+  <span class="spacer"></span>
+
+</div> -->

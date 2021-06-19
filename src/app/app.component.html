@@ -1,0 +1,14 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #leftSidenav mode="side" opened>
+    <ems-sidebar></ems-sidebar>
+  </mat-sidenav>
+  <mat-sidenav-content [@onMainContentChange]="onSideBarChange ? 'open' : 'close'">
+
+    <ems-navigation [sidenav]="leftSidenav"></ems-navigation>
+
+    <div class="main-wrap">
+      <router-outlet></router-outlet>
+    </div>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>

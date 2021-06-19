@@ -1,0 +1,26 @@
+<mat-card class="page-header">
+    <header class="header-box">
+        <div>
+            <h2>Agreements</h2>
+            <p>Sample text</p>
+        </div>
+        <div>
+            <button mat-stroked-button color="primary" (click)="addAgreementDialog()">
+                <mat-icon>add</mat-icon> Add Agreement
+            </button>
+        </div>
+    </header>
+</mat-card>
+
+<mat-card>
+    <ems-list-agreement></ems-list-agreement>
+</mat-card>
+
+<!-- <mat-tab-group animationDuration="0ms">
+    <router-outlet></router-outlet>
+    <mat-tab label="Agreements">
+
+    </mat-tab>
+    <mat-tab label="Vehicle Expenses">Content 2</mat-tab>
+    <mat-tab label="Employee Expenses">Content 3</mat-tab>
+</mat-tab-group> -->

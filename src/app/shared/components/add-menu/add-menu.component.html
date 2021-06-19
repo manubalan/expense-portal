@@ -1,0 +1,25 @@
+<button
+  mat-fab
+  color="primary"
+  aria-label="Example icon button with a delete icon"
+
+  [matMenuTriggerFor]="menu"
+  aria-label="menu"
+>
+  <mat-icon>add</mat-icon>
+</button>
+
+<mat-menu #menu="matMenu" xPosition="before">
+  <button mat-menu-item (click)="openDialog('agreement')">
+    <mat-icon>description</mat-icon>
+    <span>Agreement</span>
+  </button>
+  <button mat-menu-item (click)="openDialog('vehicle-expense')">
+    <mat-icon>local_shipping</mat-icon>
+    <span>Vehicle Expense</span>
+  </button>
+  <button mat-menu-item (click)="openDialog('employee-expense')">
+    <mat-icon>face</mat-icon>
+    <span>Employee Expense</span>
+  </button>
+</mat-menu>
