@@ -28,11 +28,19 @@ ems-root {
     left: 100px;
     top: 0;
     right: 0;
+    z-index: 100;
 
     mat-toolbar {
       display: flex;
       justify-content: space-between;
     }
+  }
+
+  ems-add-menu {
+    position: fixed;
+    right: 40px;
+    bottom: 40px;
+    z-index: 100;
   }
 
   ems-sidebar {
@@ -46,6 +54,19 @@ ems-root {
     display: flex;
     flex-direction: column;
     width: 100%;
+
+    .content-area {
+      display: flex;
+      width: 100%;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      row-gap: 30px;
+      padding-bottom: 50px;
+
+      mat-card {
+        width: calc(33.333% - 20px);
+      }
+    }
   }
 
   ems-list-agreement {
@@ -57,6 +78,16 @@ ems-root {
   mat-card,
   .mat-table {
     width: 100%;
+  }
+
+  .mat-button-base {
+    .mat-button-wrapper {
+      height: 50px;
+      display: flex;
+      align-items: center;
+      column-gap: 10px;
+      justify-content: center;
+    }
   }
 
   .mat-drawer-side {
@@ -72,7 +103,7 @@ ems-root {
         padding: 62px 30px 0 30px;
       }
       @media screen and (min-width: $medium + 1) {
-        padding: 112px 100px 0 100px;
+        padding: 100px 70px 0 70px;
       }
 
       ems-home {

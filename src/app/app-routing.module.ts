@@ -13,7 +13,14 @@ const routes: Routes = [
     path: 'home',
     loadChildren: () =>
       import('./pages/home/home.module').then((m) => m.HomeModule),
-      pathMatch: 'full',
+    pathMatch: 'full',
+  },
+  {
+    path: 'master-data',
+    loadChildren: () =>
+      import('./pages/master-data/master-data.module').then(
+        (m) => m.MasterDataModule
+      ),
   },
   {
     path: '**',

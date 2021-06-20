@@ -26,22 +26,25 @@
       color: var(--primary);
     }
   }
-
-  .bottom-trigger {
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: center;
-
-    button {
-      border: 1px solid var(--gray-300);
-    }
-  }
 }
 
 ::ng-deep {
   .mat-list-item-content {
     padding: 15px 35px !important;
     justify-content: center;
+  }
+
+  .bottom-trigger {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+
+    .mat-icon-button {
+      border: 1px solid var(--gray-300);
+      .mat-button-wrapper {
+        height: auto;
+      }
+    }
   }
 }
 

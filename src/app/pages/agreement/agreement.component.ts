@@ -19,6 +19,6 @@ export class AgreementComponent implements OnInit {
   }
 
   addAgreementDialog(): void {
-    this.dialog.open(AddAgreementComponent);
+    // this.dialog.open(AddAgreementComponent);
   }
 }

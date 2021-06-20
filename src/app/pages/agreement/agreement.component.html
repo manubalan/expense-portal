@@ -5,22 +5,37 @@
             <p>Sample text</p>
         </div>
         <div>
-            <button mat-stroked-button color="primary" (click)="addAgreementDialog()">
-                <mat-icon>add</mat-icon> Add Agreement
+            <button mat-flat-button color="primary" (click)="addAgreementDialog()">
+                <mat-icon>summarize</mat-icon> Generate Report
             </button>
         </div>
     </header>
 </div>
 
-<mat-card>
-    <ems-list-agreement></ems-list-agreement>
-</mat-card>
+<div class="content-area">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Latest Agreements</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <ems-list-agreement></ems-list-agreement>
+        </mat-card-content>
+    </mat-card>
 
-<!-- <mat-tab-group animationDuration="0ms">
-    <router-outlet></router-outlet>
-    <mat-tab label="Agreements">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Latest Vehicle Expenses</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <ems-list-agreement></ems-list-agreement>
+        </mat-card-content>
+    </mat-card>
 
-    </mat-tab>
-    <mat-tab label="Vehicle Expenses">Content 2</mat-tab>
-    <mat-tab label="Employee Expenses">Content 3</mat-tab>
-</mat-tab-group> -->
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Latest Employee Expenses</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <ems-list-agreement></ems-list-agreement>
+        </mat-card-content>
+    </mat-card>

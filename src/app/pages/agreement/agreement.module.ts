@@ -10,17 +10,20 @@ import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/shared/material.module';
 import { MasterDataService } from './services/master-data.service';
+import { AddEmployeExpenseComponent } from './components/add-employe-expense/add-employe-expense.component';
+import { AddVehicleExpensesComponent } from './components/add-vehicle-expenses/add-vehicle-expenses.component';
 
 @NgModule({
   declarations: [
     AgreementComponent,
     AddAgreementComponent,
     ListAgreementComponent,
+    AddEmployeExpenseComponent,
+    AddVehicleExpensesComponent,
   ],
   imports: [
     CommonModule,
     AgreementRoutingModule,
-    MatInputModule,
     ReactiveFormsModule,
     MaterialModule
   ],
