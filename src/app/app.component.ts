@@ -1,7 +1,5 @@
-import { Component, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component } from '@angular/core';
 import { onMainContentChange } from './shared/animations/animations';
-import { SidebarService } from './shared/components/sidebar/sidebar.service';
 
 @Component({
   selector: 'ems-root',
@@ -9,20 +7,8 @@ import { SidebarService } from './shared/components/sidebar/sidebar.service';
   styleUrls: ['./app.component.scss'],
   animations: [onMainContentChange],
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent {
   title = 'expense-app';
-  onSideBarChange = true;
-  subscribe = new Subscription();
 
-  constructor(private sidebarService: SidebarService) {
-    this.subscribe = this.sidebarService.sideNavState$.subscribe((res) => {
-      this.onSideBarChange = res;
-    });
-  }
-
-  ngOnDestroy(): void {
-    if (this.subscribe) {
-      this.subscribe.unsubscribe();
-    }
-  }
+  constructor() {}
 }

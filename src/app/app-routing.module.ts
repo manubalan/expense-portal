@@ -3,28 +3,25 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'agreement',
-    loadChildren: () =>
-      import('./pages/agreement/agreement.module').then(
-        (m) => m.AgreementModule
-      ),
-  },
-  {
     path: 'home',
     loadChildren: () =>
       import('./pages/home/home.module').then((m) => m.HomeModule),
     pathMatch: 'full',
   },
+
   {
-    path: 'master-data',
+    path: 'auth',
     loadChildren: () =>
-      import('./pages/master-data/master-data.module').then(
-        (m) => m.MasterDataModule
-      ),
+      import('./pages/auth/auth.module').then((m) => m.AuthModule),
+  },
+  {
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full',
   },
   {
     path: '**',
-    redirectTo: 'home',
+    redirectTo: 'auth',
     pathMatch: 'full',
   },
 ];

@@ -16,6 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
+import {MatFormFieldModule} from '@angular/material/form-field';
 
 @NgModule({
   declarations: [],
@@ -36,6 +37,7 @@ import { MatListModule } from '@angular/material/list';
     MatInputModule,
     MatDialogModule,
     MatListModule,
+    MatFormFieldModule
   ],
   exports: [
     MatExpansionModule,
@@ -53,6 +55,7 @@ import { MatListModule } from '@angular/material/list';
     MatInputModule,
     MatDialogModule,
     MatListModule,
+    MatFormFieldModule
   ],
 })
 export class MaterialModule {}

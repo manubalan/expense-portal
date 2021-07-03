@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { SidebarService } from 'src/app/shared/components/sidebar/sidebar.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -6,9 +8,21 @@ import { environment } from 'src/environments/environment';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   baseUrl = environment.BASE_URL;
-  constructor() {}
+  onSideBarChange = true;
+  subscribe = new Subscription();
+  constructor(private sidebarService: SidebarService) {
+    this.subscribe = this.sidebarService.sideNavState$.subscribe((res) => {
+      this.onSideBarChange = res;
+    });
+  }
 
   ngOnInit(): void {}
+
+  ngOnDestroy(): void {
+    if (this.subscribe) {
+      this.subscribe.unsubscribe();
+    }
+  }
 }

@@ -7,10 +7,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from './shared/shared.module';
 
 import { APP_BASE_HREF, PlatformLocation } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './shared/material.module';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { ErrorInterceptor } from './core/services/error.interceptor';
+import { AuthInterceptor } from './pages/auth/auth.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,9 +22,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     BrowserAnimationsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    SharedModule,
-    MaterialModule,
-    MatSidenavModule,
   ],
   providers: [
     {
@@ -30,6 +29,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
       useFactory: (loc: PlatformLocation) => loc.getBaseHrefFromDOM(),
       deps: [PlatformLocation],
     },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
 })
