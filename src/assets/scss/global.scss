@@ -43,7 +43,7 @@ ems-root {
     z-index: 100;
   }
 
-  ems-home,
+  ems-pages,
   ems-sidebar {
     display: flex;
     flex-direction: column;
@@ -107,7 +107,7 @@ ems-root {
         padding: 100px 70px 0 70px;
       }
 
-      ems-home {
+      ems-pages {
         .screen {
           max-width: 100%;
           height: auto;

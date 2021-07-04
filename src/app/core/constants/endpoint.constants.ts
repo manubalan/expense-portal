@@ -3,6 +3,7 @@ import { endPoints } from 'src/environments/environment'
 
 export const API_END_POINT = {
   authentication: `${endPoints.authentication_EndPoint}login/`,
+  auth_refresh: `${endPoints.authentication_EndPoint}login/`,
   masterData: {
     states: `${endPoints.master_data_EndPoint}states/`,
     district: `${endPoints.master_data_EndPoint}districts/`,

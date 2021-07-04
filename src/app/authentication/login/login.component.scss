@@ -1,0 +1,12 @@
+.form-box {
+  display: flex;
+  flex-direction: column;
+
+  mat-form-field {
+    margin-bottom: 50px;
+
+    .mat-icon {
+      font-size: 24px;
+    }
+  }
+}

@@ -26,7 +26,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 
 @Component({
   selector: 'ems-add-agreement',
-  templateUrl: './add-agreement.component.html',
+  template: '',
   styleUrls: ['./add-agreement.component.scss'],
 })
 export class AddAgreementComponent implements OnInit {

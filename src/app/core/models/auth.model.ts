@@ -1,7 +1,8 @@
 export interface AuthResponseModel {
   user: UserModel;
   token: TokenModel;
-  message: string;
+  message?: string;
+  is_authenticated: boolean;
 }
 
 export interface TokenModel {
@@ -12,9 +13,26 @@ export interface TokenModel {
 export interface UserModel {
   id: number;
   username: string;
-  email: string;
+  email?: string;
+  is_superuser?: boolean;
+  profile_pic?: null;
+}
+
+export interface RoleModel {
+  id: number;
   is_superuser: boolean;
-  profile_pic: null;
+  name: string;
+}
+
+export interface LoggedUserModel {
+  user?: UserModel;
+  token?: TokenModel;
+  is_authenticated?: boolean;
+}
+
+export interface ActiveUserModel{
+  user?: UserModel;
+  is_authenticated?: boolean;
 }
 
 export interface ErrorResponseModel {

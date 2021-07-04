@@ -7,8 +7,7 @@ import {
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-
-import { AuthService } from 'src/app/pages/auth/auth.service';
+import { AuthService } from 'src/app/authentication/services/auth.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -20,14 +19,10 @@ export class ErrorInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
       catchError((err) => {
-        if (err.status === 401) {
-          // auto logout if 401 response returned from api
+        if ([401, 403].indexOf(err.status) !== -1) {
+          // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
           this.authenticationService.logout();
           location.reload(true);
-        }
-
-        if (err.status === 400) {
-          console.log('Wrong API');
         }
 
         const error = err.error.message || err.statusText;

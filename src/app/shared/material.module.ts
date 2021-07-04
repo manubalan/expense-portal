@@ -16,7 +16,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
   declarations: [],
@@ -37,7 +40,10 @@ import {MatFormFieldModule} from '@angular/material/form-field';
     MatInputModule,
     MatDialogModule,
     MatListModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatDividerModule,
+    MatToolbarModule,
+    MatSidenavModule,
   ],
   exports: [
     MatExpansionModule,
@@ -55,7 +61,10 @@ import {MatFormFieldModule} from '@angular/material/form-field';
     MatInputModule,
     MatDialogModule,
     MatListModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatDividerModule,
+    MatToolbarModule,
+    MatSidenavModule,
   ],
 })
 export class MaterialModule {}

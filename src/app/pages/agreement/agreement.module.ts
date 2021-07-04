@@ -25,7 +25,7 @@ import { AddVehicleExpensesComponent } from './components/add-vehicle-expenses/a
     CommonModule,
     AgreementRoutingModule,
     ReactiveFormsModule,
-    MaterialModule
+    MaterialModule,
   ],
   providers: [MasterDataService]
 })

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from './authentication';
 import { onMainContentChange } from './shared/animations/animations';
 
 @Component({
@@ -10,5 +11,11 @@ import { onMainContentChange } from './shared/animations/animations';
 export class AppComponent {
   title = 'expense-app';
 
-  constructor() {}
+  constructor(private authenticationService: AuthService) {
+    // this.authenticationService.isAuthenticated.subscribe(el => {
+
+    //   console.log(' CUrrent USER ------------>', el);
+      
+    //       });
+  }
 }

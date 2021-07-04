@@ -1,17 +1,20 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { SidebarService } from 'src/app/shared/components/sidebar/sidebar.service';
 import { environment } from 'src/environments/environment';
+import { onMainContentChange } from '../shared/animations/animations';
+import { SidebarService } from '../shared/components/sidebar/sidebar.service';
 
 @Component({
-  selector: 'ems-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+  selector: 'ems-pages',
+  templateUrl: './pages.component.html',
+  styleUrls: ['./pages.component.scss'],
+  animations: [onMainContentChange],
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class PagesComponent implements OnInit, OnDestroy {
   baseUrl = environment.BASE_URL;
   onSideBarChange = true;
   subscribe = new Subscription();
+
   constructor(private sidebarService: SidebarService) {
     this.subscribe = this.sidebarService.sideNavState$.subscribe((res) => {
       this.onSideBarChange = res;

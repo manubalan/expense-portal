@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav/sidenav';
+import { AuthService } from 'src/app/authentication/services/auth.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -13,7 +14,12 @@ export class NavigationComponent implements OnInit {
   @Input()
   sidenav!: MatSidenav;
 
-  constructor() {}
+  constructor(private authService: AuthService) {}
 
   ngOnInit(): void {}
+
+  logout(): void {
+    this.authService.logout();
+    
+  }
 }
