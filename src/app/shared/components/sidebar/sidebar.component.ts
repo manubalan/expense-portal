@@ -19,8 +19,8 @@ export class SidebarComponent implements OnInit {
 
   public pages: Page[] = [
     { name: 'Dashboard', link: '/home', icon: 'grid_view' },
-    { name: 'Agreement', link: '/agreement', icon: 'description' },
-    { name: 'Master Data', link: '/master-data', icon: 'storage' },
+    { name: 'Agreement', link: '/dashboard/agreement', icon: 'description' },
+    { name: 'Master Data', link: '/dashboard/master-data', icon: 'storage' },
     // { name: 'Send email', link: 'some-link', icon: 'face' },
   ];
 

@@ -49,7 +49,9 @@ export class AuthService {
 
   public setToken(token: TokenModel): void {
     this.activeUser.token = token;
+
     localStorage.setItem('activeUser', JSON.stringify(this.activeUser));
+    localStorage.setItem('abcc', 'xyz');
   }
 
   public isLoggedIn(): boolean {
@@ -99,7 +101,7 @@ export class AuthService {
     this.router.navigate(['/auth']);
   }
 
-  refreshToken() {
+  refreshToken(): Observable<any> {
     return this.http
       .post<any>(API_END_POINT.auth_refresh, {
         refresh: this.getToken().refresh,

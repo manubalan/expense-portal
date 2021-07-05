@@ -15,7 +15,9 @@ export class AgreementComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // this.masterData.getMasterData();
+    this.masterData.getMasterData().subscribe((data) => {
+      console.log('Data === ', data);
+    });
   }
 
   addAgreementDialog(): void {
