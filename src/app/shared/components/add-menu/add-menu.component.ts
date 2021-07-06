@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { AddAgreementComponent } from 'src/app/pages/agreement/components/add-agreement/add-agreement.component';
-import { AddEmployeExpenseComponent } from 'src/app/pages/agreement/components/add-employe-expense/add-employe-expense.component';
-import { AddVehicleExpensesComponent } from 'src/app/pages/agreement/components/add-vehicle-expenses/add-vehicle-expenses.component';
-
+import {
+  AddAgreementComponent,
+  AddEmployeExpenseComponent,
+  AddVehicleExpensesComponent,
+} from 'src/app/pages/agreement/components';
 @Component({
   selector: 'ems-add-menu',
   templateUrl: './add-menu.component.html',

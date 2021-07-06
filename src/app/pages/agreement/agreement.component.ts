@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddAgreementComponent } from './components/add-agreement/add-agreement.component';
-import { MasterDataService } from './services/master-data.service';
+import { MasterDataService } from '../../core/services/master-data.service';
 
 @Component({
   selector: 'ems-agreement',
@@ -11,16 +11,23 @@ import { MasterDataService } from './services/master-data.service';
 export class AgreementComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
-    private masterData: MasterDataService
+    private masterDataService: MasterDataService
   ) {}
 
   ngOnInit(): void {
-    this.masterData.getMasterData().subscribe((data) => {
-      console.log('Data === ', data);
-    });
+    this.setMasterDatas();
+  }
+
+  setMasterDatas(): void {
+    // const datas = {
+    //   states: this.masterDataService.stateList.subscribe(el => el),
+    //   district: this.masterDataService.districtsList.subscribe(el => el),
+    //   location: this.masterDataService.locationsList.subscribe(el => el),
+    // };
+    // console.log('=======>', datas);
   }
 
   addAgreementDialog(): void {
-    // this.dialog.open(AddAgreementComponent);
+    this.dialog.open(AddAgreementComponent);
   }
 }

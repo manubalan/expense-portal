@@ -8,12 +8,6 @@ const routes: Routes = [
   {
     path: '',
     component: AgreementComponent,
-    children: [
-      { path: '', component: ListAgreementComponent },
-      { path: 'add', component: AddAgreementComponent },
-      { path: 'expenses', component: ListAgreementComponent },
-      { path: '', redirectTo: 'view' },
-    ],
   },
 ];
 

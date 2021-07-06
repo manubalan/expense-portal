@@ -3,7 +3,7 @@
     <h4>Add New Agreement</h4>
   </header>
   <section>
-    <ul [formGroup]="addAgreement">
+    <ul [formGroup]="addAgreementForm">
       <li>
         <mat-form-field>
           <mat-label>Agreement No.</mat-label>
@@ -37,8 +37,8 @@
       <li>
         <mat-form-field>
           <mat-label>State</mat-label>
-          <mat-select formControlName="state" >
-            <mat-option *ngFor="let item of stateList" value="{{item.value}}"> {{item.label}} </mat-option>
+          <mat-select formControlName="state">
+            <mat-option *ngFor="let item of staleList" value="{{item.id}}"> {{item.name}} </mat-option>
           </mat-select>
           <!-- <mat-error *ngIf="selected.hasError('required')">You must make a selection</mat-error>
           <mat-error *ngIf="selected.hasError('pattern') && !selected.hasError('required')">
@@ -49,8 +49,8 @@
       <li>
         <mat-form-field>
           <mat-label>District</mat-label>
-          <mat-select formControlName="district" >
-            <mat-option *ngFor="let item of districtList" value="{{item.value}}"> {{item.label}} </mat-option>
+          <mat-select formControlName="district">
+            <mat-option *ngFor="let item of districtList" value="{{item.id}}"> {{item.name}} </mat-option>
           </mat-select>
           <!-- <mat-error *ngIf="selected.hasError('required')">You must make a selection</mat-error>
           <mat-error *ngIf="selected.hasError('pattern') && !selected.hasError('required')">
@@ -61,8 +61,8 @@
       <li>
         <mat-form-field>
           <mat-label>Location</mat-label>
-          <mat-select formControlName="location" >
-            <mat-option *ngFor="let item of locationList" value="{{item.value}}"> {{item.label}} </mat-option>
+          <mat-select formControlName="location">
+            <mat-option *ngFor="let item of locationList" value="{{item.id}}"> {{item.name}} </mat-option>
           </mat-select>
           <!-- <mat-error *ngIf="selected.hasError('required')">You must make a selection</mat-error>
           <mat-error *ngIf="selected.hasError('pattern') && !selected.hasError('required')">
@@ -80,8 +80,8 @@
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-date-range-picker #picker></mat-date-range-picker>
 
-          <!-- <mat-error *ngIf="addAgreement.startDate">Invalid start date</mat-error>
-  <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error> -->
+          <mat-error *ngIf="addAgreementForm.controls.startDate">Select Start & End Dates</mat-error>
+          <mat-error *ngIf="addAgreementForm.controls.endDate.hasError('matEndDateInvalid')">Invalid end date</mat-error>
         </mat-form-field>
       </li>
       <li>
@@ -99,7 +99,8 @@
     </ul>
   </section>
   <footer>
-    <button class="add-button" [disabled]="!addAgreement.valid" mat-stroked-button color="primary" (click)="accessFormData();">
+    <button class="add-button" [disabled]="!addAgreementForm.valid" mat-stroked-button color="primary"
+      (click)="postFormData();">
       <mat-icon>add</mat-icon> Add Agreement
     </button>
     <button class="add-button" mat-stroked-button color="warn" (click)="closeDialogBox();">Cancel Now</button>

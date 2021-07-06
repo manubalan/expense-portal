@@ -7,7 +7,15 @@ import {
   NgForm,
   Validators,
 } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
+import { ErrorStateMatcher, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { Subscription } from 'rxjs';
+import {
+  AgreementRequestModel,
+  MasterDataService,
+  ResultDataModel,
+} from 'src/app/core';
+import { MasterDataModule } from 'src/app/pages/master-data/master-data.module';
+import { AgreementService } from '../../services';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -26,109 +34,180 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 
 @Component({
   selector: 'ems-add-agreement',
-  template: '',
+  templateUrl: './add-agreement.component.html',
   styleUrls: ['./add-agreement.component.scss'],
+  providers: [
+    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
+  ]
 })
 export class AddAgreementComponent implements OnInit {
-  stateList = [
-    {
-      value: 1,
-      label: 'State 1',
-    },
-    {
-      value: 2,
-      label: 'State 2',
-    },
-    {
-      value: 3,
-      label: 'State 3',
-    },
-    {
-      value: 4,
-      label: 'State 4',
-    },
-    {
-      value: 5,
-      label: 'State 5',
-    },
-  ];
+  addAgreementForm: FormGroup;
+  stateData: MasterDataModule = {
+    count: 0,
+    next: null,
+    previous: null,
+    results: [],
+  };
+  staleList: ResultDataModel[] = [];
+  districtData: MasterDataModule = {};
+  districtList: ResultDataModel[] = [];
+  locationData: MasterDataModule = {};
+  locationList: ResultDataModel[] = [];
 
-  districtList = [
-    {
-      value: 1,
-      label: 'District 1',
-    },
-    {
-      value: 2,
-      label: 'District 2',
-    },
-    {
-      value: 3,
-      label: 'District 3',
-    },
-    {
-      value: 4,
-      label: 'District 4',
-    },
-    {
-      value: 5,
-      label: 'District 5',
-    },
-  ];
-
-  locationList = [
-    {
-      value: 1,
-      label: 'Location 1',
-    },
-    {
-      value: 2,
-      label: 'Location 2',
-    },
-    {
-      value: 3,
-      label: 'Location 3',
-    },
-    {
-      value: 4,
-      label: 'Location 4',
-    },
-    {
-      value: 5,
-      label: 'Location 5',
-    },
-  ];
+  private subscriptions: Subscription[] = [];
 
   @Output()
   closeDialog = new EventEmitter<any>();
 
-  constructor(private fbuilder: FormBuilder) {}
-
-  addAgreement: FormGroup = this.fbuilder.group({
-    no: new FormControl('', Validators.required),
-    name: new FormControl(''),
-    amount: new FormControl('', Validators.required),
-    location: new FormControl('', Validators.required),
-    district: new FormControl('', Validators.required),
-    state: new FormControl('', Validators.required),
-    startDate: new FormControl('', Validators.required),
-    endDate: new FormControl('', Validators.required),
-    naration: new FormControl(''),
-  });
-
-  ngOnInit(): void {
-    this.addAgreement.valueChanges.subscribe((data) => {
-      console.log('======> ', data);
+  constructor(
+    private fbuilder: FormBuilder,
+    private masterDataService: MasterDataService,
+    private agreementService: AgreementService
+  ) {
+    this.addAgreementForm = this.fbuilder.group({
+      no: new FormControl('', Validators.required),
+      name: new FormControl('', Validators.required),
+      amount: new FormControl('', Validators.required),
+      location: new FormControl('', Validators.required),
+      district: new FormControl('', Validators.required),
+      state: new FormControl('', Validators.required),
+      startDate: new FormControl('', Validators.required),
+      endDate: new FormControl('', Validators.required),
+      naration: new FormControl(''),
     });
   }
 
-  getMasterData(): void {}
+  ngOnInit(): void {
+    this.setStateData();
+    this.detectStateData();
+    this.detectDistrictData();
 
-  accessFormData(): void {
-    console.log('Form Data -->', this.addAgreement.value);
+    this.addAgreementForm.valueChanges.subscribe((data) => [
+      console.log('AGREEMENT FORM -- ', data),
+    ]);
+  }
+
+  setStateData(): void {
+    const stateDataSub = this.masterDataService
+      .getStateList()
+      .subscribe((data) => {
+        if (data !== null && data.results) {
+          this.stateData = data;
+          this.staleList = data.results;
+        }
+      });
+
+    this.subscriptions.push(stateDataSub);
+  }
+
+  setDistrictData(params?: number): void {
+    const stateDataSub = this.masterDataService
+      .getDistrictsList(params)
+      .subscribe((data) => {
+        if (data !== null && data.results) {
+          this.districtData = data;
+          this.districtList = data.results;
+        }
+      });
+
+    this.subscriptions.push(stateDataSub);
+  }
+
+  setLocationData(params?: number): void {
+    const stateDataSub = this.masterDataService
+      .getLocationsList(params)
+      .subscribe((data) => {
+        if (data !== null && data.results) {
+          this.locationData = data;
+          this.locationList = data.results;
+        }
+      });
+
+    this.subscriptions.push(stateDataSub);
+  }
+
+  detectStateData(): void {
+    this.addAgreementForm.get('state')?.valueChanges.subscribe((value: any) => {
+      if (value) {
+        console.log('STATE --> ', value);
+        this.setDistrictData(value);
+      }
+    });
+  }
+
+  detectDistrictData(): void {
+    this.addAgreementForm
+      .get('district')
+      ?.valueChanges.subscribe((value: any) => {
+        if (value) {
+          console.log('DISTRICT --> ', value);
+          this.setLocationData(value);
+        }
+      });
+  }
+
+  postFormData(): void {
+    console.log('Form Data -->', this.addAgreementForm.value);
+
+    const request: AgreementRequestModel = {
+      agreement_number: this.addAgreementForm.value.no
+        ? this.addAgreementForm.value.no
+        : '',
+      name: this.addAgreementForm.value.name
+        ? this.addAgreementForm.value.name
+        : '',
+      amount: this.addAgreementForm.value.amount
+        ? this.addAgreementForm.value.amount
+        : '',
+      start_date: this.addAgreementForm.value.startDate
+        ? this.addAgreementForm.value.startDate
+        : '',
+      end_date: this.addAgreementForm.value.endDate
+        ? this.addAgreementForm.value.endDate
+        : '',
+      narration: this.addAgreementForm.value.naration
+        ? this.addAgreementForm.value.naration
+        : '',
+      location: this.addAgreementForm.value.location
+        ? this.addAgreementForm.value.location
+        : '',
+      district: this.addAgreementForm.value.district
+        ? this.addAgreementForm.value.district
+        : '',
+      state: this.addAgreementForm.value.state
+        ? this.addAgreementForm.value.state
+        : '',
+    };
+    this.agreementService.postAgreement(request).subscribe(
+      (data) => {
+        if (data) {
+          console.log('POSTED --', data);
+        }
+      },
+      (err) => [console.log(err)]
+    );
   }
 
   closeDialogBox(): void {
     this.closeDialog.emit();
   }
+
+  //   no: new FormControl('', Validators.required),
+  //   name: new FormControl(''),
+  //   amount: new FormControl('', Validators.required),
+  //   location: new FormControl('', Validators.required),
+  //   district: new FormControl('', Validators.required),
+  //   state: new FormControl('', Validators.required),
+  //   startDate: new FormControl('', Validators.required),
+  //   endDate: new FormControl('', Validators.required),
+  //   naration: new FormControl(''),
+  // });
+
+  // ngOnDestroy(): void {
+  //   //Called once, before the instance is destroyed.
+  //   //Add 'implements OnDestroy' to the class.
+  //   // if(this.subscriptions){
+  //   //   this.subscriptions.unsubscibe();
+  //   // }
+  // }
 }

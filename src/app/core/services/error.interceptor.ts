@@ -23,6 +23,18 @@ export class ErrorInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
+    const currentUser = JSON.parse(localStorage.getItem('activeUser') || '{}');
+    const isLoggedIn = currentUser && currentUser.token;
+    const isApiUrl = true;
+    if (isLoggedIn && isApiUrl) {
+      request = request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${currentUser.token.access}`,
+        },
+      });
+    }
+
+
     return next.handle(request).pipe(
       catchError((err) => {
         if ([401].indexOf(err.status) !== -1) {
@@ -53,7 +65,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         } else if ([403].indexOf(err.status) !== -1) {
         }
 
-        const error = err.error.message || err.statusText;
+        const error = err.error.message;
         return throwError(error);
       })
     );

@@ -1,5 +1,6 @@
 import { endPoints } from 'src/environments/environment'
 
+const searchKey = '?search=';
 
 export const API_END_POINT = {
   authentication: `${endPoints.authentication_EndPoint}login/`,
@@ -7,19 +8,20 @@ export const API_END_POINT = {
   masterData: {
     states: `${endPoints.master_data_EndPoint}states/`,
     district: `${endPoints.master_data_EndPoint}districts/`,
+    district_params: `${endPoints.master_data_EndPoint}districts/?state=`,
     location: `${endPoints.master_data_EndPoint}locations/`,
+    location_params: `${endPoints.master_data_EndPoint}locations/?district=`,
     vehicle_type: `${endPoints.master_data_EndPoint}vehicle-types/`,
+    vehicle_type_params: `${endPoints.master_data_EndPoint}vehicle-types/${searchKey}`,
     materials: `${endPoints.master_data_EndPoint}materials/`,
+    materials_params: `${endPoints.master_data_EndPoint}materials/${searchKey}`,
     employees: `${endPoints.master_data_EndPoint}employees/`,
+    employees_params: `${endPoints.master_data_EndPoint}employees/${searchKey}`,
     worktypes: `${endPoints.master_data_EndPoint}worktypes/`,
+    worktypes_params: `${endPoints.master_data_EndPoint}worktypes/${searchKey}`,
   },
+  agreement: {
+    data_operations: `${endPoints.base_api_EndPoint}agreements/`,
+    validate_item: `${endPoints.base_api_EndPoint}agreements/validate_agreement_number/?agreement_number=`,
+  }
 };
-
-
-// http://18.118.104.163:8000/
-// http://18.118.104.163:8000/api/districts/?state=1
-// http://18.118.104.163:8000/api/locations/?district=1
-// http://18.118.104.163:8000/api/vehicle-types/
-// http://18.118.104.163:8000/api/materials/?search=a
-// http://18.118.104.163:8000/api/employees/
-// http://18.118.104.163:8000/api/worktypes/

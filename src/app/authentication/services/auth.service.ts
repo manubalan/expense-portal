@@ -49,9 +49,8 @@ export class AuthService {
 
   public setToken(token: TokenModel): void {
     this.activeUser.token = token;
-
     localStorage.setItem('activeUser', JSON.stringify(this.activeUser));
-    localStorage.setItem('abcc', 'xyz');
+    this.activeUserSubject.next(this.activeUser);
   }
 
   public isLoggedIn(): boolean {
