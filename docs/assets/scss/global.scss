@@ -19,7 +19,7 @@ $medium: 900px;
 ems-root {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 
   ems-navigation {
     display: flex;
@@ -43,11 +43,12 @@ ems-root {
     z-index: 100;
   }
 
+  ems-pages,
   ems-sidebar {
     display: flex;
     flex-direction: column;
     background-color: white;
-    height: 100%;
+    height: 100vh;
   }
 
   ems-agreement {
@@ -106,7 +107,7 @@ ems-root {
         padding: 100px 70px 0 70px;
       }
 
-      ems-home {
+      ems-pages {
         .screen {
           max-width: 100%;
           height: auto;
@@ -114,6 +115,18 @@ ems-root {
         }
       }
     }
+  }
+
+  ems-auth {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: gray;
   }
 }
 
@@ -177,3 +190,4 @@ ems-root {
     }
   }
 }
+
