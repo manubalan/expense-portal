@@ -1,4 +1,10 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -7,7 +13,6 @@ import {
   NgForm,
   Validators,
 } from '@angular/forms';
-import { ErrorStateMatcher, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { Subscription } from 'rxjs';
 import {
   AgreementRequestModel,
@@ -17,30 +22,15 @@ import {
 import { MasterDataModule } from 'src/app/pages/master-data/master-data.module';
 import { AgreementService } from '../../services';
 
-/** Error when invalid control is dirty, touched, or submitted. */
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(
-    control: FormControl | null,
-    form: FormGroupDirective | NgForm | null
-  ): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(
-      control &&
-      control.invalid &&
-      (control.dirty || control.touched || isSubmitted)
-    );
-  }
-}
+import * as moment from 'moment';
+import { LoaderService, SnackBarService } from 'src/app/shared/components';
 
 @Component({
   selector: 'ems-add-agreement',
   templateUrl: './add-agreement.component.html',
   styleUrls: ['./add-agreement.component.scss'],
-  providers: [
-    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
-  ]
 })
-export class AddAgreementComponent implements OnInit {
+export class AddAgreementComponent implements OnInit, OnDestroy {
   addAgreementForm: FormGroup;
   stateData: MasterDataModule = {
     count: 0,
@@ -62,7 +52,9 @@ export class AddAgreementComponent implements OnInit {
   constructor(
     private fbuilder: FormBuilder,
     private masterDataService: MasterDataService,
-    private agreementService: AgreementService
+    private agreementService: AgreementService,
+    private loaderService: LoaderService,
+    private snackBarService: SnackBarService
   ) {
     this.addAgreementForm = this.fbuilder.group({
       no: new FormControl('', Validators.required),
@@ -72,7 +64,7 @@ export class AddAgreementComponent implements OnInit {
       district: new FormControl('', Validators.required),
       state: new FormControl('', Validators.required),
       startDate: new FormControl('', Validators.required),
-      endDate: new FormControl('', Validators.required),
+      endDate: new FormControl(''),
       naration: new FormControl(''),
     });
   }
@@ -147,7 +139,7 @@ export class AddAgreementComponent implements OnInit {
   }
 
   postFormData(): void {
-    console.log('Form Data -->', this.addAgreementForm.value);
+    this.loaderService.show();
 
     const request: AgreementRequestModel = {
       agreement_number: this.addAgreementForm.value.no
@@ -160,10 +152,10 @@ export class AddAgreementComponent implements OnInit {
         ? this.addAgreementForm.value.amount
         : '',
       start_date: this.addAgreementForm.value.startDate
-        ? this.addAgreementForm.value.startDate
+        ? moment(this.addAgreementForm.value.startDate).format('YYYY-MM-DD')
         : '',
       end_date: this.addAgreementForm.value.endDate
-        ? this.addAgreementForm.value.endDate
+        ? moment(this.addAgreementForm.value.endDate).format('YYYY-MM-DD')
         : '',
       narration: this.addAgreementForm.value.naration
         ? this.addAgreementForm.value.naration
@@ -178,36 +170,30 @@ export class AddAgreementComponent implements OnInit {
         ? this.addAgreementForm.value.state
         : '',
     };
-    this.agreementService.postAgreement(request).subscribe(
-      (data) => {
-        if (data) {
-          console.log('POSTED --', data);
-        }
-      },
-      (err) => [console.log(err)]
-    );
+    this.agreementService.postAgreement(request).subscribe((data) => {
+      if (data) {
+        this.snackBarService.success('Agreement added Successfully ! ', 'Done');
+
+        this.addAgreementForm.reset();
+        this.loaderService.hide();
+      }
+      this.loaderService.hide();
+    });
+    // (error: any) => {
+    //   if (error) {
+    //     this.snackBarService.error('Agreement added Successfully ! ', 'Done');
+
+    //   }
+    // };
   }
 
   closeDialogBox(): void {
     this.closeDialog.emit();
   }
 
-  //   no: new FormControl('', Validators.required),
-  //   name: new FormControl(''),
-  //   amount: new FormControl('', Validators.required),
-  //   location: new FormControl('', Validators.required),
-  //   district: new FormControl('', Validators.required),
-  //   state: new FormControl('', Validators.required),
-  //   startDate: new FormControl('', Validators.required),
-  //   endDate: new FormControl('', Validators.required),
-  //   naration: new FormControl(''),
-  // });
-
-  // ngOnDestroy(): void {
-  //   //Called once, before the instance is destroyed.
-  //   //Add 'implements OnDestroy' to the class.
-  //   // if(this.subscriptions){
-  //   //   this.subscriptions.unsubscibe();
-  //   // }
-  // }
+  ngOnDestroy(): void {
+    if (this.subscriptions.length > 0) {
+      this.subscriptions.forEach((subs) => [subs.unsubscribe()]);
+    }
+  }
 }

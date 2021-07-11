@@ -7,7 +7,7 @@
       <li>
         <mat-form-field>
           <mat-label>Agreement No.</mat-label>
-          <input type="number" matInput formControlName="no" placeholder="Agreement No.">
+          <input type="text" matInput formControlName="no" placeholder="Agreement No.">
           <!-- <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
         Please enter a valid email address
       </mat-error> -->
@@ -72,16 +72,18 @@
       </li>
       <li>
         <mat-form-field>
-          <mat-label>Start - End Date</mat-label>
-          <mat-date-range-input [rangePicker]="picker">
-            <input matStartDate formControlName="startDate" placeholder="Start date">
-            <input matEndDate formControlName="endDate" placeholder="End date">
-          </mat-date-range-input>
+          <mat-label>Start Date</mat-label>
+          <input matInput formControlName="startDate" [matDatepicker]="picker">
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-date-range-picker #picker></mat-date-range-picker>
-
-          <mat-error *ngIf="addAgreementForm.controls.startDate">Select Start & End Dates</mat-error>
-          <mat-error *ngIf="addAgreementForm.controls.endDate.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>End Date</mat-label>
+          <input matInput formControlName="endDate" [matDatepicker]="picker2">
+          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
         </mat-form-field>
       </li>
       <li>
@@ -107,3 +109,5 @@
   </footer>
 
 </div>
+
+<ems-loader></ems-loader>
