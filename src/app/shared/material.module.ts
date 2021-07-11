@@ -20,9 +20,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { LoaderComponent, LoaderService, SnackBarService } from './components';
 
 @NgModule({
-  declarations: [],
+  declarations: [LoaderComponent],
   imports: [
     CommonModule,
     MatExpansionModule,
@@ -44,8 +47,11 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatDividerModule,
     MatToolbarModule,
     MatSidenavModule,
+    MatAutocompleteModule,
+    MatSnackBarModule,
   ],
   exports: [
+    LoaderComponent,
     MatExpansionModule,
     MatButtonModule,
     MatCardModule,
@@ -65,6 +71,9 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatDividerModule,
     MatToolbarModule,
     MatSidenavModule,
+    MatAutocompleteModule,
+    MatSnackBarModule,
   ],
+  providers: [LoaderService, SnackBarService],
 })
 export class MaterialModule {}

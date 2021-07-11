@@ -191,3 +191,29 @@ ems-root {
   }
 }
 
+.snack-bar-success {
+  background-color: #06d6a0;
+  color: #fff;
+
+  .mat-simple-snackbar-action {
+    color: #fff;
+  }
+}
+
+.snack-bar-error {
+  background-color: #ef476f;
+  color: #fff;
+
+  .mat-simple-snackbar-action {
+    color: #fff;
+  }
+}
+
+.snack-bar-warning {
+  background-color: #1b9aaa;
+  color: #fff;
+
+  .mat-simple-snackbar-action {
+    color: #fff;
+  }
+}
