@@ -1,0 +1,18 @@
+# --- Create Tags ---
+
+- git checkout develop
+- git pull origin develop
+- git tag -a v1.0 -m "Message about the Version"
+- git push --tags
+
+#--- Merge Tags ---
+- git checkout release
+- git pull origin release
+- git merge v1.0
+- git push origin release
+
+#--- Prod Env ---
+- git checkout main
+- git pull origin main
+- git merge v1.0
+- git push origin main
