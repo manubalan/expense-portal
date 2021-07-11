@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
 
-  BASE_URL: 'http://localhost:4040',
+  BASE_URL: 'http://expense-portal.s3-website-us-east-1.amazonaws.com',
 
   AUTH_ENDPOINT: 'http://18.118.104.163',
   AUTH_PORT: '8000',
