@@ -12,6 +12,8 @@ import { AgreementListModel } from 'src/app/core';
 })
 export class AgreementComponent implements OnInit {
   agreementListResult: AgreementListModel = {};
+  empExpenseListResult: any;
+  vehicleExpenseListResult: any;
 
   constructor(
     public dialog: MatDialog,
@@ -21,6 +23,8 @@ export class AgreementComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAgreementList();
+    this.getEmpExpenseList();
+    this.getVehicleExpenseList();
   }
 
   getAgreementList(): void {
@@ -28,6 +32,24 @@ export class AgreementComponent implements OnInit {
       console.log('AGREEMENTS LIST =>', data);
       if (data) {
         this.agreementListResult = data;
+      }
+    });
+  }
+
+  getEmpExpenseList(): void {
+    this.agreementService.getEmpExpense().subscribe((data) => {
+      console.log('EMP EXPENSE LIST =>', data);
+      if (data) {
+        this.empExpenseListResult = data;
+      }
+    });
+  }
+
+  getVehicleExpenseList(): void {
+    this.agreementService.getVehicleExpense().subscribe((data) => {
+      console.log('EMP EXPENSE LIST =>', data);
+      if (data) {
+        this.vehicleExpenseListResult = data;
       }
     });
   }

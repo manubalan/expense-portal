@@ -27,10 +27,10 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let agreement of agreementListResult?.results; let i=index">
-                        <td>{{i}}</td>
-                        <td> {{agreement.agreement_number}} </td>
-                        <td>{{agreement.name}}</td>
-                        <td>{{agreement.amount}}</td>
+                        <td style="width: 25%;">{{i}}</td>
+                        <td style="width: 25%;"> {{agreement.agreement_number}} </td>
+                        <td style="width: 25%;">{{agreement.name}}</td>
+                        <td style="width: 25%;">{{agreement.amount}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -38,12 +38,28 @@
         </mat-card-content>
     </mat-card>
 
-    <!-- <mat-card>
+    <mat-card>
         <mat-card-header>
             <mat-card-title>Latest Vehicle Expenses</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <ems-list-agreement></ems-list-agreement>
+            <table>
+                <thead>
+                    <th>SlNo</th>
+                    <th>Agreement Number</th>
+                    <th>Vehicle Details</th>
+                    <th>Materials</th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let agreement of vehicleExpenseListResult?.results; let i=index">
+                        <td style="width: 25%;">{{i}}</td>
+                        <td style="width: 25%;"> {{agreement.agreement}} </td>
+                        <td style="width: 25%;">{{agreement.vehicle_type_details.name}}</td>
+                        <td style="width: 25%;">{{agreement.materials_from_details.name}}</td>
+                    </tr>
+                </tbody>
+                </table>
+            <!-- <ems-list-agreement></ems-list-agreement> -->
         </mat-card-content>
     </mat-card>
 
@@ -52,6 +68,22 @@
             <mat-card-title>Latest Employee Expenses</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <ems-list-agreement></ems-list-agreement>
+            <table>
+                <thead>
+                    <th>SlNo</th>
+                    <th>Agreement Number</th>
+                    <th>Employee Name</th>
+                    <th>Work Details</th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let agreement of empExpenseListResult?.results; let i=index">
+                        <td style="width: 25%;">{{i}}</td>
+                        <td style="width: 25%;"> {{agreement.agreement}} </td>
+                        <td style="width: 25%;">{{agreement.employee_name_details.name}}</td>
+                        <td style="width: 25%;">{{agreement.work_type_details.name}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- <ems-list-agreement></ems-list-agreement> -->
         </mat-card-content>
-    </mat-card> -->
+    </mat-card>
