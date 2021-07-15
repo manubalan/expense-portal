@@ -77,8 +77,8 @@ export class AuthService {
   login(username: string, password: string): any {
     return this.http
       .post<any>(API_END_POINT.authentication, {
-        username: 'admin',
-        password: 'Jothil@29',
+        username,
+        password,
       })
       .pipe(
         map((response: AuthResponseModel) => {

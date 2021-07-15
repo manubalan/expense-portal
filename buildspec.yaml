@@ -1,9 +1,5 @@
 version: 0.1
-env:
-    variables:
-        CACHE_CONTROL: "86400"
-        S3_BUCKET: "{{S3_BUCKET}}"
-        BUILD_FOLDER: "dist"
+
 phases:
   install:
     commands:
@@ -28,4 +24,4 @@ artifacts:
   files:
     - "**/*"
   discard-paths: no
-  base-directory: dist
+  base-directory: dist/
