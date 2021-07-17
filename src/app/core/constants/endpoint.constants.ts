@@ -23,5 +23,7 @@ export const API_END_POINT = {
   agreement: {
     data_operations: `${endPoints.base_api_EndPoint}agreements/`,
     validate_item: `${endPoints.base_api_EndPoint}agreements/validate_agreement_number/?agreement_number=`,
+    vehicle_expense: `${endPoints.base_api_EndPoint}vehicle-expenses/`,
+    employee_expense: `${endPoints.base_api_EndPoint}employees-expenses/`,
   }
 };

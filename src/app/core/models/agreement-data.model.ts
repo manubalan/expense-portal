@@ -1,3 +1,9 @@
+export interface GetResponseMode {
+  count?: number;
+  next?: string;
+  previous?: null;
+}
+
 export interface AgreementRequestModel {
   agreement_number: string;
   name?: string;
@@ -10,10 +16,7 @@ export interface AgreementRequestModel {
   state: number;
 }
 
-export interface AgreementListModel {
-  count?: number;
-  next?: string;
-  previous?: null;
+export interface AgreementListModel extends GetResponseMode {
   results?: AgreementListResultModel[];
 }
 
@@ -38,4 +41,36 @@ export interface AgreementListResultModel {
 
 export interface DetailsModel {
   name: string;
+}
+
+export interface ValidateAgreementResponseModel {
+  message?: string;
+  is_exist?: boolean;
+  showNow: boolean;
+}
+
+export interface ConstantDataModel {
+  id: number;
+  label: string;
+  value: string;
+}
+
+export interface VehicleTypeListModel extends GetResponseMode {
+  results: VehicleTypeResultModel[];
+}
+
+export interface VehicleTypeResultModel {
+  id: number;
+  name: string;
+}
+export interface EmployeeExpenseRequestModel {
+  day: string;
+  work_date: string;
+  kooli: number;
+  kooli_paid: number;
+  paid_date: string;
+  narration: string;
+  agreement: string;
+  name: string;
+  Work_type: string;
 }

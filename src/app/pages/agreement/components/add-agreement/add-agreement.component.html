@@ -5,15 +5,14 @@
   <section>
     <ul [formGroup]="addAgreementForm">
       <li>
-        <mat-form-field>
+        <mat-form-field appearance="legacy">
           <mat-label>Agreement No.</mat-label>
           <input type="text" matInput formControlName="no" placeholder="Agreement No.">
-          <!-- <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
-        Please enter a valid email address
-      </mat-error> -->
-          <!-- <mat-error *ngIf="emailFormControl.hasError('required')">
-            Agreement No <strong>required</strong>
-          </mat-error> -->
+          <mat-icon matSuffix *ngIf="validateAgreement.showNow"
+            [color]="validateAgreement.is_exist ? 'warn' : 'primary'"> {{validateAgreement.is_exist ? 'close' :
+            'check'}} </mat-icon>
+          <mat-hint>Agreement should be unique </mat-hint>
+          <mat-error *ngIf="validateAgreement.is_exist">{{validateAgreement.message}}</mat-error>
         </mat-form-field>
       </li>
       <li>
@@ -26,12 +25,6 @@
         <mat-form-field>
           <mat-label>Amount</mat-label>
           <input type="number" matInput formControlName="amount" placeholder="Amount">
-          <!-- <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
-        Please enter a valid email address
-      </mat-error> -->
-          <!-- <mat-error *ngIf="emailFormControl.hasError('required')">
-            Amount <strong>required</strong>
-          </mat-error> -->
         </mat-form-field>
       </li>
       <li>
@@ -40,10 +33,6 @@
           <mat-select formControlName="state">
             <mat-option *ngFor="let item of staleList" value="{{item.id}}"> {{item.name}} </mat-option>
           </mat-select>
-          <!-- <mat-error *ngIf="selected.hasError('required')">You must make a selection</mat-error>
-          <mat-error *ngIf="selected.hasError('pattern') && !selected.hasError('required')">
-            Your selection is invalid
-          </mat-error> -->
         </mat-form-field>
       </li>
       <li>
@@ -52,10 +41,6 @@
           <mat-select formControlName="district">
             <mat-option *ngFor="let item of districtList" value="{{item.id}}"> {{item.name}} </mat-option>
           </mat-select>
-          <!-- <mat-error *ngIf="selected.hasError('required')">You must make a selection</mat-error>
-          <mat-error *ngIf="selected.hasError('pattern') && !selected.hasError('required')">
-            Your selection is invalid
-          </mat-error> -->
         </mat-form-field>
       </li>
       <li>
@@ -64,10 +49,6 @@
           <mat-select formControlName="location">
             <mat-option *ngFor="let item of locationList" value="{{item.id}}"> {{item.name}} </mat-option>
           </mat-select>
-          <!-- <mat-error *ngIf="selected.hasError('required')">You must make a selection</mat-error>
-          <mat-error *ngIf="selected.hasError('pattern') && !selected.hasError('required')">
-            Your selection is invalid
-          </mat-error> -->
         </mat-form-field>
       </li>
       <li>
@@ -90,12 +71,6 @@
         <mat-form-field>
           <mat-label>Naration</mat-label>
           <input type="text" matInput formControlName="naration" placeholder="Naration">
-          <!-- <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
-        Please enter a valid email address
-      </mat-error> -->
-          <!-- <mat-error *ngIf="emailFormControl.hasError('required')">
-            Naration <strong>required</strong>
-          </mat-error> -->
         </mat-form-field>
       </li>
     </ul>
@@ -103,9 +78,10 @@
   <footer>
     <button class="add-button" [disabled]="!addAgreementForm.valid" mat-stroked-button color="primary"
       (click)="postFormData();">
-      <mat-icon>add</mat-icon> Add Agreement
+      Add Agreement
     </button>
-    <button class="add-button" mat-stroked-button color="warn" (click)="closeDialogBox();">Cancel Now</button>
+    <button class="add-button" mat-stroked-button color="warn" (click)="closeDialogBox();"
+      [mat-dialog-close]="true">Completed !</button>
   </footer>
 
 </div>

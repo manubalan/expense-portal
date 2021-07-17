@@ -18,12 +18,14 @@ import {
   AgreementRequestModel,
   MasterDataService,
   ResultDataModel,
+  ValidateAgreementResponseModel,
 } from 'src/app/core';
 import { MasterDataModule } from 'src/app/pages/master-data/master-data.module';
 import { AgreementService } from '../../services';
 
 import * as moment from 'moment';
 import { LoaderService, SnackBarService } from 'src/app/shared/components';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'ems-add-agreement',
@@ -43,6 +45,7 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
   districtList: ResultDataModel[] = [];
   locationData: MasterDataModule = {};
   locationList: ResultDataModel[] = [];
+  validateAgreement: ValidateAgreementResponseModel = { showNow: false };
 
   private subscriptions: Subscription[] = [];
 
@@ -54,7 +57,7 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
     private masterDataService: MasterDataService,
     private agreementService: AgreementService,
     private loaderService: LoaderService,
-    private snackBarService: SnackBarService
+    private snackBarService: SnackBarService,
   ) {
     this.addAgreementForm = this.fbuilder.group({
       no: new FormControl('', Validators.required),
@@ -73,16 +76,15 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
     this.setStateData();
     this.detectStateData();
     this.detectDistrictData();
-
-    this.addAgreementForm.valueChanges.subscribe((data) => [
-      console.log('AGREEMENT FORM -- ', data),
-    ]);
+    this.detectAgreementNumber();
   }
 
   setStateData(): void {
+    this.loaderService.show();
     const stateDataSub = this.masterDataService
       .getStateList()
       .subscribe((data) => {
+        this.loaderService.hide();
         if (data !== null && data.results) {
           this.stateData = data;
           this.staleList = data.results;
@@ -93,9 +95,11 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
   }
 
   setDistrictData(params?: number): void {
+    this.loaderService.show();
     const stateDataSub = this.masterDataService
       .getDistrictsList(params)
       .subscribe((data) => {
+        this.loaderService.hide();
         if (data !== null && data.results) {
           this.districtData = data;
           this.districtList = data.results;
@@ -106,9 +110,11 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
   }
 
   setLocationData(params?: number): void {
+    this.loaderService.show();
     const stateDataSub = this.masterDataService
       .getLocationsList(params)
       .subscribe((data) => {
+        this.loaderService.hide();
         if (data !== null && data.results) {
           this.locationData = data;
           this.locationList = data.results;
@@ -118,10 +124,29 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
     this.subscriptions.push(stateDataSub);
   }
 
+  detectAgreementNumber(): void {
+    const validateSubscription = this.addAgreementForm
+      .get('no')
+      ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe((value) => {
+        if (value !== null && value !== '') {
+          this.loaderService.show();
+          this.agreementService.validateAgreement(value).subscribe((data) => {
+            this.loaderService.hide();
+            if (data) {
+              this.validateAgreement = data;
+              this.validateAgreement.showNow = true;
+            }
+          });
+        }
+      });
+
+    // this.subscriptions.push(validateSubscription);
+  }
+
   detectStateData(): void {
     this.addAgreementForm.get('state')?.valueChanges.subscribe((value: any) => {
       if (value) {
-        console.log('STATE --> ', value);
         this.setDistrictData(value);
       }
     });
@@ -132,7 +157,6 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
       .get('district')
       ?.valueChanges.subscribe((value: any) => {
         if (value) {
-          console.log('DISTRICT --> ', value);
           this.setLocationData(value);
         }
       });
@@ -175,6 +199,7 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
         this.snackBarService.success('Agreement added Successfully ! ', 'Done');
 
         this.addAgreementForm.reset();
+        this.validateAgreement.showNow = false;
         this.loaderService.hide();
       }
       this.loaderService.hide();

@@ -4,6 +4,7 @@ import { AddAgreementComponent } from './components/add-agreement/add-agreement.
 import { MasterDataService } from '../../core/services/master-data.service';
 import { AgreementService } from './services';
 import { AgreementListModel } from 'src/app/core';
+import { LoaderService } from 'src/app/shared/components';
 
 @Component({
   selector: 'ems-agreement',
@@ -18,7 +19,8 @@ export class AgreementComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private masterDataService: MasterDataService,
-    private agreementService: AgreementService
+    private agreementService: AgreementService,
+    private loaderService: LoaderService
   ) {}
 
   ngOnInit(): void {
@@ -28,8 +30,10 @@ export class AgreementComponent implements OnInit {
   }
 
   getAgreementList(): void {
+    this.loaderService.show();
     this.agreementService.getAgreements().subscribe((data) => {
       console.log('AGREEMENTS LIST =>', data);
+      this.loaderService.hide();
       if (data) {
         this.agreementListResult = data;
       }
@@ -37,8 +41,10 @@ export class AgreementComponent implements OnInit {
   }
 
   getEmpExpenseList(): void {
+    this.loaderService.show();
     this.agreementService.getEmpExpense().subscribe((data) => {
       console.log('EMP EXPENSE LIST =>', data);
+      this.loaderService.hide();
       if (data) {
         this.empExpenseListResult = data;
       }
@@ -46,8 +52,10 @@ export class AgreementComponent implements OnInit {
   }
 
   getVehicleExpenseList(): void {
+    this.loaderService.show();
     this.agreementService.getVehicleExpense().subscribe((data) => {
       console.log('EMP EXPENSE LIST =>', data);
+      this.loaderService.hide();
       if (data) {
         this.vehicleExpenseListResult = data;
       }

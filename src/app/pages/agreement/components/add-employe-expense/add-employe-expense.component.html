@@ -1,1 +1,86 @@
-<p>add-employe-expense works!</p>
+<div class="form-pop-up">
+  <header>
+    <h4>Add New Employee Expense</h4>
+  </header>
+  <section>
+    <ul [formGroup]="addEmployeExpenseForm">
+      <li>
+        <mat-form-field appearance="legacy">
+          <mat-label>Agreement No.</mat-label>
+          <mat-select formControlName="agreementNo">
+            <mat-option *ngFor="let item of agreementList" value="{{item.id}}"> {{item.name}} </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Day Type</mat-label>
+          <mat-select formControlName="dayType">
+            <mat-option *ngFor="let item of dayTypeList" value="{{item.value}}"> {{item.label}} </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <mat-select formControlName="employeeName">
+            <mat-option *ngFor="let item of employeeList" value="{{item.id}}"> {{item.name}} </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Work Type</mat-label>
+          <mat-select formControlName="workType">
+            <mat-option *ngFor="let item of workTypeList" value="{{item.id}}"> {{item.name}} </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Date</mat-label>
+          <input matInput formControlName="work_date" [matDatepicker]="work">
+          <mat-datepicker-toggle matSuffix [for]="work"></mat-datepicker-toggle>
+          <mat-datepicker #work></mat-datepicker>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Kooli</mat-label>
+          <input type="number" matInput formControlName="kooli">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Kooli Paid</mat-label>
+          <input type="number" matInput formControlName="kooliPaid">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Paid Date</mat-label>
+          <input matInput formControlName="paid_date" [matDatepicker]="kooli">
+          <mat-datepicker-toggle matSuffix [for]="kooli"></mat-datepicker-toggle>
+          <mat-datepicker #kooli></mat-datepicker>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Narration</mat-label>
+          <input type="text" matInput formControlName="narration">
+        </mat-form-field>
+      </li>
+    </ul>
+  </section>
+  <footer>
+    <button class="add-button" [disabled]="!addEmployeExpenseForm.valid" mat-stroked-button color="primary"
+      (click)="postFormData();">
+      Add Agreement
+    </button>
+    <button class="add-button" mat-stroked-button color="warn" (click)="closeDialogBox();"
+      [mat-dialog-close]="true">Completed !</button>
+  </footer>
+
+</div>
+
+<ems-loader></ems-loader>

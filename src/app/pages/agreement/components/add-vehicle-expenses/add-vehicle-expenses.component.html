@@ -1,1 +1,137 @@
-<p>add-vehicle-expenses works!</p>
+<div class="form-pop-up">
+  <header>
+    <h4>Add New Vehicle Expense</h4>
+  </header>
+  <section>
+    <ul [formGroup]="addVehicleExpenseForm">
+      <li>
+        <mat-form-field appearance="legacy">
+          <mat-label>Agreement No.</mat-label>
+          <mat-select formControlName="no">
+            <mat-option *ngFor="let item of agreementList" value="{{item.id}}"> {{item.name}} </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Vehicle Type</mat-label>
+          <mat-select formControlName="vehicleType">
+            <mat-option *ngFor="let item of vehicleTypeList" value="{{item.id}}"> {{item.name}} </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Vehicle Details</mat-label>
+          <input type="text" matInput formControlName="vehicleDetails">
+          <mat-hint>Vehicle number is prefered</mat-hint>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Driver Name</mat-label>
+          <mat-select formControlName="driverName">
+            <mat-option *ngFor="let item of employeeList" value="{{item.id}}"> {{item.name}} </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Material From Location</mat-label>
+          <input type="text" matInput formControlName="materialFrom">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Material Item</mat-label>
+          <mat-select formControlName="materialItem">
+            <mat-option *ngFor="let item of materialItemList" value="{{item.id}}"> {{item.name}} </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>QTY Type</mat-label>
+          <mat-select formControlName="qtyType">
+            <mat-option *ngFor="let item of qtyTypeList" value="{{item.id}}"> {{item.label}} </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Quantity</mat-label>
+          <input type="number" matInput formControlName="quantity">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Delivery Date</mat-label>
+          <input matInput formControlName="deliveryDate" [matDatepicker]="delivery">
+          <mat-datepicker-toggle matSuffix [for]="delivery"></mat-datepicker-toggle>
+          <mat-datepicker #delivery></mat-datepicker>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Amount</mat-label>
+          <input type="number" matInput formControlName="amount">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Amount Paid</mat-label>
+          <input type="number" matInput formControlName="amountPaid">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Paid Date</mat-label>
+          <input matInput formControlName="paidDate" [matDatepicker]="picker2">
+          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Betha</mat-label>
+          <input type="number" matInput formControlName="betha">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Betha Paid</mat-label>
+          <input type="number" matInput formControlName="bethaPaid">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Vehicle Charge</mat-label>
+          <input type="number" matInput formControlName="vehicleCahrge">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Narration</mat-label>
+          <input type="text" matInput formControlName="narration">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Total Amount</mat-label>
+          <input type="number" readonly matInput formControlName="totalAmount">
+        </mat-form-field>
+      </li>
+    </ul>
+  </section>
+  <footer>
+    <button class="add-button" [disabled]="!addVehicleExpenseForm.valid" mat-stroked-button color="primary"
+      (click)="postFormData();">
+      Add Agreement
+    </button>
+    <button class="add-button" mat-stroked-button color="warn" (click)="closeDialogBox();"
+      [mat-dialog-close]="true">Completed !</button>
+  </footer>
+
+</div>
+
+<ems-loader></ems-loader>
