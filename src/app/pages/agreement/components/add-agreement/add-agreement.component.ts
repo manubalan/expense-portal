@@ -1,4 +1,5 @@
 import {
+  AfterViewChecked,
   Component,
   EventEmitter,
   OnDestroy,
@@ -9,8 +10,6 @@ import {
   FormBuilder,
   FormControl,
   FormGroup,
-  FormGroupDirective,
-  NgForm,
   Validators,
 } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -30,7 +29,6 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 @Component({
   selector: 'ems-add-agreement',
   templateUrl: './add-agreement.component.html',
-  styleUrls: ['./add-agreement.component.scss'],
 })
 export class AddAgreementComponent implements OnInit, OnDestroy {
   addAgreementForm: FormGroup;
@@ -40,12 +38,17 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
     previous: null,
     results: [],
   };
-  staleList: ResultDataModel[] = [];
+  stateList: ResultDataModel[] = [];
   districtData: MasterDataModule = {};
   districtList: ResultDataModel[] = [];
   locationData: MasterDataModule = {};
   locationList: ResultDataModel[] = [];
   validateAgreement: ValidateAgreementResponseModel = { showNow: false };
+
+  editMode = {
+    isActive: false,
+    agreementID: 0,
+  };
 
   private subscriptions: Subscription[] = [];
 
@@ -57,7 +60,7 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
     private masterDataService: MasterDataService,
     private agreementService: AgreementService,
     private loaderService: LoaderService,
-    private snackBarService: SnackBarService,
+    private snackBarService: SnackBarService
   ) {
     this.addAgreementForm = this.fbuilder.group({
       no: new FormControl('', Validators.required),
@@ -73,10 +76,35 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.patchFormData();
     this.setStateData();
     this.detectStateData();
     this.detectDistrictData();
     this.detectAgreementNumber();
+  }
+
+  patchFormData(): void {
+    if (this.editMode.isActive) {
+      const agreementIDSub = this.agreementService
+        .getAgreementID(this.editMode.agreementID)
+        .subscribe((data) => {
+          if (data) {
+            this.addAgreementForm.patchValue({
+              no: data.agreement_number,
+              name: data.name,
+              amount: data.amount,
+              location: data.location,
+              district: data.district,
+              state: data.state,
+              startDate: data.start_date,
+              endDate: data.end_date,
+              naration: data.narration,
+            });
+          }
+        });
+
+      this.subscriptions.push(agreementIDSub);
+    }
   }
 
   setStateData(): void {
@@ -87,7 +115,7 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
         this.loaderService.hide();
         if (data !== null && data.results) {
           this.stateData = data;
-          this.staleList = data.results;
+          this.stateList = data.results;
         }
       });
 
@@ -194,22 +222,28 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
         ? this.addAgreementForm.value.state
         : '',
     };
-    this.agreementService.postAgreement(request).subscribe((data) => {
-      if (data) {
-        this.snackBarService.success('Agreement added Successfully ! ', 'Done');
 
-        this.addAgreementForm.reset();
-        this.validateAgreement.showNow = false;
+    this.agreementService
+      .postAgreement(
+        request,
+        this.editMode.isActive ? true : false,
+        this.editMode.agreementID ? this.editMode.agreementID : 0
+      )
+      .subscribe((data) => {
+        if (data) {
+          this.snackBarService.success(
+            this.editMode.isActive
+              ? 'Agreement updated Successfully ! '
+              : 'Agreement added Successfully !',
+            'Done'
+          );
+
+          this.addAgreementForm.reset();
+          this.validateAgreement.showNow = false;
+          this.loaderService.hide();
+        }
         this.loaderService.hide();
-      }
-      this.loaderService.hide();
-    });
-    // (error: any) => {
-    //   if (error) {
-    //     this.snackBarService.error('Agreement added Successfully ! ', 'Done');
-
-    //   }
-    // };
+      });
   }
 
   closeDialogBox(): void {

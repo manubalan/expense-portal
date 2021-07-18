@@ -11,19 +11,24 @@
       <td mat-cell *matCellDef="let row"> {{row.id}} </td>
     </ng-container>
 
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
-      <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+    <ng-container matColumnDef="agreement">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Agreement </th>
+      <td mat-cell *matCellDef="let row"> {{row.agreement_details.agreement_number}} </td>
     </ng-container>
 
-    <ng-container matColumnDef="location_details">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Location </th>
-      <td mat-cell *matCellDef="let row"> {{row.location_details.name}} </td>
+    <ng-container matColumnDef="vehicle_type">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Vehicle Type </th>
+      <td mat-cell *matCellDef="let row"> {{row.vehicle_type_details.name}} </td>
     </ng-container>
 
-    <ng-container matColumnDef="amount">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Amount </th>
-      <td mat-cell *matCellDef="let row"> {{row.amount}} </td>
+    <ng-container matColumnDef="vehicle_details">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Vehicle Details </th>
+      <td mat-cell *matCellDef="let row"> {{row.vehicle_details}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="materials">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Material </th>
+      <td mat-cell *matCellDef="let row"> {{row.materials_details.name}} </td>
     </ng-container>
 
     <ng-container matColumnDef="action">
@@ -31,11 +36,11 @@
       <td mat-cell *matCellDef="let row" style="cursor: pointer;">
         <mat-icon [matMenuTriggerFor]="menu">more_vert</mat-icon>
         <mat-menu #menu="matMenu" xPosition="after">
-          <button mat-menu-item (click)="editAgreement(row.id)">
+          <button mat-menu-item (click)="editVehicleExpense(row.id)">
             <mat-icon>edit</mat-icon>
             <span>Edit</span>
           </button>
-          <button mat-menu-item color="danger" (click)="deleteAgreement(row.id)">
+          <button mat-menu-item color="danger">
             <mat-icon>delete</mat-icon>
             <span>Delete</span>
           </button>

@@ -1,6 +1,6 @@
 <div class="form-pop-up">
   <header>
-    <h4>Add New Employee Expense</h4>
+    <h4>{{editMode.isActive ? 'Update' : 'Add New' }}  Employee Expense</h4>
   </header>
   <section>
     <ul [formGroup]="addEmployeExpenseForm">
@@ -8,7 +8,7 @@
         <mat-form-field appearance="legacy">
           <mat-label>Agreement No.</mat-label>
           <mat-select formControlName="agreementNo">
-            <mat-option *ngFor="let item of agreementList" value="{{item.id}}"> {{item.name}} </mat-option>
+            <mat-option *ngFor="let item of agreementList" [value]="item.id"> {{item.name}} </mat-option>
           </mat-select>
         </mat-form-field>
       </li>
@@ -16,7 +16,7 @@
         <mat-form-field>
           <mat-label>Day Type</mat-label>
           <mat-select formControlName="dayType">
-            <mat-option *ngFor="let item of dayTypeList" value="{{item.value}}"> {{item.label}} </mat-option>
+            <mat-option *ngFor="let item of dayTypeList" [value]="item.value"> {{item.label}} </mat-option>
           </mat-select>
         </mat-form-field>
       </li>
@@ -24,7 +24,7 @@
         <mat-form-field>
           <mat-label>Name</mat-label>
           <mat-select formControlName="employeeName">
-            <mat-option *ngFor="let item of employeeList" value="{{item.id}}"> {{item.name}} </mat-option>
+            <mat-option *ngFor="let item of employeeList" [value]="item.id"> {{item.name}} </mat-option>
           </mat-select>
         </mat-form-field>
       </li>
@@ -32,7 +32,7 @@
         <mat-form-field>
           <mat-label>Work Type</mat-label>
           <mat-select formControlName="workType">
-            <mat-option *ngFor="let item of workTypeList" value="{{item.id}}"> {{item.name}} </mat-option>
+            <mat-option *ngFor="let item of workTypeList" [value]="item.id"> {{item.name}} </mat-option>
           </mat-select>
         </mat-form-field>
       </li>
@@ -75,7 +75,7 @@
   <footer>
     <button class="add-button" [disabled]="!addEmployeExpenseForm.valid" mat-stroked-button color="primary"
       (click)="postFormData();">
-      Add Agreement
+      {{editMode.isActive ? 'Update' : 'Add New'}} Employee Expense
     </button>
     <button class="add-button" mat-stroked-button color="warn" (click)="closeDialogBox();"
       [mat-dialog-close]="true">Completed !</button>

@@ -29,6 +29,11 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
   materialItemList: ResultDataModel[] = [];
   employeeList: any;
 
+  editMode = {
+    isActive: false,
+    agreementID: 0,
+  };
+
   qtyTypeList: ConstantDataModel[] = QuqntityType;
 
   private subscriptionsArray: Subscription[] = [];
@@ -62,11 +67,44 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.patchFormData();
     this.setAgreementList();
     this.setVehicleTypeList();
     this.setMaterialList();
     this.setEmployeeList();
     this.detectFormData();
+  }
+
+  patchFormData(): void {
+    if (this.editMode.isActive) {
+      const agreementIDSub = this.agreementService
+        .getVehicleExpenseID(this.editMode.agreementID)
+        .subscribe((data) => {
+          if (data) {
+            this.addVehicleExpenseForm.patchValue({
+              no: data.agreement,
+              vehicleType: data.vehicle_type,
+              vehicleDetails: data.vehicle_details,
+              driverName: data.driver_name,
+              materialFrom: data.materials_from,
+              materialItem: data.materials,
+              qtyType: data.qty_type,
+              quantity: data.quantity,
+              deliveryDate: data.delivery_date,
+              amount: data.amount,
+              amountPaid: data.amount_paid,
+              paidDate: data.amount_date,
+              betha: data.betha,
+              bethaPaid: data.betha_paid,
+              vehicleCahrge: data.vechicle_charge,
+              narration: data.narration,
+              totalAmount: data.total_amount,
+            });
+          }
+        });
+
+      this.subscriptionsArray.push(agreementIDSub);
+    }
   }
 
   setAgreementList(): void {
@@ -256,12 +294,18 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     };
 
     const postDatSubs = this.agreementService
-      .postEmployeeExpense(requestBody)
+      .postVehicleExpense(
+        requestBody,
+        this.editMode.isActive ? true : false,
+        this.editMode.agreementID ? this.editMode.agreementID : 0
+      )
       .subscribe(
         (resposne) => {
           if (resposne) {
             this.snackBarService.success(
-              'Vehicle Expense added Successfully ! ',
+              this.editMode.isActive
+                ? 'Vehicle Expense updated Successfully'
+                : 'Vehicle Expense added Successfully ! ',
               'Done'
             );
             this.addVehicleExpenseForm.reset();

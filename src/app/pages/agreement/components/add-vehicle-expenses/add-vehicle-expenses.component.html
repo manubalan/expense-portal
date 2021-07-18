@@ -1,6 +1,6 @@
 <div class="form-pop-up">
   <header>
-    <h4>Add New Vehicle Expense</h4>
+    <h4>{{editMode.isActive ? 'Update' : 'Add New' }} Vehicle Expense</h4>
   </header>
   <section>
     <ul [formGroup]="addVehicleExpenseForm">
@@ -8,7 +8,7 @@
         <mat-form-field appearance="legacy">
           <mat-label>Agreement No.</mat-label>
           <mat-select formControlName="no">
-            <mat-option *ngFor="let item of agreementList" value="{{item.id}}"> {{item.name}} </mat-option>
+            <mat-option *ngFor="let item of agreementList" [value]="item.id"> {{item.name}} </mat-option>
           </mat-select>
         </mat-form-field>
       </li>
@@ -16,7 +16,7 @@
         <mat-form-field>
           <mat-label>Vehicle Type</mat-label>
           <mat-select formControlName="vehicleType">
-            <mat-option *ngFor="let item of vehicleTypeList" value="{{item.id}}"> {{item.name}} </mat-option>
+            <mat-option *ngFor="let item of vehicleTypeList" [value]="item.id"> {{item.name}} </mat-option>
           </mat-select>
         </mat-form-field>
       </li>
@@ -31,7 +31,7 @@
         <mat-form-field>
           <mat-label>Driver Name</mat-label>
           <mat-select formControlName="driverName">
-            <mat-option *ngFor="let item of employeeList" value="{{item.id}}"> {{item.name}} </mat-option>
+            <mat-option *ngFor="let item of employeeList" [value]="item.id"> {{item.name}} </mat-option>
           </mat-select>
         </mat-form-field>
       </li>
@@ -45,7 +45,7 @@
         <mat-form-field>
           <mat-label>Material Item</mat-label>
           <mat-select formControlName="materialItem">
-            <mat-option *ngFor="let item of materialItemList" value="{{item.id}}"> {{item.name}} </mat-option>
+            <mat-option *ngFor="let item of materialItemList" [value]="item.id"> {{item.name}} </mat-option>
           </mat-select>
         </mat-form-field>
       </li>
@@ -53,7 +53,7 @@
         <mat-form-field>
           <mat-label>QTY Type</mat-label>
           <mat-select formControlName="qtyType">
-            <mat-option *ngFor="let item of qtyTypeList" value="{{item.id}}"> {{item.label}} </mat-option>
+            <mat-option *ngFor="let item of qtyTypeList" [value]="item.id"> {{item.label}} </mat-option>
           </mat-select>
         </mat-form-field>
       </li>
@@ -126,7 +126,7 @@
   <footer>
     <button class="add-button" [disabled]="!addVehicleExpenseForm.valid" mat-stroked-button color="primary"
       (click)="postFormData();">
-      Add Agreement
+      {{editMode.isActive ? 'Update' : 'Add' }}  Vehicle Expense
     </button>
     <button class="add-button" mat-stroked-button color="warn" (click)="closeDialogBox();"
       [mat-dialog-close]="true">Completed !</button>

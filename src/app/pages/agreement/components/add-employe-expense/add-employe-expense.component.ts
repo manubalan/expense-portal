@@ -28,6 +28,11 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
   dayTypeList: ConstantDataModel[] = DayTypes;
   employeeList: any;
 
+  editMode = {
+    isActive: false,
+    agreementID: 0,
+  };
+
   private subscriptionsArray: Subscription[] = [];
 
   constructor(
@@ -51,9 +56,34 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.patchFormData();
     this.setAgreementList();
     this.setWorkTypeList();
     this.setEmployeeList();
+  }
+
+  patchFormData(): void {
+    if (this.editMode.isActive) {
+      const agreementIDSub = this.agreementService
+        .getEmpExpenseID(this.editMode.agreementID)
+        .subscribe((data) => {
+          if (data) {
+            this.addEmployeExpenseForm.patchValue({
+              agreementNo: data.agreement,
+              dayType: data.day,
+              employeeName: data.employee_name_details.name,
+              workType: data.Work_type,
+              work_date: data.work_date,
+              kooli: data.kooli,
+              kooliPaid: data.kooli_paid,
+              paid_date: data.paid_date,
+              narration: data.narration,
+            });
+          }
+        });
+
+      this.subscriptionsArray.push(agreementIDSub);
+    }
   }
 
   setAgreementList(): void {
@@ -150,12 +180,18 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
     };
 
     const postDatSubs = this.agreementService
-      .postEmployeeExpense(requestBody)
+      .postEmployeeExpense(
+        requestBody,
+        this.editMode.isActive ? true : false,
+        this.editMode.agreementID ? this.editMode.agreementID : 0
+      )
       .subscribe(
         (resposne) => {
           if (resposne) {
             this.snackBarService.success(
-              'Employee Expense added Successfully ! ',
+              this.editMode.isActive
+                ? 'Employee Expense updated Successfully !'
+                : 'Employee Expense added Successfully ! ',
               'Done'
             );
             this.addEmployeExpenseForm.reset();

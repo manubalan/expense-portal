@@ -4,4 +4,5 @@ export const allSharedComponents = [
   components.AddMenuComponent,
   components.NavigationComponent,
   components.SidebarComponent,
+  components.DialogBoxComponent
 ];

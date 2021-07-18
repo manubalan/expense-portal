@@ -7,11 +7,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './material.module';
 import { AuthService } from '../authentication/services/auth.service';
 import { allSharedComponents } from './components/export.all';
+import { DialogBoxService } from './components';
 
 @NgModule({
   declarations: [...allSharedComponents],
   imports: [CommonModule, RouterModule, ReactiveFormsModule, MaterialModule],
   exports: [...allSharedComponents],
-  providers: [SidebarService, AuthService],
+  providers: [SidebarService, AuthService, DialogBoxService],
 })
 export class SharedModule {}
