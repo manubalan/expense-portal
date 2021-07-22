@@ -53,7 +53,7 @@
         <mat-form-field>
           <mat-label>QTY Type</mat-label>
           <mat-select formControlName="qtyType">
-            <mat-option *ngFor="let item of qtyTypeList" [value]="item.id"> {{item.label}} </mat-option>
+            <mat-option *ngFor="let item of qtyTypeList" [value]="item.value"> {{item.label}} </mat-option>
           </mat-select>
         </mat-form-field>
       </li>

@@ -2,17 +2,17 @@ export const QuqntityType = [
   {
     id: 1,
     label: 'Count',
-    value: 'count',
+    value: 'Count',
   },
   {
     id: 2,
     label: 'Cubic',
-    value: 'cubic',
+    value: 'Cubic',
   },
   {
     id: 3,
     label: 'Kilo Grams',
-    value: 'kg',
+    value: 'Kg',
   },
 ];
 
@@ -20,16 +20,16 @@ export const DayTypes = [
   {
     id: 1,
     label: 'Full',
-    value: 'full',
+    value: 'Full',
   },
   {
     id: 2,
     label: 'Half',
-    value: 'half',
+    value: 'Half',
   },
   {
     id: 3,
     label: 'Over Time',
-    value: 'overtime',
+    value: 'Over-time',
   },
 ];

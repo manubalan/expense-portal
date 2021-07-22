@@ -5,10 +5,15 @@ import {
   transition,
   animate,
 } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 import { MasterDataService } from 'src/app/core';
-import { LoaderService } from 'src/app/shared/components';
+import {
+  DialogBoxService,
+  LoaderService,
+  SnackBarService,
+} from 'src/app/shared/components';
 import { AgreementService } from '../../services';
 import { AddVehicleExpensesComponent } from '../add-vehicle-expenses/add-vehicle-expenses.component';
 
@@ -27,7 +32,7 @@ import { AddVehicleExpensesComponent } from '../add-vehicle-expenses/add-vehicle
     ]),
   ],
 })
-export class ListVehicleExpenseComponent implements OnInit {
+export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [
     'id',
     'agreement',
@@ -37,16 +42,28 @@ export class ListVehicleExpenseComponent implements OnInit {
     'action',
   ];
   dataSource: any;
+  subscriptionArray: Subscription[] = [];
 
   constructor(
     public dialog: MatDialog,
     private agreementService: AgreementService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private dialogeService: DialogBoxService,
+    private snackBarService: SnackBarService
   ) {
     this.getVehicleExpenseList();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const subjectSubs = this.agreementService.vehicleExpUpdated$.subscribe(
+      (update) => {
+        if (update) {
+          this.getVehicleExpenseList();
+        }
+      }
+    );
+    this.subscriptionArray.push(subjectSubs);
+  }
 
   getVehicleExpenseList(): void {
     this.loaderService.show();
@@ -63,5 +80,35 @@ export class ListVehicleExpenseComponent implements OnInit {
       isActive: true,
       agreementID: ID,
     };
+  }
+
+  deleteVehicleExpense(ID: number): void {
+    const ref = this.dialogeService.openDialog('Are sure want to delete ?');
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.loaderService.show();
+        const delSubs = this.agreementService
+          .deleteVehicleExp(ID)
+          .subscribe((response) => {
+            this.agreementService.vehicleExpUpdated$.next(true);
+            this.snackBarService.success(
+              'Vehicle Expense removed Successfully ! ',
+              'Done'
+            );
+            this.loaderService.hide();
+          });
+
+        this.subscriptionArray.push(delSubs);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.agreementService.vehicleExpUpdated$.complete();
+    if (this.subscriptionArray.length > 0) {
+      this.subscriptionArray.forEach((sub) => {
+        sub.unsubscribe();
+      });
+    }
   }
 }

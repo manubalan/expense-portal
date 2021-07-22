@@ -208,7 +208,7 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
         : '',
       end_date: this.addAgreementForm.value.endDate
         ? moment(this.addAgreementForm.value.endDate).format('YYYY-MM-DD')
-        : '',
+        : null,
       narration: this.addAgreementForm.value.naration
         ? this.addAgreementForm.value.naration
         : '',
@@ -231,6 +231,7 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
       )
       .subscribe((data) => {
         if (data) {
+          this.agreementService.agreementUpdated$.next(true);
           this.snackBarService.success(
             this.editMode.isActive
               ? 'Agreement updated Successfully ! '

@@ -72,7 +72,6 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     this.setVehicleTypeList();
     this.setMaterialList();
     this.setEmployeeList();
-    this.detectFormData();
   }
 
   patchFormData(): void {
@@ -164,47 +163,6 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     this.subscriptionsArray.push(employSubs);
   }
 
-  detectFormData(): void {
-    const amountSubs = this.addVehicleExpenseForm
-      .get('amountPaid')
-      ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
-      .subscribe((value) => {
-        this.addVehicleExpenseForm
-          .get('totalAmount')
-          ?.setValue(this.addVehicleExpenseForm.value.totalAmount + value);
-      });
-
-    if (amountSubs) {
-      this.subscriptionsArray.push(amountSubs);
-    }
-
-    const bathSubs = this.addVehicleExpenseForm
-      .get('bethaPaid')
-      ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
-      .subscribe((value) => {
-        this.addVehicleExpenseForm
-          .get('totalAmount')
-          ?.setValue(this.addVehicleExpenseForm.value.totalAmount + value);
-      });
-
-    if (bathSubs) {
-      this.subscriptionsArray.push(bathSubs);
-    }
-
-    const vehicleSubs = this.addVehicleExpenseForm
-      .get('vehicleCahrge')
-      ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
-      .subscribe((value) => {
-        this.addVehicleExpenseForm
-          .get('totalAmount')
-          ?.setValue(this.addVehicleExpenseForm.value.totalAmount + value);
-      });
-
-    if (vehicleSubs) {
-      this.subscriptionsArray.push(vehicleSubs);
-    }
-  }
-
   postFormData(): void {
     this.loaderService.show();
     const requestBody = {
@@ -234,12 +192,12 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
         this.addVehicleExpenseForm.value &&
         this.addVehicleExpenseForm.value.amount
           ? this.addVehicleExpenseForm.value.amount
-          : null,
+          : 0,
       amount_paid:
         this.addVehicleExpenseForm.value &&
         this.addVehicleExpenseForm.value.amountPaid
           ? this.addVehicleExpenseForm.value.amountPaid
-          : null,
+          : 0,
       amount_date:
         this.addVehicleExpenseForm.value &&
         this.addVehicleExpenseForm.value.paidDate
@@ -251,17 +209,17 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
         this.addVehicleExpenseForm.value &&
         this.addVehicleExpenseForm.value.betha
           ? this.addVehicleExpenseForm.value.betha
-          : null,
+          : 0,
       betha_paid:
         this.addVehicleExpenseForm.value &&
         this.addVehicleExpenseForm.value.bethaPaid
           ? this.addVehicleExpenseForm.value.bethaPaid
-          : null,
+          : 0,
       vechicle_charge:
         this.addVehicleExpenseForm.value &&
         this.addVehicleExpenseForm.value.vehicleCahrge
           ? this.addVehicleExpenseForm.value.vehicleCahrge
-          : null,
+          : 0,
       narration:
         this.addVehicleExpenseForm.value &&
         this.addVehicleExpenseForm.value.narration
@@ -302,6 +260,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
       .subscribe(
         (resposne) => {
           if (resposne) {
+            this.agreementService.vehicleExpUpdated$.next(true);
             this.snackBarService.success(
               this.editMode.isActive
                 ? 'Vehicle Expense updated Successfully'

@@ -9,7 +9,7 @@ export interface AgreementRequestModel {
   name?: string;
   amount: number;
   start_date: string;
-  end_date: string;
+  end_date?: string | null;
   narration?: string;
   location: number;
   district: number;

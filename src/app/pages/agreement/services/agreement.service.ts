@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import {
   AgreementListResponseModel,
   AgreementListResultModel,
@@ -18,6 +18,10 @@ import {
   providedIn: 'root',
 })
 export class AgreementService {
+  agreementUpdated$ = new Subject<boolean>();
+  vehicleExpUpdated$ = new Subject<boolean>();
+  employExpUpdated$ = new Subject<boolean>();
+
   constructor(private http: HttpClient) {}
 
   // Agreement API functions
@@ -60,9 +64,7 @@ export class AgreementService {
   }
 
   deleteAgreement(ID: number): Observable<any> {
-    return this.http.delete<AgreementListResultModel>(
-      `${API_END_POINT.agreement.data_operations}${ID}`
-    );
+    return this.http.delete(`${API_END_POINT.agreement.data_operations}${ID}`);
   }
 
   // Vehicle Expense API functions
@@ -96,6 +98,10 @@ export class AgreementService {
     );
   }
 
+  deleteVehicleExp(ID: number): Observable<any> {
+    return this.http.delete(`${API_END_POINT.agreement.vehicle_expense}${ID}`);
+  }
+
   // Employee Expense API functions
   postEmployeeExpense(
     request: any,
@@ -125,5 +131,9 @@ export class AgreementService {
     return this.http.get<EmployeeExpenseListResultModel>(
       `${API_END_POINT.agreement.employee_expense}${ID}`
     );
+  }
+
+  deleteEmployeeExp(ID: number): Observable<any> {
+    return this.http.delete(`${API_END_POINT.agreement.employee_expense}${ID}`);
   }
 }

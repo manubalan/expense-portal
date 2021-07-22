@@ -5,18 +5,12 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import {
-  AfterViewInit,
-  Component,
-  Input,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-import { AgreementListResultModel, MasterDataService } from 'src/app/core';
+import { Subscription } from 'rxjs';
+import { AgreementListResultModel } from 'src/app/core';
 import {
   DialogBoxService,
   LoaderService,
@@ -39,7 +33,7 @@ import { AddAgreementComponent } from '../add-agreement/add-agreement.component'
     ]),
   ],
 })
-export class ListAgreementComponent {
+export class ListAgreementComponent implements OnInit, OnDestroy{
   displayedColumns: string[] = [
     'id',
     'name',
@@ -47,7 +41,9 @@ export class ListAgreementComponent {
     'amount',
     'action',
   ];
-  dataSource: AgreementListResultModel[] = [];
+  agreementListData: AgreementListResultModel[] = [];
+
+  subscriptionArray: Subscription[] = [];
 
   @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
   @ViewChild(MatSort) sort: MatSort | undefined;
@@ -62,12 +58,24 @@ export class ListAgreementComponent {
     this.getAgreementList();
   }
 
+  ngOnInit(): void {
+    const subjectSubs = this.agreementService.agreementUpdated$.subscribe(
+      (update) => {
+        if (update) {
+          this.getAgreementList();
+        }
+      }
+    );
+
+    this.subscriptionArray.push(subjectSubs);
+  }
+
   getAgreementList(): void {
     this.loaderService.show();
     this.agreementService.getAgreements().subscribe((data) => {
       this.loaderService.hide();
       if (data && data.results) {
-        this.dataSource = data.results;
+        this.agreementListData = data.results;
       }
     });
   }
@@ -84,14 +92,27 @@ export class ListAgreementComponent {
     ref.afterClosed().subscribe((confirmed: boolean) => {
       if (confirmed) {
         this.loaderService.show();
-        this.agreementService.deleteAgreement(ID).subscribe((response) => {
-          this.snackBarService.error(
-            'Agreement removed Successfully ! ',
-            'Done'
-          );
-          this.loaderService.hide();
-        });
+        const deletSubs = this.agreementService
+          .deleteAgreement(ID)
+          .subscribe((response) => {
+            this.agreementService.agreementUpdated$.next(true);
+            this.snackBarService.success(
+              'Agreement removed Successfully ! ',
+              'Done'
+            );
+            this.loaderService.hide();
+          });
+
+        this.subscriptionArray.push(deletSubs);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscriptionArray.length > 0) {
+      this.subscriptionArray.forEach((subs) => {
+        subs.unsubscribe();
+      });
+    }
   }
 }

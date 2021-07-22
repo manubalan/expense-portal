@@ -40,7 +40,7 @@
             <mat-icon>edit</mat-icon>
             <span>Edit</span>
           </button>
-          <button mat-menu-item color="danger">
+          <button mat-menu-item color="danger"  (click)="deleteVehicleExpense(row.id)">
             <mat-icon>delete</mat-icon>
             <span>Delete</span>
           </button>

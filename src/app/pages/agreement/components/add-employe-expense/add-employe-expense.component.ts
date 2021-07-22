@@ -49,7 +49,7 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
       workType: new FormControl(''),
       work_date: new FormControl(''),
       kooli: new FormControl('', Validators.required),
-      kooliPaid: new FormControl('', Validators.required),
+      kooliPaid: new FormControl(''),
       paid_date: new FormControl(''),
       narration: new FormControl(''),
     });
@@ -188,6 +188,7 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
       .subscribe(
         (resposne) => {
           if (resposne) {
+            this.agreementService.vehicleExpUpdated$.next(true);
             this.snackBarService.success(
               this.editMode.isActive
                 ? 'Employee Expense updated Successfully !'
