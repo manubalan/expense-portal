@@ -23,8 +23,9 @@ import { MasterDataModule } from 'src/app/pages/master-data/master-data.module';
 import { AgreementService } from '../../services';
 
 import * as moment from 'moment';
-import { LoaderService, SnackBarService } from 'src/app/shared/components';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { LoaderService } from 'src/app/shared/components/loader/loader.component';
+import { SnackBarService } from 'src/app/shared/components/snack-bar/snack-bar.service';
 
 @Component({
   selector: 'ems-add-agreement',

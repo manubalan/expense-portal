@@ -18,11 +18,16 @@ const routes: Routes = [
           import('./agreement/agreement.module').then((m) => m.AgreementModule),
       },
       {
-        path: 'master',
+        path: 'master-data',
         loadChildren: () =>
           import('./master-data/master-data.module').then(
             (m) => m.MasterDataModule
           ),
+      },
+      {
+        path: 'reports',
+        loadChildren: () =>
+          import('./reports/reports.module').then((m) => m.ReportsModule),
       },
       {
         path: '**',

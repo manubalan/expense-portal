@@ -4,6 +4,10 @@ export interface GetResponseMode {
   previous?: null;
 }
 
+export interface PageCardModel {
+  isActive?: boolean;
+}
+
 export interface AgreementRequestModel {
   agreement_number: string;
   name?: string;

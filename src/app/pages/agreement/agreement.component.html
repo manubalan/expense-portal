@@ -2,41 +2,41 @@
     <header class="header-box">
         <div>
             <h1>Agreements</h1>
-            <p>Sample text</p>
-        </div>
-        <div>
-            <button mat-flat-button color="primary" (click)="addAgreementDialog()">
-                <mat-icon>summarize</mat-icon> Generate Report
-            </button>
         </div>
     </header>
 </div>
 
 <div class="content-area">
-    <mat-card>
+    <mat-card class="data-tile-card tile" [ngClass]="{'tile':!fullCard[0].isActive}">
         <mat-card-header>
-            <mat-card-title>Latest Agreements</mat-card-title>
+            <mat-card-title>Agreements</mat-card-title>
+            <mat-icon (click)="expandMe(fullCard[0])"> {{fullCard[0].isActive ? 'navigate_before' : 'navigate_next' }}
+            </mat-icon>
         </mat-card-header>
         <mat-card-content>
-            <ems-list-agreement></ems-list-agreement>
+            <ems-list-agreement [fullView]="fullCard[0].isActive ? true : false "></ems-list-agreement>
         </mat-card-content>
     </mat-card>
 
-    <mat-card>
+    <mat-card class="data-tile-card tile" [ngClass]="{'tile':!fullCard[1].isActive}">
         <mat-card-header>
             <mat-card-title>Latest Vehicle Expenses</mat-card-title>
+            <mat-icon (click)="expandMe(fullCard[1])"> {{fullCard[1].isActive ? 'navigate_before' : 'navigate_next' }}
+            </mat-icon>
         </mat-card-header>
         <mat-card-content>
-            <ems-list-vehicle-expense></ems-list-vehicle-expense>
+            <ems-list-vehicle-expense [fullView]="fullCard[1].isActive ? true : false "></ems-list-vehicle-expense>
         </mat-card-content>
     </mat-card>
 
-    <mat-card>
+    <mat-card class="data-tile-card tile" [ngClass]="{'tile':!fullCard[2].isActive}">
         <mat-card-header>
             <mat-card-title>Latest Employee Expenses</mat-card-title>
+            <mat-icon (click)="expandMe(fullCard[2])"> {{fullCard[2].isActive ? 'navigate_before' : 'navigate_next' }}
+            </mat-icon>
         </mat-card-header>
         <mat-card-content>
-            <ems-list-employee-expense></ems-list-employee-expense>
+            <ems-list-employee-expense [fullView]="fullCard[2].isActive ? true : false "></ems-list-employee-expense>
         </mat-card-content>
     </mat-card>
 

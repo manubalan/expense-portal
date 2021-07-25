@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddAgreementComponent } from './components/add-agreement/add-agreement.component';
 import { MasterDataService } from '../../core/services/master-data.service';
 import { AgreementService } from './services';
-import { AgreementListResponseModel } from 'src/app/core';
+import { AgreementListResponseModel, PageCardModel } from 'src/app/core';
 import { LoaderService } from 'src/app/shared/components';
 
 @Component({
@@ -13,13 +13,22 @@ import { LoaderService } from 'src/app/shared/components';
 })
 export class AgreementComponent implements OnInit {
   empExpenseListResult: any;
+  fullCard: PageCardModel[] = [];
 
   constructor(
     public dialog: MatDialog,
     private masterDataService: MasterDataService,
     private agreementService: AgreementService,
     private loaderService: LoaderService
-  ) {}
+  ) {
+    for (let index = 0; index < 3; index++) {
+      this.fullCard.push({
+        isActive: false,
+      });
+    }
+
+    console.log('ARRAY LENGTH =>', this.fullCard);
+  }
 
   ngOnInit(): void {
     this.getEmpExpenseList();
@@ -37,5 +46,9 @@ export class AgreementComponent implements OnInit {
 
   addAgreementDialog(): void {
     this.dialog.open(AddAgreementComponent);
+  }
+
+  expandMe(item: PageCardModel): void {
+    item.isActive = !item.isActive;
   }
 }

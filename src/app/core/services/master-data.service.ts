@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { API_END_POINT, MasterDataModel } from 'src/app/core';
-import { environment } from 'src/environments/environment';
+import { API_END_POINT } from '../constants/endpoint.constants';
+import { MasterDataModel } from '../models/master-data.model';
 
 @Injectable({
   providedIn: 'root',

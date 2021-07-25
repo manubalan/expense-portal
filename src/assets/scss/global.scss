@@ -55,17 +55,46 @@ ems-root {
     display: flex;
     flex-direction: column;
     width: 100%;
+  }
 
-    .content-area {
-      display: flex;
-      width: 100%;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      row-gap: 30px;
-      padding-bottom: 50px;
+  .content-area {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    row-gap: 30px;
+    padding-bottom: 50px;
+    column-gap: 30px;
 
-      mat-card {
-        width: calc(33.333% - 20px);
+    mat-card {
+      &.data-tile-card {
+        width: 100%;
+
+        &.tile {
+          width: calc(33.333% - 20px);
+        }
+
+        mat-card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          mat-card-title {
+            margin: 0;
+            line-height: 1;
+          }
+
+          mat-icon {
+            height: 40px;
+            width: 40px;
+            border: 1px solid var(--gray-300);;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+          }
+        }
       }
     }
   }

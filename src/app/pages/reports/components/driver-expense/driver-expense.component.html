@@ -1,0 +1,39 @@
+<mat-card-header>
+  <mat-card-title>Driver Expense</mat-card-title>
+</mat-card-header>
+<mat-card-content>
+<!-- <mat-form-field appearance="standard">
+  <mat-label>Filter</mat-label>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input>
+</mat-form-field> -->
+
+<div class="mat-elevation-z0">
+  <table mat-table [dataSource]="dataSource" matSort>
+
+    <ng-container matColumnDef="driver_name__name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Driver Name </th>
+      <td mat-cell *matCellDef="let row"> {{row.driver_name__name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="betha">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Betha </th>
+      <td mat-cell *matCellDef="let row"> {{row.betha}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="betha_paid">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Betha Paid </th>
+      <td mat-cell *matCellDef="let row"> {{row.betha_paid}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    <!-- Row shown when there is no matching data. -->
+    <!-- <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+    </tr> -->
+  </table>
+
+  <!-- <mat-paginator [pageSizeOptions]="[3, 5, 25, 100]"></mat-paginator> -->
+</div>
+</mat-card-content>

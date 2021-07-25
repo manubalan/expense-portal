@@ -5,7 +5,15 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -33,17 +41,14 @@ import { AddAgreementComponent } from '../add-agreement/add-agreement.component'
     ]),
   ],
 })
-export class ListAgreementComponent implements OnInit, OnDestroy{
-  displayedColumns: string[] = [
-    'id',
-    'name',
-    'location_details',
-    'amount',
-    'action',
-  ];
+export class ListAgreementComponent implements OnInit, OnDestroy, OnChanges {
+  displayedColumns: string[] = [];
   agreementListData: AgreementListResultModel[] = [];
 
   subscriptionArray: Subscription[] = [];
+
+  @Input()
+  fullView = false;
 
   @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
   @ViewChild(MatSort) sort: MatSort | undefined;
@@ -68,6 +73,33 @@ export class ListAgreementComponent implements OnInit, OnDestroy{
     );
 
     this.subscriptionArray.push(subjectSubs);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes) {
+      if (changes.fullView && changes.fullView.currentValue) {
+        this.displayedColumns = [
+          'id',
+          'created_on',
+          'end_date',
+          'name',
+          'agreement_number',
+          'district_details',
+          'location_details',
+          'expense',
+          'amount',
+          'action',
+        ];
+      } else {
+        this.displayedColumns = [
+          'id',
+          'name',
+          'location_details',
+          'amount',
+          'action',
+        ];
+      }
+    }
   }
 
   getAgreementList(): void {

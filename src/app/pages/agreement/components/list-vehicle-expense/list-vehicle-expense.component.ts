@@ -5,7 +5,7 @@ import {
   transition,
   animate,
 } from '@angular/animations';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { MasterDataService } from 'src/app/core';
@@ -32,17 +32,13 @@ import { AddVehicleExpensesComponent } from '../add-vehicle-expenses/add-vehicle
     ]),
   ],
 })
-export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = [
-    'id',
-    'agreement',
-    'vehicle_details',
-    'vehicle_type',
-    'materials',
-    'action',
-  ];
+export class ListVehicleExpenseComponent implements OnInit, OnDestroy, OnChanges {
+  displayedColumns: string[] = [];
   dataSource: any;
   subscriptionArray: Subscription[] = [];
+
+  @Input()
+  fullView = false;
 
   constructor(
     public dialog: MatDialog,
@@ -64,6 +60,41 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
     );
     this.subscriptionArray.push(subjectSubs);
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes) {
+      if (changes.fullView && changes.fullView.currentValue) {
+        this.displayedColumns = [
+          'id',
+          'agreement',
+          'vehicle_details',
+          'vehicle_type',
+          'vechicle_charge',
+          'materials',
+          'qty_type',
+          'quantity',
+          'driver_name',
+          'delivery_date',
+          'betha',
+          'betha_paid',
+          'amount',
+          'amount_paid',
+          'amount_date',
+          'total_amount',
+          'action',
+        ];
+      } else {
+        this.displayedColumns = [
+          'id',
+          'agreement',
+          'vehicle_details',
+          'materials',
+          'action',
+        ];
+      }
+    }
+  }
+
 
   getVehicleExpenseList(): void {
     this.loaderService.show();

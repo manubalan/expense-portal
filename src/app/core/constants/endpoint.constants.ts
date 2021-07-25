@@ -25,5 +25,11 @@ export const API_END_POINT = {
     validate_item: `${endPoints.base_api_EndPoint}agreements/validate_agreement_number/?agreement_number=`,
     vehicle_expense: `${endPoints.base_api_EndPoint}vehicle-expenses/`,
     employee_expense: `${endPoints.base_api_EndPoint}employees-expenses/`,
+  },
+  reports: {
+    employee_expense: `${endPoints.base_api_EndPoint}employees-expenses/`,
+    employee_wise_expense: `${endPoints.base_api_EndPoint}employees-wise-expenses/`,
+    vehicle_expense: `${endPoints.base_api_EndPoint}vehicle-expenses/`,
+    driver_expense: `${endPoints.base_api_EndPoint}driver-wise-expense/`,
   }
 };

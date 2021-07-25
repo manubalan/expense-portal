@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { MasterDataService } from 'src/app/core';
@@ -15,18 +15,13 @@ import { AddEmployeExpenseComponent } from '../add-employe-expense/add-employe-e
   templateUrl: './list-employee-expense.component.html',
   styleUrls: ['./list-employee-expense.component.scss'],
 })
-export class ListEmployeeExpenseComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = [
-    'id',
-    'agreement',
-    'name',
-    'day',
-    'work_date',
-    'kooli_paid',
-    'action',
-  ];
+export class ListEmployeeExpenseComponent implements OnInit, OnDestroy , OnChanges{
+  displayedColumns: string[] = [];
   dataSource: any;
   subscriptionArray: Subscription[] = [];
+
+  @Input()
+  fullView = false;
 
   constructor(
     public dialog: MatDialog,
@@ -49,6 +44,33 @@ export class ListEmployeeExpenseComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptionArray.push(subjectSubs);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes) {
+      if (changes.fullView && changes.fullView.currentValue) {
+        this.displayedColumns = [
+          'id',
+          'agreement',
+          'name',
+          'work_type_details',
+          'day',
+          'work_date',
+          'kooli',
+          'kooli_paid',
+          'paid_date',
+          'action',
+        ];
+      } else {
+        this.displayedColumns = [
+          'id',
+          'agreement',
+          'name',
+          'kooli_paid',
+          'action',
+        ];
+      }
+    }
   }
 
   getEmpExpenseList(): void {

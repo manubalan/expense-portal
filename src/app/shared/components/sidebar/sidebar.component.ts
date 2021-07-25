@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { MenuModel } from 'src/app/core';
 import { environment } from 'src/environments/environment';
 import { animateText, onSideNavChange } from '../../animations/animations';
 import { SidebarService } from './sidebar.service';
-interface Page {
-  link: string;
-  name: string;
-  icon: string;
-}
+
 @Component({
   selector: 'ems-sidebar',
   templateUrl: './sidebar.component.html',
@@ -17,9 +14,42 @@ export class SidebarComponent implements OnInit {
   public sideNavState = false;
   public linkText = false;
 
-  public pages: Page[] = [
-    { name: 'Dashboard', link: '/home', icon: 'grid_view' },
-    { name: 'Agreement', link: '/dashboard/agreement', icon: 'description' },
+  public pages: MenuModel[] = [
+    { name: 'Dashboard', link: '/dashboard', icon: 'grid_view' },
+    {
+      name: 'Agreement',
+      link: '',
+      icon: 'description',
+      children: [
+        {
+          name: 'Agreements Details',
+          link: '/dashboard/agreement/',
+          icon: 'description',
+        }
+      ]
+    },
+    {
+      name: 'Reports',
+      link: '',
+      icon: 'receipt_long',
+      children: [
+        {
+          name: 'Employee Expense',
+          link: '/dashboard/reports/exployee-expense',
+          icon: 'supervisor_account',
+        },
+        {
+          name: 'Vehicle Expense',
+          link: '/dashboard/reports/vehicle-expense',
+          icon: 'local_shipping',
+        },
+        {
+          name: 'Driver Expense',
+          link: '/dashboard/reports/driver-expense',
+          icon: 'people_alt',
+        },
+      ],
+    },
     { name: 'Master Data', link: '/dashboard/master-data', icon: 'storage' },
     // { name: 'Send email', link: 'some-link', icon: 'face' },
   ];
