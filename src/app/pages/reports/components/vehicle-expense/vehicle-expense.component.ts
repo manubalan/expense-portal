@@ -5,6 +5,9 @@ import { ReportService } from '../../services/report.services';
 @Component({
   selector: 'ems-vehicle-expense',
   templateUrl: './vehicle-expense.component.html',
+  host: {
+    class: 'full-width-card'
+  }
 })
 export class VehicleExpenseComponent implements OnInit {
   displayedColumns: string[] = [];

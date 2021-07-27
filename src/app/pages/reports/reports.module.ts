@@ -10,6 +10,7 @@ import { VehicleExpenseComponent } from './components/vehicle-expense/vehicle-ex
 import { DriverExpenseComponent } from './components/driver-expense/driver-expense.component';
 
 import { ReportService } from './services/report.services';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,7 @@ import { ReportService } from './services/report.services';
     VehicleExpenseComponent,
     DriverExpenseComponent,
   ],
-  imports: [CommonModule, ReportsRoutingModule, MaterialModule],
+  imports: [CommonModule, ReportsRoutingModule, MaterialModule, ReactiveFormsModule],
   providers: [ReportService],
 })
 export class ReportsModule {}

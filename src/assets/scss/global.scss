@@ -66,6 +66,41 @@ ems-root {
     padding-bottom: 50px;
     column-gap: 30px;
 
+    .full-width-card {
+      width: 100%;
+
+      &.full-card {
+        display: flex;
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        row-gap: 30px;
+        padding-bottom: 50px;
+        column-gap: 30px;
+      }
+    }
+
+    .wrap-box {
+      display: flex;
+      width: 100%;
+      column-gap: 30px;
+
+      .report-box {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        row-gap: 30px;
+
+        &:first-child {
+          width: calc(40% - 15px);
+        }
+
+        &:last-child {
+          width: calc(60% - 15px);
+        }
+      }
+    }
+
     mat-card {
       &.data-tile-card {
         width: 100%;
@@ -87,7 +122,7 @@ ems-root {
           mat-icon {
             height: 40px;
             width: 40px;
-            border: 1px solid var(--gray-300);;
+            border: 1px solid var(--gray-300);
             border-radius: 25px;
             display: flex;
             align-items: center;

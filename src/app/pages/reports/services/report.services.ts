@@ -14,6 +14,12 @@ export class ReportService {
     );
   }
 
+  getEmployeeWiseReport(): Observable<GetResponseModel> {
+    return this.http.get<GetResponseModel>(
+      API_END_POINT.reports.employee_wise_expense
+    );
+  }
+
   getVehicleReport(): Observable<GetResponseModel> {
     return this.http.get<GetResponseModel>(
       API_END_POINT.reports.vehicle_expense
