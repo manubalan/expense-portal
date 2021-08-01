@@ -34,7 +34,6 @@ export class ErrorInterceptor implements HttpInterceptor {
       });
     }
 
-
     return next.handle(request).pipe(
       catchError((err) => {
         if ([401].indexOf(err.status) !== -1) {
@@ -62,7 +61,7 @@ export class ErrorInterceptor implements HttpInterceptor {
               this.authenticationService.logout();
             }
           }
-        } 
+        }
         if ([403].indexOf(err.status) !== -1) {
           this.authenticationService.logout();
         }

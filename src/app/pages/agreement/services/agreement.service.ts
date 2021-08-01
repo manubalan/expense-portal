@@ -51,9 +51,11 @@ export class AgreementService {
     );
   }
 
-  getAgreements(): Observable<AgreementListResponseModel> {
+  getAgreements(param?: string): Observable<AgreementListResponseModel> {
     return this.http.get<AgreementListResponseModel>(
-      API_END_POINT.agreement.data_operations
+      `${API_END_POINT.agreement.data_operations}${
+        param !== undefined ? param : ''
+      }`
     );
   }
 

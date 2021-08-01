@@ -22,16 +22,15 @@ export class MasterDataService {
     );
   }
 
-  getLocationsList(params?: number): Observable<MasterDataModel> {
+  getLocationsList(params?: number, search?: string): Observable<MasterDataModel> {
     return this.http.get<MasterDataModel>(
       params
-        ? `${API_END_POINT.masterData.location_params}${params}`
-        : API_END_POINT.masterData.location
+        ? `${API_END_POINT.masterData.location_params}${params !== 0 ? params : ''}`
+        : `${API_END_POINT.masterData.location}${search !== null && search !== undefined ? search : ''}`
     );
   }
 
-
-  getVehicletypesList(params?: number): Observable<MasterDataModel> {
+  getVehicletypesList(params?: string): Observable<MasterDataModel> {
     return this.http.get<MasterDataModel>(
       params
         ? `${API_END_POINT.masterData.vehicle_type_params}${params}`
@@ -39,7 +38,7 @@ export class MasterDataService {
     );
   }
 
-  getMaterialsList(params?: number): Observable<MasterDataModel> {
+  getMaterialsList(params?: string): Observable<MasterDataModel> {
     return this.http.get<MasterDataModel>(
       params
         ? `${API_END_POINT.masterData.materials_params}${params}`
@@ -47,7 +46,7 @@ export class MasterDataService {
     );
   }
 
-  getEmployeesList(params?: number): Observable<MasterDataModel> {
+  getEmployeesList(params?: string): Observable<MasterDataModel> {
     return this.http.get<MasterDataModel>(
       params
         ? `${API_END_POINT.masterData.employees_params}${params}`
@@ -55,7 +54,7 @@ export class MasterDataService {
     );
   }
 
-  getWorktypesList(params?: number): Observable<MasterDataModel> {
+  getWorktypesList(params?: string): Observable<MasterDataModel> {
     return this.http.get<MasterDataModel>(
       params
         ? `${API_END_POINT.masterData.worktypes_params}${params}`

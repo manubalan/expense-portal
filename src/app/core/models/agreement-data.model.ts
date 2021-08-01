@@ -153,5 +153,5 @@ export interface EmployeeExpenseListResultModel {
   narration: string;
   agreement: number;
   name: number;
-  Work_type: number;
+  work_type: number;
 }

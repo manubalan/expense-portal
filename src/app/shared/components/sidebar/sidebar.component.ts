@@ -39,9 +39,19 @@ export class SidebarComponent implements OnInit {
           icon: 'supervisor_account',
         },
         {
+          name: 'Employee Wise Expense',
+          link: '/dashboard/reports/exployee-wise-expense',
+          icon: 'supervisor_account',
+        },
+        {
           name: 'Vehicle Expense',
           link: '/dashboard/reports/vehicle-expense',
           icon: 'local_shipping',
+        },
+        {
+          name: 'Driver Wise Expense',
+          link: '/dashboard/reports/driver-wise-expense',
+          icon: 'people_alt',
         },
         {
           name: 'Driver Expense',

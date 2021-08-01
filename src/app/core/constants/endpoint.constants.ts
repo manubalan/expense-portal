@@ -28,8 +28,8 @@ export const API_END_POINT = {
   },
   reports: {
     employee_expense: `${endPoints.base_api_EndPoint}employees-expenses/`,
-    employee_wise_expense: `${endPoints.base_api_EndPoint}employees-wise-expenses/`,
+    employee_wise_expense: `${endPoints.base_api_EndPoint}employees-wise-expenses`,
     vehicle_expense: `${endPoints.base_api_EndPoint}vehicle-expenses/`,
-    driver_expense: `${endPoints.base_api_EndPoint}driver-wise-expense/`,
+    driver_expense: `${endPoints.base_api_EndPoint}driver-wise-expense`,
   }
 };

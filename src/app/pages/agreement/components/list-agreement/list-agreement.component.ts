@@ -79,20 +79,20 @@ export class ListAgreementComponent implements OnInit, OnDestroy, OnChanges {
     if (changes) {
       if (changes.fullView && changes.fullView.currentValue) {
         this.displayedColumns = [
-          'id',
-          'created_on',
-          'end_date',
-          'name',
           'agreement_number',
+          'name',
+          'amount',
+          'expense',
+          'state_details',
           'district_details',
           'location_details',
-          'expense',
-          'amount',
+          'start_date',
+          'end_date',
+          'narration',
           'action',
         ];
       } else {
         this.displayedColumns = [
-          'id',
           'name',
           'location_details',
           'amount',

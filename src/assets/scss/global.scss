@@ -85,18 +85,28 @@ ems-root {
       width: 100%;
       column-gap: 30px;
 
+      mat-accordion{
+        width: 100%;
+      }
+
       .report-box {
         display: flex;
         flex-direction: column;
         width: 100%;
         row-gap: 30px;
+      }
 
-        &:first-child {
-          width: calc(40% - 15px);
-        }
+      .filter-box {
+        padding: 20px;
+        display: flex;
+        column-gap: 30px;
+        align-items: center;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-wrap: wrap;
 
-        &:last-child {
-          width: calc(60% - 15px);
+        mat-form-field{
+          width: calc(20% - 25px);
         }
       }
     }

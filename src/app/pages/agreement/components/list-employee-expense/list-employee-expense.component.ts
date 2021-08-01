@@ -50,11 +50,10 @@ export class ListEmployeeExpenseComponent implements OnInit, OnDestroy , OnChang
     if (changes) {
       if (changes.fullView && changes.fullView.currentValue) {
         this.displayedColumns = [
-          'id',
           'agreement',
+          'day',
           'name',
           'work_type_details',
-          'day',
           'work_date',
           'kooli',
           'kooli_paid',
@@ -63,7 +62,6 @@ export class ListEmployeeExpenseComponent implements OnInit, OnDestroy , OnChang
         ];
       } else {
         this.displayedColumns = [
-          'id',
           'agreement',
           'name',
           'kooli_paid',

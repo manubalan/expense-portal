@@ -71,8 +71,8 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
             this.addEmployeExpenseForm.patchValue({
               agreementNo: data.agreement,
               dayType: data.day,
-              employeeName: data.employee_name_details.name,
-              workType: data.Work_type,
+              employeeName: data.name,
+              workType: data.work_type,
               work_date: data.work_date,
               kooli: data.kooli,
               kooliPaid: data.kooli_paid,
@@ -145,7 +145,7 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
         this.addEmployeExpenseForm.value.employeeName
           ? this.addEmployeExpenseForm.value.employeeName
           : null,
-      Work_type:
+      work_type:
         this.addEmployeExpenseForm.value &&
         this.addEmployeExpenseForm.value.workType
           ? this.addEmployeExpenseForm.value.workType
@@ -161,12 +161,12 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
         this.addEmployeExpenseForm.value &&
         this.addEmployeExpenseForm.value.kooli
           ? this.addEmployeExpenseForm.value.kooli
-          : null,
+          : 0,
       kooli_paid:
         this.addEmployeExpenseForm.value &&
         this.addEmployeExpenseForm.value.kooliPaid
           ? this.addEmployeExpenseForm.value.kooliPaid
-          : null,
+          : 0,
       paid_date:
         this.addEmployeExpenseForm.value &&
         this.addEmployeExpenseForm.value.date

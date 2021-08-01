@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { MasterDataService } from 'src/app/core';
@@ -8,13 +8,10 @@ import { LoaderService } from 'src/app/shared';
 import { ReportService } from '../../services/report.services';
 
 @Component({
-  selector: 'ems-driver-expense',
-  templateUrl: './driver-expense.component.html',
-  host: {
-    class: 'full-width-card',
-  },
+  selector: 'ems-driver-wise-expense',
+  templateUrl: './driver-wise-expense.component.html',
 })
-export class DriverExpenseComponent implements OnInit , OnDestroy{
+export class DriverWiseExpenseComponent implements OnInit {
   displayedColumns: string[] = [];
   driverReports: any;
   driverFilterForm: FormGroup;
@@ -34,8 +31,6 @@ export class DriverExpenseComponent implements OnInit , OnDestroy{
     this.driverFilterForm = this.fbuilder.group({
       agreement: new FormControl(''),
       driverName: new FormControl(''),
-      startDate: new FormControl(''),
-      endDate: new FormControl(''),
       search: new FormControl(''),
     });
 
@@ -45,7 +40,12 @@ export class DriverExpenseComponent implements OnInit , OnDestroy{
   }
 
   ngOnInit(): void {
-    this.displayedColumns = ['driver_name__name', 'betha', 'betha_paid'];
+    this.displayedColumns = [
+      'driver_name__name',
+      'betha',
+      'betha_paid'
+    ];
+
     this.loaderService.show();
     this.resportService.getDriverReport().subscribe((data) => {
       this.loaderService.hide();
@@ -117,12 +117,6 @@ export class DriverExpenseComponent implements OnInit , OnDestroy{
     if (this.driverFilterForm.value.driverName) {
       paramList.push(`employee_id=${this.driverFilterForm.value.driverName}`);
     }
-    if (this.driverFilterForm.value.startDate) {
-      paramList.push(`search=${this.driverFilterForm.value.startDate}`);
-    }
-    if (this.driverFilterForm.value.endDate) {
-      paramList.push(`search=${this.driverFilterForm.value.endDate}`);
-    }
     if (this.driverFilterForm.value.search) {
       paramList.push(`search=${this.driverFilterForm.value.search}`);
     }
@@ -135,7 +129,7 @@ export class DriverExpenseComponent implements OnInit , OnDestroy{
 
     this.loaderService.show();
     this.resportService
-      .getEmployeeWiseReport(`?` + paramUrl.slice(0, -1))
+      .getDriverReport(`?` + paramUrl.slice(0, -1))
       .subscribe((data) => {
         this.loaderService.hide();
         if (data) {
@@ -149,4 +143,5 @@ export class DriverExpenseComponent implements OnInit , OnDestroy{
       this.subscriptionArray.map((subs) => subs.unsubscribe());
     }
   }
+
 }

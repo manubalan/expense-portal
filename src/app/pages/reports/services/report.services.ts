@@ -14,21 +14,21 @@ export class ReportService {
     );
   }
 
-  getEmployeeWiseReport(): Observable<GetResponseModel> {
+  getEmployeeWiseReport(params?: string): Observable<GetResponseModel> {
     return this.http.get<GetResponseModel>(
-      API_END_POINT.reports.employee_wise_expense
+      API_END_POINT.reports.employee_wise_expense + (params ? params : '/')
     );
   }
 
-  getVehicleReport(): Observable<GetResponseModel> {
+  getVehicleReport(params?: string): Observable<GetResponseModel> {
     return this.http.get<GetResponseModel>(
-      API_END_POINT.reports.vehicle_expense
+      API_END_POINT.reports.vehicle_expense + (params ? params : '/')
     );
   }
 
-  getDriverReport(): Observable<GetResponseModel> {
+  getDriverReport(params?: string): Observable<GetResponseModel> {
     return this.http.get<GetResponseModel>(
-      API_END_POINT.reports.driver_expense
+      API_END_POINT.reports.driver_expense + (params ? params : '/')
     );
   }
 }

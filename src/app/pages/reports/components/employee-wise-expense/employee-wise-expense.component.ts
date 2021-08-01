@@ -8,19 +8,20 @@ import { LoaderService } from 'src/app/shared';
 import { ReportService } from '../../services/report.services';
 
 @Component({
-  selector: 'ems-driver-expense',
-  templateUrl: './driver-expense.component.html',
+  selector: 'ems-employee-wise-expense',
+  templateUrl: './employee-wise-expense.component.html',
   host: {
-    class: 'full-width-card',
+    class: 'full-width-card full-card',
   },
 })
-export class DriverExpenseComponent implements OnInit , OnDestroy{
-  displayedColumns: string[] = [];
-  driverReports: any;
-  driverFilterForm: FormGroup;
+export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
+  displayedColumnsWise: string[] = [];
+  employeeWiseData: any;
+  agreementWiseFilter: FormGroup;
 
   agreementList: any[] = [];
-  driverList: any[] = [];
+  employeList: any[] = [];
+  workTypeList: any[] = [];
 
   subscriptionArray: Subscription[] = [];
 
@@ -31,50 +32,65 @@ export class DriverExpenseComponent implements OnInit , OnDestroy{
     private agreementService: AgreementService,
     private masterService: MasterDataService
   ) {
-    this.driverFilterForm = this.fbuilder.group({
+    this.agreementWiseFilter = this.fbuilder.group({
       agreement: new FormControl(''),
-      driverName: new FormControl(''),
-      startDate: new FormControl(''),
-      endDate: new FormControl(''),
+      employeeId: new FormControl(''),
+      workType: new FormControl(''),
       search: new FormControl(''),
     });
-
-    this.getAgreementList();
-    this.getDriverList();
-    this.detectFilterForms();
   }
 
   ngOnInit(): void {
-    this.displayedColumns = ['driver_name__name', 'betha', 'betha_paid'];
+    this.displayedColumnsWise = ['name__name', 'kooli', 'kooli_paid'];
+
     this.loaderService.show();
-    this.resportService.getDriverReport().subscribe((data) => {
-      this.loaderService.hide();
-      if (data) {
-        this.driverReports = data.results;
-      }
-    });
+    const reportSubs = this.resportService
+      .getEmployeeWiseReport()
+      .subscribe((data) => {
+        this.loaderService.hide();
+        if (data) {
+          this.employeeWiseData = data.results;
+        }
+      });
+
+    this.subscriptionArray.push(reportSubs);
+
+    this.getAgreementList();
+    this.getEmployeeList();
+    this.getWorkTypeList();
+    this.detectFilterForms();
   }
 
   detectFilterForms(): void {
-    const detectSubs = this.driverFilterForm
+    const detectSubs = this.agreementWiseFilter
       .get('agreement')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
-      .subscribe((value: any) => {
+      .subscribe((value) => {
         if (value && value !== null && typeof value === 'string') {
           this.getAgreementList(value);
         }
       });
     if (detectSubs) this.subscriptionArray.push(detectSubs);
 
-    const empSubs = this.driverFilterForm
-      .get('driverName')
+    const empSubs = this.agreementWiseFilter
+      .get('employeeId')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
-      .subscribe((value: any) => {
+      .subscribe((value) => {
         if (value && value !== null && typeof value === 'string') {
-          this.getDriverList(value);
+          this.getEmployeeList(value);
         }
       });
     if (empSubs) this.subscriptionArray.push(empSubs);
+
+    const workSubs = this.agreementWiseFilter
+      .get('workType')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value) => {
+        if (value && value !== null && typeof value === 'string') {
+          this.getWorkTypeList(value);
+        }
+      });
+    if (workSubs) this.subscriptionArray.push(workSubs);
   }
 
   getAgreementList(search?: string): void {
@@ -93,7 +109,7 @@ export class DriverExpenseComponent implements OnInit , OnDestroy{
     this.subscriptionArray.push(agreementSubs);
   }
 
-  getDriverList(search?: string): void {
+  getEmployeeList(search?: string): void {
     const empSubs = this.masterService
       .getEmployeesList(
         search !== null && search !== undefined
@@ -102,29 +118,41 @@ export class DriverExpenseComponent implements OnInit , OnDestroy{
       )
       .subscribe((data) => {
         if (data && data.results) {
-          this.driverList = data.results;
+          this.employeList = data.results;
         }
       });
     this.subscriptionArray.push(empSubs);
   }
 
+  getWorkTypeList(search?: string): void {
+    const workSubs = this.masterService
+      .getWorktypesList(
+        search !== null && search !== undefined
+          ? `?search=${search}`
+          : undefined
+      )
+      .subscribe((data) => {
+        if (data && data.results) {
+          this.workTypeList = data.results;
+        }
+      });
+    this.subscriptionArray.push(workSubs);
+  }
+
   searchNow(): void {
     const paramList = [];
     let paramUrl = '';
-    if (this.driverFilterForm.value.agreement) {
-      paramList.push(`agreement_id=${this.driverFilterForm.value.agreement}`);
+    if (this.agreementWiseFilter.value.agreement) {
+      paramList.push(`agreement_id=${this.agreementWiseFilter.value.agreement}`);
     }
-    if (this.driverFilterForm.value.driverName) {
-      paramList.push(`employee_id=${this.driverFilterForm.value.driverName}`);
+    if (this.agreementWiseFilter.value.employeeId) {
+      paramList.push(`employee_id=${this.agreementWiseFilter.value.employeeId}`);
     }
-    if (this.driverFilterForm.value.startDate) {
-      paramList.push(`search=${this.driverFilterForm.value.startDate}`);
+    if (this.agreementWiseFilter.value.workType) {
+      paramList.push(`work_type_id=${this.agreementWiseFilter.value.workType}`);
     }
-    if (this.driverFilterForm.value.endDate) {
-      paramList.push(`search=${this.driverFilterForm.value.endDate}`);
-    }
-    if (this.driverFilterForm.value.search) {
-      paramList.push(`search=${this.driverFilterForm.value.search}`);
+    if (this.agreementWiseFilter.value.search) {
+      paramList.push(`search=${this.agreementWiseFilter.value.search}`);
     }
 
     if (paramList.length > 0) {
@@ -139,7 +167,7 @@ export class DriverExpenseComponent implements OnInit , OnDestroy{
       .subscribe((data) => {
         this.loaderService.hide();
         if (data) {
-          this.driverReports = data.results;
+          this.employeeWiseData = data.results;
         }
       });
   }
