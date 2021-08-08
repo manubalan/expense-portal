@@ -1,5 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatSidenav } from '@angular/material/sidenav/sidenav';
+import {
+  Component,
+  EventEmitter,
+  HostBinding,
+  Input,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { AuthService } from 'src/app/authentication/services/auth.service';
 import { environment } from 'src/environments/environment';
 
@@ -9,17 +16,26 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./navigation.component.scss'],
 })
 export class NavigationComponent implements OnInit {
+  @HostBinding('class.expanded') expandedMenu: boolean = false;
   baseUrl = environment.BASE_URL;
 
   @Input()
-  sidenav!: MatSidenav;
+  expanded: boolean | undefined;
 
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {}
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes) {
+      if (changes.expanded) {
+        this.expandedMenu =
+          this.expanded !== undefined && this.expanded ? true : false;
+      }
+    }
+  }
+
   logout(): void {
     this.authService.logout();
-    
   }
 }

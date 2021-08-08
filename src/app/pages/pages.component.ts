@@ -12,6 +12,7 @@ import { SidebarService } from '../shared/components/sidebar/sidebar.service';
 })
 export class PagesComponent implements OnInit, OnDestroy {
   baseUrl = environment.BASE_URL;
+  expanded = false;
   onSideBarChange = true;
   subscribe = new Subscription();
 
@@ -22,6 +23,10 @@ export class PagesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {}
+
+  menuExpanded(event: boolean): void {
+    this.expanded = event ? true : false;
+  }
 
   ngOnDestroy(): void {
     if (this.subscribe) {

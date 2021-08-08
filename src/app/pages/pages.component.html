@@ -15,5 +15,8 @@
   </mat-sidenav-content>
 </mat-sidenav-container> -->
 
-<ems-sidebar></ems-sidebar>
-<ems-navigation></ems-navigation>
+<ems-sidebar (menuExpanded)="menuExpanded($event)"></ems-sidebar>
+<ems-navigation [expanded]="expanded"></ems-navigation>
+<div class="main-wrap">
+  <router-outlet></router-outlet>
+</div>
