@@ -15,7 +15,12 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { MasterDataService } from 'src/app/core';
+import {
+  MasterDataService,
+  PageAttrEventModel,
+  PageAttrModel,
+  PAGE_ATTR_DATA,
+} from 'src/app/core';
 import {
   DialogBoxService,
   LoaderService,
@@ -27,27 +32,13 @@ import { AddVehicleExpensesComponent } from '../add-vehicle-expenses/add-vehicle
 @Component({
   selector: 'ems-list-vehicle-expense',
   templateUrl: './list-vehicle-expense.component.html',
-  styleUrls: ['./list-vehicle-expense.component.scss'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
-      transition(
-        'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
-      ),
-    ]),
-  ],
 })
-export class ListVehicleExpenseComponent
-  implements OnInit, OnDestroy, OnChanges
-{
+export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [];
   dataSource: any;
-  subscriptionArray: Subscription[] = [];
+  pageAttributes: PageAttrModel = PAGE_ATTR_DATA;
 
-  @Input()
-  fullView = false;
+  subscriptionArray: Subscription[] = [];
 
   constructor(
     public dialog: MatDialog,
@@ -68,46 +59,49 @@ export class ListVehicleExpenseComponent
       }
     );
     this.subscriptionArray.push(subjectSubs);
-  }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes) {
-      if (changes.fullView && changes.fullView.currentValue) {
-        this.displayedColumns = [
-          'agreement',
-          'vehicle_type',
-          'vehicle_details',
-          'driver_name',
-          'materials_from_details',
-          'materials',
-          'qty_type',
-          'quantity',
-          'delivery_date',
-          'amount',
-          'amount_paid',
-          'betha',
-          'betha_paid',
-          'vechicle_charge',
-          'total_amount',
-          'action',
-        ];
-      } else {
-        this.displayedColumns = [
-          'agreement',
-          'vehicle_details',
-          'materials',
-          'action',
-        ];
-      }
-    }
+    this.displayedColumns = [
+      'agreement',
+      'vehicle_type',
+      'vehicle_details',
+      'driver_name',
+      'materials_from_details',
+      'materials',
+      'qty_type',
+      'quantity',
+      'delivery_date',
+      'amount',
+      'amount_paid',
+      'betha',
+      'betha_paid',
+      'vechicle_charge',
+      'total_amount',
+      'action',
+    ];
   }
 
   getVehicleExpenseList(): void {
+    const paramList = [];
+    let paramUrl = '';
+    if (this.pageAttributes.pageSize > 0) {
+      paramList.push(`limit=${this.pageAttributes.pageSize}`);
+    }
+    if (this.pageAttributes.currentPage) {
+      paramList.push(`offset=${this.pageAttributes.currentPage}`);
+    }
+
+    if (paramList.length > 0) {
+      paramList.map((par) => {
+        paramUrl = paramUrl + par + '&';
+      });
+    }
+
     this.loaderService.show();
     this.agreementService.getVehicleExpense().subscribe((data) => {
       this.loaderService.hide();
       if (data) {
         this.dataSource = data.results;
+        if (data.count) this.pageAttributes.totalRecord = data.count;
       }
     });
   }
@@ -138,6 +132,19 @@ export class ListVehicleExpenseComponent
         this.subscriptionArray.push(delSubs);
       }
     });
+  }
+
+  handlePage(event: PageAttrEventModel): void {
+    this.pageAttributes.pageSize = event.pageSize
+      ? event.pageSize
+      : this.pageAttributes.pageSize;
+    this.pageAttributes.currentPage = event.pageIndex
+      ? event.pageIndex
+      : this.pageAttributes.currentPage;
+    this.pageAttributes.prevPage = event.previousPageIndex
+      ? event.previousPageIndex
+      : this.pageAttributes.prevPage;
+    this.getVehicleExpenseList();
   }
 
   ngOnDestroy(): void {

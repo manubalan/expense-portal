@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
 import {
   AgreementListResultModel,
   ConstantDataModel,
-  DayTypes,
+  DAY_TYPES,
   MasterDataService,
   ResultDataModel,
 } from 'src/app/core';
@@ -25,7 +25,7 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
   addEmployeExpenseForm: FormGroup;
   agreementList: AgreementListResultModel[] = [];
   workTypeList: ResultDataModel[] = [];
-  dayTypeList: ConstantDataModel[] = DayTypes;
+  dayTypeList: ConstantDataModel[] = DAY_TYPES;
   employeeList: any;
 
   editMode = {

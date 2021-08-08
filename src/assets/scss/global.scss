@@ -57,8 +57,6 @@ ems-root {
     flex-wrap: wrap;
     justify-content: flex-start;
     row-gap: 30px;
-    padding-bottom: 50px;
-    column-gap: 30px;
 
     .full-width-card {
       width: 100%;
@@ -79,7 +77,7 @@ ems-root {
       width: 100%;
       column-gap: 30px;
 
-      mat-accordion{
+      mat-accordion {
         width: 100%;
       }
 
@@ -99,7 +97,7 @@ ems-root {
         align-items: flex-start;
         flex-wrap: wrap;
 
-        mat-form-field{
+        mat-form-field {
           width: calc(20% - 25px);
         }
       }
@@ -138,7 +136,9 @@ ems-root {
     }
   }
 
-  ems-list-agreement {
+  ems-list-agreement,
+  ems-list-employee-expense,
+  ems-list-vehicle-expense {
     display: flex;
     width: 100%;
     flex-direction: column;
@@ -165,6 +165,8 @@ ems-root {
 
   .main-wrap {
     background-color: #f6f8fa;
+    min-height: 100vh;
+
     @media screen and (max-width: $medium) {
       padding: 70px 20px 20px 20px;
     }

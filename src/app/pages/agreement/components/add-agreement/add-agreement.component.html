@@ -7,9 +7,8 @@
       <li>
         <mat-form-field appearance="legacy">
           <mat-label>Agreement No.</mat-label>
-          <input type="text" matInput formControlName="no" placeholder="Agreement No."
-            [readonly]="editMode.isActive ? true : false">
-          <mat-icon matSuffix *ngIf="validateAgreement.showNow && !editMode.isActive"
+          <input type="text" matInput formControlName="no" placeholder="Agreement No.">
+          <mat-icon matSuffix *ngIf="validateAgreement.showNow"
             [color]="validateAgreement.is_exist ? 'warn' : 'primary'"> {{validateAgreement.is_exist ? 'close' :
             'check'}} </mat-icon>
           <mat-hint>Agreement should be unique </mat-hint>

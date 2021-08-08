@@ -155,3 +155,18 @@ export interface EmployeeExpenseListResultModel {
   name: number;
   work_type: number;
 }
+
+export interface PageAttrModel {
+  totalRecord: number;
+  currentPage: number;
+  prevPage: number;
+  pageSize: number;
+  pageSizeOpt: number[];
+  firstLastEnable?: boolean;
+}
+export interface PageAttrEventModel {
+  previousPageIndex?: number;
+  pageIndex?: number;
+  pageSize?: number;
+  length?: number;
+}

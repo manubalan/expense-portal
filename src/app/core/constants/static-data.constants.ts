@@ -1,4 +1,6 @@
-export const QuqntityType = [
+import { PageAttrModel } from '../models/agreement-data.model';
+
+export const QUANTITY_TYPES = [
   {
     id: 1,
     label: 'Count',
@@ -16,7 +18,7 @@ export const QuqntityType = [
   },
 ];
 
-export const DayTypes = [
+export const DAY_TYPES = [
   {
     id: 1,
     label: 'Full',
@@ -33,3 +35,12 @@ export const DayTypes = [
     value: 'Over-time',
   },
 ];
+
+export const PAGE_ATTR_DATA: PageAttrModel = {
+  totalRecord: 0,
+  currentPage: 0,
+  prevPage: 0,
+  pageSize: 5,
+  pageSizeOpt: [5, 10, 25, 50],
+  firstLastEnable: true,
+};

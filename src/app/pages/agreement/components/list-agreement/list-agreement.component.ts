@@ -5,20 +5,16 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  SimpleChanges,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 import { Subscription } from 'rxjs';
-import { AgreementListResultModel } from 'src/app/core';
+import {
+  AgreementListResultModel,
+  PageAttrEventModel,
+  PageAttrModel,
+  PAGE_ATTR_DATA,
+} from 'src/app/core';
 import {
   DialogBoxService,
   LoaderService,
@@ -41,17 +37,12 @@ import { AddAgreementComponent } from '../add-agreement/add-agreement.component'
     ]),
   ],
 })
-export class ListAgreementComponent implements OnInit, OnDestroy, OnChanges {
+export class ListAgreementComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [];
   agreementListData: AgreementListResultModel[] = [];
+  pageAttributes: PageAttrModel = PAGE_ATTR_DATA;
 
   subscriptionArray: Subscription[] = [];
-
-  @Input()
-  fullView = false;
-
-  @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
-  @ViewChild(MatSort) sort: MatSort | undefined;
 
   constructor(
     public dialog: MatDialog,
@@ -72,44 +63,49 @@ export class ListAgreementComponent implements OnInit, OnDestroy, OnChanges {
       }
     );
 
+    this.displayedColumns = [
+      'agreement_number',
+      'name',
+      'amount',
+      'expense',
+      'state_details',
+      'district_details',
+      'location_details',
+      'start_date',
+      'end_date',
+      'narration',
+      'action',
+    ];
+
     this.subscriptionArray.push(subjectSubs);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes) {
-      if (changes.fullView && changes.fullView.currentValue) {
-        this.displayedColumns = [
-          'agreement_number',
-          'name',
-          'amount',
-          'expense',
-          'state_details',
-          'district_details',
-          'location_details',
-          'start_date',
-          'end_date',
-          'narration',
-          'action',
-        ];
-      } else {
-        this.displayedColumns = [
-          'name',
-          'location_details',
-          'amount',
-          'action',
-        ];
-      }
-    }
-  }
-
   getAgreementList(): void {
+    const paramList = [];
+    let paramUrl = '';
+    if (this.pageAttributes.pageSize > 0) {
+      paramList.push(`limit=${this.pageAttributes.pageSize}`);
+    }
+    if (this.pageAttributes.currentPage) {
+      paramList.push(`offset=${this.pageAttributes.currentPage}`);
+    }
+
+    if (paramList.length > 0) {
+      paramList.map((par) => {
+        paramUrl = paramUrl + par + '&';
+      });
+    }
+
     this.loaderService.show();
-    this.agreementService.getAgreements().subscribe((data) => {
-      this.loaderService.hide();
-      if (data && data.results) {
-        this.agreementListData = data.results;
-      }
-    });
+    this.agreementService
+      .getAgreements(`?` + paramUrl.slice(0, -1))
+      .subscribe((data) => {
+        this.loaderService.hide();
+        if (data && data.results) {
+          this.agreementListData = data.results;
+          if (data.count) this.pageAttributes.totalRecord = data.count;
+        }
+      });
   }
 
   editAgreement(ID: number): void {
@@ -138,6 +134,19 @@ export class ListAgreementComponent implements OnInit, OnDestroy, OnChanges {
         this.subscriptionArray.push(deletSubs);
       }
     });
+  }
+
+  handlePage(event: PageAttrEventModel): void {
+    this.pageAttributes.pageSize = event.pageSize
+      ? event.pageSize
+      : this.pageAttributes.pageSize;
+    this.pageAttributes.currentPage = event.pageIndex
+      ? event.pageIndex
+      : this.pageAttributes.currentPage;
+    this.pageAttributes.prevPage = event.previousPageIndex
+      ? event.previousPageIndex
+      : this.pageAttributes.prevPage;
+    this.getAgreementList();
   }
 
   ngOnDestroy(): void {

@@ -3,7 +3,13 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { DayTypes, MasterDataService } from 'src/app/core';
+import {
+  DAY_TYPES,
+  MasterDataService,
+  PAGE_ATTR_DATA,
+  PageAttrEventModel,
+  PageAttrModel,
+} from 'src/app/core';
 import { AgreementService } from 'src/app/pages/agreement/services';
 import { LoaderService } from 'src/app/shared';
 import { ReportService } from '../../services/report.services';
@@ -25,6 +31,7 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
   workTypeList: any[] = [];
   dayList: any[] = [];
   hasResult = false;
+  pageAttributes: PageAttrModel = PAGE_ATTR_DATA;
 
   subscriptionArray: Subscription[] = [];
 
@@ -49,7 +56,22 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
     this.getEmployeeList();
     this.getWorkTypeList();
     this.detectFilterForms();
-    this.dayList = DayTypes;
+    this.dayList = DAY_TYPES;
+  }
+
+  ngOnInit(): void {
+    this.displayedColumns = [
+      'work_date',
+      'name',
+      'location',
+      'day',
+      'work_type_details',
+      'kooli',
+      'kooli_paid',
+      'paid_date',
+      'agreement',
+    ];
+    this.searchNow();
   }
 
   detectFilterForms(): void {
@@ -100,6 +122,10 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
     this.subscriptionArray.push(agreementSubs);
   }
 
+  public agreementOptionView(option: any): string {
+    return option ? `${option.agreement_number} - ${option.name}` : '';
+  }
+
   getEmployeeList(search?: string): void {
     const empSubs = this.masterService
       .getEmployeesList(
@@ -113,6 +139,10 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
         }
       });
     this.subscriptionArray.push(empSubs);
+  }
+
+  public employeeOptionView(option: any): string {
+    return option ? option.name : '';
   }
 
   getWorkTypeList(search?: string): void {
@@ -130,46 +160,36 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
     this.subscriptionArray.push(workSubs);
   }
 
-  ngOnInit(): void {
-    this.displayedColumns = [
-      'work_date',
-      'name',
-      'location',
-      'day',
-      'work_type_details',
-      'kooli',
-      'kooli_paid',
-      'paid_date',
-      'agreement',
-    ];
-    this.getReportData();
-  }
-
-  getReportData(): void {
-    this.loaderService.show();
-    const resultSub = this.resportService
-      .getEmployeeReport()
-      .subscribe((data) => {
-        this.loaderService.hide();
-        if (data && data.results) {
-          this.employeeData = data.results;
-          this.hasResult = data.results.length > 0 ? true : false;
-        }
-      });
-    this.subscriptionArray.push(resultSub);
+  public worktypeOptionView(option: any): string {
+    return option ? option.name : '';
   }
 
   searchNow(): void {
     const paramList = [];
     let paramUrl = '';
-    if (this.agreementFilter.value.agreement) {
-      paramList.push(`agreement=${this.agreementFilter.value.agreement}`);
+    if (this.pageAttributes.pageSize > 0) {
+      paramList.push(`limit=${this.pageAttributes.pageSize}`);
     }
-    if (this.agreementFilter.value.employee) {
-      paramList.push(`name=${this.agreementFilter.value.employee}`);
+    if (this.pageAttributes.currentPage) {
+      paramList.push(`offset=${this.pageAttributes.currentPage}`);
     }
-    if (this.agreementFilter.value.workType) {
-      paramList.push(`work_type=${this.agreementFilter.value.workType}`);
+    if (
+      this.agreementFilter.value.agreement &&
+      this.agreementFilter.value.agreement.id
+    ) {
+      paramList.push(`agreement=${this.agreementFilter.value.agreement.id}`);
+    }
+    if (
+      this.agreementFilter.value.employee &&
+      this.agreementFilter.value.employee.id
+    ) {
+      paramList.push(`name=${this.agreementFilter.value.employee.id}`);
+    }
+    if (
+      this.agreementFilter.value.workType &&
+      this.agreementFilter.value.workType.id
+    ) {
+      paramList.push(`work_type=${this.agreementFilter.value.workType.id}`);
     }
     if (this.agreementFilter.value.startDate) {
       paramList.push(
@@ -206,13 +226,27 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
         if (data && data.results) {
           this.employeeData = data.results;
           this.hasResult = data.results.length > 0 ? true : false;
+          this.pageAttributes.totalRecord = data.count;
         }
       });
   }
 
+  handlePage(event: PageAttrEventModel): void {
+    this.pageAttributes.pageSize = event.pageSize
+      ? event.pageSize
+      : this.pageAttributes.pageSize;
+    this.pageAttributes.currentPage = event.pageIndex
+      ? event.pageIndex
+      : this.pageAttributes.currentPage;
+    this.pageAttributes.prevPage = event.previousPageIndex
+      ? event.previousPageIndex
+      : this.pageAttributes.prevPage;
+    this.searchNow();
+  }
+
   resetSearch(): void {
     this.agreementFilter.reset();
-    this.getReportData();
+    this.searchNow();
   }
 
   ngOnDestroy(): void {

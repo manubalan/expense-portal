@@ -1,25 +1,32 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { MasterDataService, PageAttrEventModel, PageAttrModel, PAGE_ATTR_DATA } from 'src/app/core';
+import {
+  MasterDataService,
+  PageAttrEventModel,
+  PageAttrModel,
+  PAGE_ATTR_DATA,
+} from 'src/app/core';
 import { AgreementService } from 'src/app/pages/agreement/services';
 import { LoaderService } from 'src/app/shared';
 import { ReportService } from '../../services/report.services';
 
 @Component({
-  selector: 'ems-driver-expense',
-  templateUrl: './driver-expense.component.html',
+  selector: 'ems-vehicle-driver-expense',
+  templateUrl: './vehicle-driver-expense.component.html',
   host: {
     class: 'full-width-card',
   },
 })
-export class DriverExpenseComponent implements OnInit, OnDestroy {
+export class VehicleDriverExpenseComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [];
-  driverReports: any;
-  driverFilterForm: FormGroup;
+  vehicleReports: any;
+  vehicleFilterForm: FormGroup;
+
   agreementList: any[] = [];
-  driverList: any[] = [];
+  employeeList: any[] = [];
   hasResult = false;
   pageAttributes: PageAttrModel = PAGE_ATTR_DATA;
 
@@ -32,26 +39,41 @@ export class DriverExpenseComponent implements OnInit, OnDestroy {
     private agreementService: AgreementService,
     private masterService: MasterDataService
   ) {
-    this.driverFilterForm = this.fbuilder.group({
+    this.vehicleFilterForm = this.fbuilder.group({
       agreement: new FormControl(''),
-      driverName: new FormControl(''),
+      employee: new FormControl(''),
       startDate: new FormControl(''),
       endDate: new FormControl(''),
       search: new FormControl(''),
     });
 
     this.getAgreementList();
-    this.getDriverList();
+    this.getEmployeeList();
     this.detectFilterForms();
   }
 
   ngOnInit(): void {
-    this.displayedColumns = ['driver_name__name', 'betha', 'betha_paid'];
+    this.displayedColumns = [
+      'delivery_date',
+      'agreement',
+      'location',
+      'materials_details',
+      'materials_from_details',
+      'qty_type',
+      'quantity',
+      'vehicle_type_details',
+      'vehicle_details',
+      'driver_name',
+      'betha',
+      'betha_paid',
+      'vechicle_charge',
+      'total_amount',
+    ];
     this.searchNow();
   }
 
   detectFilterForms(): void {
-    const detectSubs = this.driverFilterForm
+    const detectSubs = this.vehicleFilterForm
       .get('agreement')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value: any) => {
@@ -61,12 +83,12 @@ export class DriverExpenseComponent implements OnInit, OnDestroy {
       });
     if (detectSubs) this.subscriptionArray.push(detectSubs);
 
-    const empSubs = this.driverFilterForm
-      .get('driverName')
+    const empSubs = this.vehicleFilterForm
+      .get('employee')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value: any) => {
         if (value && value !== null && typeof value === 'string') {
-          this.getDriverList(value);
+          this.getEmployeeList(value);
         }
       });
     if (empSubs) this.subscriptionArray.push(empSubs);
@@ -92,7 +114,7 @@ export class DriverExpenseComponent implements OnInit, OnDestroy {
     return option ? `${option.agreement_number} - ${option.name}` : '';
   }
 
-  getDriverList(search?: string): void {
+  getEmployeeList(search?: string): void {
     const empSubs = this.masterService
       .getEmployeesList(
         search !== null && search !== undefined
@@ -101,7 +123,7 @@ export class DriverExpenseComponent implements OnInit, OnDestroy {
       )
       .subscribe((data) => {
         if (data && data.results) {
-          this.driverList = data.results;
+          this.employeeList = data.results;
         }
       });
     this.subscriptionArray.push(empSubs);
@@ -121,19 +143,34 @@ export class DriverExpenseComponent implements OnInit, OnDestroy {
       paramList.push(`offset=${this.pageAttributes.currentPage}`);
     }
     if (
-      this.driverFilterForm.value.agreement &&
-      this.driverFilterForm.value.agreement.id
+      this.vehicleFilterForm.value.agreement &&
+      this.vehicleFilterForm.value.agreement.id
     ) {
-      paramList.push(`agreement=${this.driverFilterForm.value.agreement.id}`);
+      paramList.push(`agreement=${this.vehicleFilterForm.value.agreement.id}`);
     }
     if (
-      this.driverFilterForm.value.driverName &&
-      this.driverFilterForm.value.driverName.id
+      this.vehicleFilterForm.value.employee &&
+      this.vehicleFilterForm.value.employee.id
     ) {
-      paramList.push(`driver_id=${this.driverFilterForm.value.driverName.id}`);
+      paramList.push(`driver_name=${this.vehicleFilterForm.value.employee.id}`);
     }
-    if (this.driverFilterForm.value.search) {
-      paramList.push(`search=${this.driverFilterForm.value.search}`);
+
+    if (this.vehicleFilterForm.value.startDate) {
+      paramList.push(
+        `from_date=${moment(this.vehicleFilterForm.value.startDate).format(
+          'YYYY-MM-DD'
+        )}`
+      );
+    }
+    if (this.vehicleFilterForm.value.endDate) {
+      paramList.push(
+        `to_date=${moment(this.vehicleFilterForm.value.endDate).format(
+          'YYYY-MM-DD'
+        )}`
+      );
+    }
+    if (this.vehicleFilterForm.value.search) {
+      paramList.push(`search=${this.vehicleFilterForm.value.search}`);
     }
 
     if (paramList.length > 0) {
@@ -144,11 +181,11 @@ export class DriverExpenseComponent implements OnInit, OnDestroy {
 
     this.loaderService.show();
     this.resportService
-      .getDriverReport(`?` + paramUrl.slice(0, -1))
+      .getVehicleReport(`?` + paramUrl.slice(0, -1))
       .subscribe((data) => {
         this.loaderService.hide();
-        if (data) {
-          this.driverReports = data.results;
+        if (data && data.results) {
+          this.vehicleReports = data.results;
           this.hasResult = data.results.length > 0 ? true : false;
           this.pageAttributes.totalRecord = data.count;
         }
@@ -169,7 +206,7 @@ export class DriverExpenseComponent implements OnInit, OnDestroy {
   }
 
   resetSearch(): void {
-    this.driverFilterForm.reset();
+    this.vehicleFilterForm.reset();
     this.searchNow();
   }
 

@@ -10,25 +10,25 @@ export class ReportService {
 
   getEmployeeReport(params?: string): Observable<GetResponseModel> {
     return this.http.get<GetResponseModel>(
-      API_END_POINT.reports.employee_expense + (params ? params : '/')
+      API_END_POINT.reports.employee_expense + (params ? params : '')
     );
   }
 
   getEmployeeWiseReport(params?: string): Observable<GetResponseModel> {
     return this.http.get<GetResponseModel>(
-      API_END_POINT.reports.employee_wise_expense + (params ? params : '/')
+      API_END_POINT.reports.employee_wise_expense + (params ? params : '')
     );
   }
 
   getVehicleReport(params?: string): Observable<GetResponseModel> {
     return this.http.get<GetResponseModel>(
-      API_END_POINT.reports.vehicle_expense + (params ? params : '/')
+      API_END_POINT.reports.vehicle_expense + (params ? params : '')
     );
   }
 
   getDriverReport(params?: string): Observable<GetResponseModel> {
     return this.http.get<GetResponseModel>(
-      API_END_POINT.reports.driver_expense + (params ? params : '/')
+      API_END_POINT.reports.driver_expense + (params ? params : '')
     );
   }
 }

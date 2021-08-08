@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { MasterDataService } from 'src/app/core';
+import { MasterDataService, PageAttrEventModel, PageAttrModel, PAGE_ATTR_DATA } from 'src/app/core';
 import { AgreementService } from 'src/app/pages/agreement/services';
 import { LoaderService } from 'src/app/shared';
 import { ReportService } from '../../services/report.services';
@@ -23,8 +23,8 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
   agreementList: any[] = [];
   locationList: any[] = [];
   materialList: any[] = [];
-
   hasResult = false;
+  pageAttributes: PageAttrModel = PAGE_ATTR_DATA;
 
   subscriptionArray: Subscription[] = [];
 
@@ -55,6 +55,7 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
     this.displayedColumns = [
       'delivery_date',
       'agreement',
+      'location',
       'materials_details',
       'materials_from_details',
       'qty_type',
@@ -62,26 +63,11 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
       'vehicle_type_details',
       'vehicle_details',
       'amount',
-      'betha',
+      'amount_paid',
       'vechicle_charge',
       'total_amount',
     ];
-    this.getREportData();
-  }
-
-  getREportData(): void {
-    this.loaderService.show();
-    const resultSub = this.resportService
-      .getVehicleReport()
-      .subscribe((data) => {
-        this.loaderService.hide();
-        if (data && data.results) {
-          this.vehicleReports = data.results;
-          this.hasResult = data.results.length > 0 ? true : false;
-        }
-      });
-
-    this.subscriptionArray.push(resultSub);
+    this.searchNow();
   }
 
   detectFilterForms(): void {
@@ -132,6 +118,10 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
     this.subscriptionArray.push(agreementSubs);
   }
 
+  public agreementOptionView(option: any): string {
+    return option ? `${option.agreement_number} - ${option.name}` : '';
+  }
+
   getLocationList(search?: string): void {
     const empSubs = this.masterService
       .getLocationsList(
@@ -146,6 +136,10 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
         }
       });
     this.subscriptionArray.push(empSubs);
+  }
+
+  public locationOptionView(option: any): string {
+    return option ? option.name : '';
   }
 
   getMaterialList(search?: string): void {
@@ -163,20 +157,41 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
     this.subscriptionArray.push(empSubs);
   }
 
+  public materialOptionView(option: any): string {
+    return option ? option.name : '';
+  }
+
   searchNow(): void {
     const paramList = [];
     let paramUrl = '';
-    if (this.vehicleFilterForm.value.agreement) {
-      paramList.push(`agreement=${this.vehicleFilterForm.value.agreement}`);
+    if (this.pageAttributes.pageSize > 0) {
+      paramList.push(`limit=${this.pageAttributes.pageSize}`);
+    }
+    if (this.pageAttributes.currentPage) {
+      paramList.push(`offset=${this.pageAttributes.currentPage}`);
+    }
+    if (
+      this.vehicleFilterForm.value.agreement &&
+      this.vehicleFilterForm.value.agreement.id
+    ) {
+      paramList.push(`agreement=${this.vehicleFilterForm.value.agreement.id}`);
     }
     if (this.vehicleFilterForm.value.vehicleNo) {
       paramList.push(`vehicle_no=${this.vehicleFilterForm.value.vehicleNo}`);
     }
-    if (this.vehicleFilterForm.value.location) {
-      paramList.push(`materials_from=${this.vehicleFilterForm.value.location}`);
+    if (
+      this.vehicleFilterForm.value.location &&
+      this.vehicleFilterForm.value.location.id
+    ) {
+      paramList.push(
+        `materials_from=${this.vehicleFilterForm.value.location.id}`
+      );
     }
-    if (this.vehicleFilterForm.value.material) {
-      paramList.push(`materials=${this.vehicleFilterForm.value.material}`);
+    if (
+      this.vehicleFilterForm.value.material &&
+      this.vehicleFilterForm.value.material.id
+    ) {
+      paramList.push(`materials=${this.vehicleFilterForm.value.material.id}`);
     }
     if (this.vehicleFilterForm.value.startDate) {
       paramList.push(
@@ -210,13 +225,27 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
         if (data && data.results) {
           this.vehicleReports = data.results;
           this.hasResult = data.results.length > 0 ? true : false;
+          this.pageAttributes.totalRecord = data.count;
         }
       });
   }
 
+  handlePage(event: PageAttrEventModel): void {
+    this.pageAttributes.pageSize = event.pageSize
+      ? event.pageSize
+      : this.pageAttributes.pageSize;
+    this.pageAttributes.currentPage = event.pageIndex
+      ? event.pageIndex
+      : this.pageAttributes.currentPage;
+    this.pageAttributes.prevPage = event.previousPageIndex
+      ? event.previousPageIndex
+      : this.pageAttributes.prevPage;
+    this.searchNow();
+  }
+
   resetSearch(): void {
     this.vehicleFilterForm.reset();
-    this.getREportData();
+    this.searchNow();
   }
 
   ngOnDestroy(): void {

@@ -18,7 +18,8 @@ import { SidebarService } from './sidebar.service';
 export class SidebarComponent {
   @HostBinding('class.expanded') expanded: boolean = false;
   private wasInside = false;
-  public selectedIndex: number;
+  public selectedPage: number;
+  public selectedChild: number;
   public sideNavState = false;
   public linkText = false;
 
@@ -30,19 +31,29 @@ export class SidebarComponent {
     {
       name: 'Agreement',
       link: '',
-      icon: 'description',
+      icon: 'list_alt',
       children: [
         {
           name: 'Agreements Details',
-          link: '/dashboard/agreement/',
-          icon: 'description',
+          link: '/dashboard/agreement/agreements-list',
+          icon: 'request_quote',
+        },
+        {
+          name: 'Vehicle Expense',
+          link: '/dashboard/agreement/vehicle-expenses',
+          icon: 'directions_car',
+        },
+        {
+          name: 'Employee Expense',
+          link: '/dashboard/agreement/exployee-expense',
+          icon: 'groups',
         },
       ],
     },
     {
       name: 'Reports',
       link: '',
-      icon: 'receipt_long',
+      icon: 'assessment',
       children: [
         {
           name: 'Employee Expense',
@@ -52,32 +63,32 @@ export class SidebarComponent {
         {
           name: 'Employee Expense (Date Wise)',
           link: '/dashboard/reports/exployee-expense',
-          icon: 'supervisor_account',
+          icon: 'perm_contact_calendar',
         },
 
         {
           name: 'Material Expense',
           link: '/dashboard/reports/vehicle-expense',
-          icon: 'local_shipping',
+          icon: 'group_work',
         },
         {
           name: 'Vehicle Expense',
           link: '/dashboard/reports/driver-wise-expense',
-          icon: 'people_alt',
+          icon: 'local_shipping',
         },
         {
           name: 'Driver Expense',
           link: '/dashboard/reports/driver-expense',
-          icon: 'people_alt',
+          icon: 'commute',
         },
       ],
     },
     { name: 'Master Data', link: '/dashboard/master-data', icon: 'storage' },
-    // { name: 'Send email', link: 'some-link', icon: 'face' },
   ];
 
   constructor(private sidenavService: SidebarService) {
-    this.selectedIndex = -1;
+    this.selectedPage = 0;
+    this.selectedChild = -1;
   }
 
   baseUrl = environment.BASE_URL;
@@ -90,24 +101,24 @@ export class SidebarComponent {
   @HostListener('document:click')
   clickout() {
     if (!this.wasInside) {
-      this.selectedIndex = -1;
+      this.selectedPage = -1;
     }
     this.wasInside = false;
   }
 
   expandMenu(): void {
     this.expanded = !this.expanded;
-    this.selectedIndex = -1;
+    this.selectedPage = -1;
     this.menuExpanded.emit(this.expanded);
   }
 
-  setIndex(item: MenuModel, index: number): boolean {
-    if (this.selectedIndex === index) {
-      this.selectedIndex = -1;
+  setPageIndex(item: MenuModel, index: number): boolean {
+    if (this.selectedPage === index) {
+      this.selectedPage = -1;
       return false;
     }
 
-    this.selectedIndex = index;
+    this.selectedPage = index;
     if (item.children && item.children?.length > 0) {
       return false;
     } else {
@@ -115,7 +126,8 @@ export class SidebarComponent {
     }
   }
 
-  menuSelected(): void {
-    this.selectedIndex = -1;
+  setChildIndex(index: number): void {
+    this.selectedChild = index;
+    this.selectedPage = -1;
   }
 }

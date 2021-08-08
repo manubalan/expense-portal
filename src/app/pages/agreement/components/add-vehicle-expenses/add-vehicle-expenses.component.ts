@@ -12,7 +12,7 @@ import {
   AgreementListResultModel,
   ConstantDataModel,
   MasterDataService,
-  QuqntityType,
+  QUANTITY_TYPES,
   ResultDataModel,
 } from 'src/app/core';
 import { LoaderService, SnackBarService } from 'src/app/shared/components';
@@ -35,7 +35,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     agreementID: 0,
   };
 
-  qtyTypeList: ConstantDataModel[] = QuqntityType;
+  qtyTypeList: ConstantDataModel[] = QUANTITY_TYPES;
 
   private subscriptionsArray: Subscription[] = [];
 

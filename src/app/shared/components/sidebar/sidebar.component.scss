@@ -113,7 +113,7 @@
       left: 50px;
       top: 0;
       width: 50px;
-      background-color: #573bfe;
+      background-color: #674fee;
 
       li {
         display: flex;
@@ -121,13 +121,18 @@
         height: 50px;
         justify-content: center;
         align-items: center;
-        &:hover {
+
+        &:hover,
+        &.active {
           background-color: rgba(255, 255, 255, 0.1);
         }
 
         a {
           text-decoration: none;
           color: #fff;
+          display: flex;
+          height: 50px;
+          align-items: center;
         }
 
         .mat-icon {
@@ -150,13 +155,14 @@
       text-decoration: none;
       color: #fff;
 
-      &:hover {
+      &:hover,
+      &.active {
         background-color: rgba(255, 255, 255, 0.1);
       }
 
       &.active ~ .sub-menu {
         display: flex;
-        transition: all .2s ease-in-out;
+        transition: all 0.2s ease-in-out;
       }
 
       .mat-icon {

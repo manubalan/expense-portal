@@ -12,7 +12,7 @@ import { DriverExpenseComponent } from './components/driver-expense/driver-expen
 import { ReportService } from './services/report.services';
 import { ReactiveFormsModule } from '@angular/forms';
 import { EmployeeWiseExpenseComponent } from './components/employee-wise-expense/employee-wise-expense.component';
-import { DriverWiseExpenseComponent } from './components/driver-wise-expense/driver-wise-expense.component';
+import { VehicleDriverExpenseComponent } from './components/vehicle-driver-expense/vehicle-driver-expense.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +21,7 @@ import { DriverWiseExpenseComponent } from './components/driver-wise-expense/dri
     VehicleExpenseComponent,
     DriverExpenseComponent,
     EmployeeWiseExpenseComponent,
-    DriverWiseExpenseComponent,
+    VehicleDriverExpenseComponent,
   ],
   imports: [CommonModule, ReportsRoutingModule, MaterialModule, ReactiveFormsModule],
   providers: [ReportService],

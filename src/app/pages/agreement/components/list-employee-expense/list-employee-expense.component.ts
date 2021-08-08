@@ -1,7 +1,11 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { MasterDataService } from 'src/app/core';
+import { PageAttrEventModel, PageAttrModel, PAGE_ATTR_DATA } from 'src/app/core';
 import {
   DialogBoxService,
   LoaderService,
@@ -13,19 +17,16 @@ import { AddEmployeExpenseComponent } from '../add-employe-expense/add-employe-e
 @Component({
   selector: 'ems-list-employee-expense',
   templateUrl: './list-employee-expense.component.html',
-  styleUrls: ['./list-employee-expense.component.scss'],
 })
-export class ListEmployeeExpenseComponent implements OnInit, OnDestroy , OnChanges{
+export class ListEmployeeExpenseComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [];
   dataSource: any;
-  subscriptionArray: Subscription[] = [];
+  pageAttributes: PageAttrModel = PAGE_ATTR_DATA;
 
-  @Input()
-  fullView = false;
+  subscriptionArray: Subscription[] = [];
 
   constructor(
     public dialog: MatDialog,
-    private masterDataService: MasterDataService,
     private agreementService: AgreementService,
     private loaderService: LoaderService,
     private dialogeService: DialogBoxService,
@@ -44,39 +45,42 @@ export class ListEmployeeExpenseComponent implements OnInit, OnDestroy , OnChang
     );
 
     this.subscriptionArray.push(subjectSubs);
-  }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes) {
-      if (changes.fullView && changes.fullView.currentValue) {
-        this.displayedColumns = [
-          'agreement',
-          'day',
-          'name',
-          'work_type_details',
-          'work_date',
-          'kooli',
-          'kooli_paid',
-          'paid_date',
-          'action',
-        ];
-      } else {
-        this.displayedColumns = [
-          'agreement',
-          'name',
-          'kooli_paid',
-          'action',
-        ];
-      }
-    }
+    this.displayedColumns = [
+      'agreement',
+      'day',
+      'name',
+      'work_type_details',
+      'work_date',
+      'kooli',
+      'kooli_paid',
+      'paid_date',
+      'action',
+    ];
   }
 
   getEmpExpenseList(): void {
+    const paramList = [];
+    let paramUrl = '';
+    if (this.pageAttributes.pageSize > 0) {
+      paramList.push(`limit=${this.pageAttributes.pageSize}`);
+    }
+    if (this.pageAttributes.currentPage) {
+      paramList.push(`offset=${this.pageAttributes.currentPage}`);
+    }
+
+    if (paramList.length > 0) {
+      paramList.map((par) => {
+        paramUrl = paramUrl + par + '&';
+      });
+    }
+
     this.loaderService.show();
     this.agreementService.getEmpExpense().subscribe((data) => {
       this.loaderService.hide();
       if (data && data.results) {
         this.dataSource = data.results;
+        if (data.count) this.pageAttributes.totalRecord = data.count;
       }
     });
   }
@@ -110,6 +114,19 @@ export class ListEmployeeExpenseComponent implements OnInit, OnDestroy , OnChang
         this.subscriptionArray.push(deleSubs);
       }
     });
+  }
+
+  handlePage(event: PageAttrEventModel): void {
+    this.pageAttributes.pageSize = event.pageSize
+      ? event.pageSize
+      : this.pageAttributes.pageSize;
+    this.pageAttributes.currentPage = event.pageIndex
+      ? event.pageIndex
+      : this.pageAttributes.currentPage;
+    this.pageAttributes.prevPage = event.previousPageIndex
+      ? event.previousPageIndex
+      : this.pageAttributes.prevPage;
+    this.getEmpExpenseList();
   }
 
   ngOnDestroy(): void {

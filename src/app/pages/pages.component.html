@@ -1,22 +1,6 @@
-<!-- <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #leftSidenav mode="side" opened>
-    <ems-sidebar></ems-sidebar>
-  </mat-sidenav>
-  <mat-sidenav-content [@onMainContentChange]="onSideBarChange ? 'open' : 'close'">
-
-    <ems-navigation [sidenav]="leftSidenav"></ems-navigation>
-
-    <div class="main-wrap">
-      <router-outlet></router-outlet>
-    </div>
-
-    <ems-add-menu></ems-add-menu>
-
-  </mat-sidenav-content>
-</mat-sidenav-container> -->
-
 <ems-sidebar (menuExpanded)="menuExpanded($event)"></ems-sidebar>
 <ems-navigation [expanded]="expanded"></ems-navigation>
 <div class="main-wrap">
   <router-outlet></router-outlet>
+  <ems-add-menu></ems-add-menu>
 </div>

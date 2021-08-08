@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { MasterDataService } from 'src/app/core';
+import { MasterDataService, PageAttrEventModel, PageAttrModel, PAGE_ATTR_DATA } from 'src/app/core';
 import { AgreementService } from 'src/app/pages/agreement/services';
 import { LoaderService } from 'src/app/shared';
 import { ReportService } from '../../services/report.services';
@@ -23,6 +23,7 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
   employeList: any[] = [];
   workTypeList: any[] = [];
   hasResults = false;
+  pageAttributes: PageAttrModel = PAGE_ATTR_DATA;
 
   subscriptionArray: Subscription[] = [];
 
@@ -43,26 +44,11 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.displayedColumnsWise = ['name__name', 'kooli', 'kooli_paid'];
-    this.getReportData();
+    this.searchNow();
     this.getAgreementList();
     this.getEmployeeList();
     this.getWorkTypeList();
     this.detectFilterForms();
-  }
-
-  getReportData(): void {
-    this.loaderService.show();
-    const reportSubs = this.resportService
-      .getEmployeeWiseReport()
-      .subscribe((data) => {
-        this.loaderService.hide();
-        if (data && data.results) {
-          this.employeeWiseData = data.results;
-          this.hasResults = data.results.length > 0 ? true : false;
-        }
-      });
-
-    this.subscriptionArray.push(reportSubs);
   }
 
   detectFilterForms(): void {
@@ -113,6 +99,10 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
     this.subscriptionArray.push(agreementSubs);
   }
 
+  public agreementOptionView(option: any): string {
+    return option ? `${option.agreement_number} - ${option.name}` : '';
+  }
+
   getEmployeeList(search?: string): void {
     const empSubs = this.masterService
       .getEmployeesList(
@@ -126,6 +116,10 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
         }
       });
     this.subscriptionArray.push(empSubs);
+  }
+
+  public employeeOptionView(option: any): string {
+    return option ? option.name : '';
   }
 
   getWorkTypeList(search?: string): void {
@@ -143,21 +137,42 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
     this.subscriptionArray.push(workSubs);
   }
 
+  public worktypeOptionView(option: any): string {
+    return option ? option.name : '';
+  }
+
   searchNow(): void {
     const paramList = [];
     let paramUrl = '';
-    if (this.agreementWiseFilter.value.agreement) {
+    if (this.pageAttributes.pageSize > 0) {
+      paramList.push(`limit=${this.pageAttributes.pageSize}`);
+    }
+    if (this.pageAttributes.currentPage) {
+      paramList.push(`offset=${this.pageAttributes.currentPage}`);
+    }
+    if (
+      this.agreementWiseFilter.value.agreement &&
+      this.agreementWiseFilter.value.agreement.id
+    ) {
       paramList.push(
-        `agreement_id=${this.agreementWiseFilter.value.agreement}`
+        `agreement_id=${this.agreementWiseFilter.value.agreement.id}`
       );
     }
-    if (this.agreementWiseFilter.value.employeeId) {
+    if (
+      this.agreementWiseFilter.value.employeeId &&
+      this.agreementWiseFilter.value.employeeId.id
+    ) {
       paramList.push(
-        `employee_id=${this.agreementWiseFilter.value.employeeId}`
+        `employee_id=${this.agreementWiseFilter.value.employeeId.id}`
       );
     }
-    if (this.agreementWiseFilter.value.workType) {
-      paramList.push(`work_type_id=${this.agreementWiseFilter.value.workType}`);
+    if (
+      this.agreementWiseFilter.value.workType &&
+      this.agreementWiseFilter.value.workType.id
+    ) {
+      paramList.push(
+        `work_type_id=${this.agreementWiseFilter.value.workType.id}`
+      );
     }
     if (this.agreementWiseFilter.value.search) {
       paramList.push(`search=${this.agreementWiseFilter.value.search}`);
@@ -177,13 +192,27 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
         if (data && data.results) {
           this.employeeWiseData = data.results;
           this.hasResults = data.results.length > 0 ? true : false;
+          this.pageAttributes.totalRecord = data.count;
         }
       });
   }
 
+  handlePage(event: PageAttrEventModel): void {
+    this.pageAttributes.pageSize = event.pageSize
+      ? event.pageSize
+      : this.pageAttributes.pageSize;
+    this.pageAttributes.currentPage = event.pageIndex
+      ? event.pageIndex
+      : this.pageAttributes.currentPage;
+    this.pageAttributes.prevPage = event.previousPageIndex
+      ? event.previousPageIndex
+      : this.pageAttributes.prevPage;
+    this.searchNow();
+  }
+
   resetSearch(): void {
     this.agreementWiseFilter.reset();
-    this.getReportData();
+    this.searchNow();
   }
 
   ngOnDestroy(): void {
