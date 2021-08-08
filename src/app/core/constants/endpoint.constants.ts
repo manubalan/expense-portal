@@ -27,9 +27,9 @@ export const API_END_POINT = {
     employee_expense: `${endPoints.base_api_EndPoint}employees-expenses/`,
   },
   reports: {
-    employee_expense: `${endPoints.base_api_EndPoint}employees-expenses/`,
+    employee_expense: `${endPoints.base_api_EndPoint}employees-expenses`,
     employee_wise_expense: `${endPoints.base_api_EndPoint}employees-wise-expenses`,
-    vehicle_expense: `${endPoints.base_api_EndPoint}vehicle-expenses/`,
+    vehicle_expense: `${endPoints.base_api_EndPoint}vehicle-expenses`,
     driver_expense: `${endPoints.base_api_EndPoint}driver-wise-expense`,
   }
 };

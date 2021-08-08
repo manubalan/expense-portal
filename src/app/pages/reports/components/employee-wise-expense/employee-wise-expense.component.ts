@@ -22,6 +22,7 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
   agreementList: any[] = [];
   employeList: any[] = [];
   workTypeList: any[] = [];
+  hasResults = false;
 
   subscriptionArray: Subscription[] = [];
 
@@ -42,23 +43,26 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.displayedColumnsWise = ['name__name', 'kooli', 'kooli_paid'];
+    this.getReportData();
+    this.getAgreementList();
+    this.getEmployeeList();
+    this.getWorkTypeList();
+    this.detectFilterForms();
+  }
 
+  getReportData(): void {
     this.loaderService.show();
     const reportSubs = this.resportService
       .getEmployeeWiseReport()
       .subscribe((data) => {
         this.loaderService.hide();
-        if (data) {
+        if (data && data.results) {
           this.employeeWiseData = data.results;
+          this.hasResults = data.results.length > 0 ? true : false;
         }
       });
 
     this.subscriptionArray.push(reportSubs);
-
-    this.getAgreementList();
-    this.getEmployeeList();
-    this.getWorkTypeList();
-    this.detectFilterForms();
   }
 
   detectFilterForms(): void {
@@ -143,10 +147,14 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
     const paramList = [];
     let paramUrl = '';
     if (this.agreementWiseFilter.value.agreement) {
-      paramList.push(`agreement_id=${this.agreementWiseFilter.value.agreement}`);
+      paramList.push(
+        `agreement_id=${this.agreementWiseFilter.value.agreement}`
+      );
     }
     if (this.agreementWiseFilter.value.employeeId) {
-      paramList.push(`employee_id=${this.agreementWiseFilter.value.employeeId}`);
+      paramList.push(
+        `employee_id=${this.agreementWiseFilter.value.employeeId}`
+      );
     }
     if (this.agreementWiseFilter.value.workType) {
       paramList.push(`work_type_id=${this.agreementWiseFilter.value.workType}`);
@@ -166,10 +174,16 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
       .getEmployeeWiseReport(`?` + paramUrl.slice(0, -1))
       .subscribe((data) => {
         this.loaderService.hide();
-        if (data) {
+        if (data && data.results) {
           this.employeeWiseData = data.results;
+          this.hasResults = data.results.length > 0 ? true : false;
         }
       });
+  }
+
+  resetSearch(): void {
+    this.agreementWiseFilter.reset();
+    this.getReportData();
   }
 
   ngOnDestroy(): void {

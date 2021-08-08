@@ -1,3 +1,5 @@
+<h2>Employee Expense</h2>
+
 <div class="wrap-box">
 
   <mat-accordion multi>
@@ -15,7 +17,7 @@
           <input type="text" placeholder="Enter Agreement" aria-label="Enter Agreement" matInput
             formControlName="agreement" [matAutocomplete]="agreement">
           <mat-autocomplete #agreement="matAutocomplete">
-            <mat-option *ngFor="let option of agreementList" [value]="option.name">
+            <mat-option *ngFor="let option of agreementList" [value]="option.id">
               {{option.name}}
             </mat-option>
           </mat-autocomplete>
@@ -26,18 +28,18 @@
           <input type="text" placeholder="Enter Employee" aria-label="Enter Employee" matInput
             formControlName="employeeId" [matAutocomplete]="employeeId">
           <mat-autocomplete #employeeId="matAutocomplete">
-            <mat-option *ngFor="let option of employeList" [value]="option.name">
+            <mat-option *ngFor="let option of employeList" [value]="option.id">
               {{option.name}}
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
 
         <mat-form-field>
-          <mat-label>Employee ID</mat-label>
+          <mat-label>Work Type</mat-label>
           <input type="text" placeholder="Enter Agreement" aria-label="Enter Agreement" matInput
             formControlName="workType" [matAutocomplete]="workType">
           <mat-autocomplete #workType="matAutocomplete">
-            <mat-option *ngFor="let option of workTypeList" [value]="option.name">
+            <mat-option *ngFor="let option of workTypeList" [value]="option.id">
               {{option.name}}
             </mat-option>
           </mat-autocomplete>
@@ -48,53 +50,55 @@
           <input formControlName="search" matInput placeholder="Placeholder">
         </mat-form-field>
 
-        <button mat-stroked-button color="primary" (click)="searchNow()">Primary</button>
+        <button mat-stroked-button color="primary" (click)="searchNow()">Filter Now</button>
+        <button mat-stroked-button color="primary" (click)="resetSearch()">Reset</button>
       </div>
     </mat-expansion-panel>
 
     <mat-expansion-panel hideToggle [expanded]="true">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-         Reports
-        </mat-panel-title>
-      </mat-expansion-panel-header>
+      <ng-container *ngIf="hasResults; else elseTemplate">
+        <mat-card-content>
+          <!-- <mat-form-field appearance="standard">
+  <mat-label>Filter</mat-label>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input>
+</mat-form-field> -->
 
-      <mat-card-content>
-        <!-- <mat-form-field appearance="standard">
-      <mat-label>Filter</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input>
-    </mat-form-field> -->
+          <div class="mat-elevation-z0">
+            <table mat-table [dataSource]="employeeWiseData" matSort>
 
-        <div class="mat-elevation-z0">
-          <table mat-table [dataSource]="employeeWiseData" matSort>
+              <ng-container matColumnDef="name__name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+                <td mat-cell *matCellDef="let row">{{row.name__name}} </td>
+              </ng-container>
 
-            <ng-container matColumnDef="name__name">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
-              <td mat-cell *matCellDef="let row">{{row.name__name}} </td>
-            </ng-container>
+              <ng-container matColumnDef="kooli">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> kooli </th>
+                <td mat-cell *matCellDef="let row"> {{row.kooli}} </td>
+              </ng-container>
 
-            <ng-container matColumnDef="kooli">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> kooli </th>
-              <td mat-cell *matCellDef="let row"> {{row.kooli}} </td>
-            </ng-container>
+              <ng-container matColumnDef="kooli_paid">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Kooli Paid </th>
+                <td mat-cell *matCellDef="let row"> {{row.kooli_paid}} </td>
+              </ng-container>
 
-            <ng-container matColumnDef="kooli_paid">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Kooli Paid </th>
-              <td mat-cell *matCellDef="let row"> {{row.kooli_paid}} </td>
-            </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsWise"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumnsWise;"></tr>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumnsWise"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumnsWise;"></tr>
+              <!-- Row shown when there is no matching data. -->
+              <!-- <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+    </tr> -->
+            </table>
 
-            <!-- Row shown when there is no matching data. -->
-            <!-- <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
-        </tr> -->
-          </table>
-
-          <!-- <mat-paginator [pageSizeOptions]="[3, 5, 25, 100]"></mat-paginator> -->
-        </div>
-      </mat-card-content>
+            <!-- <mat-paginator [pageSizeOptions]="[3, 5, 25, 100]"></mat-paginator> -->
+          </div>
+        </mat-card-content>
+      </ng-container>
+      <ng-template #elseTemplate>
+        <mat-card-content>
+          <h5>No Data</h5>
+        </mat-card-content>
+      </ng-template>
 
     </mat-expansion-panel>
   </mat-accordion>

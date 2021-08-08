@@ -8,9 +8,9 @@ import { GetResponseModel } from 'src/app/core/models/report-data.model';
 export class ReportService {
   constructor(private http: HttpClient) {}
 
-  getEmployeeReport(): Observable<GetResponseModel> {
+  getEmployeeReport(params?: string): Observable<GetResponseModel> {
     return this.http.get<GetResponseModel>(
-      API_END_POINT.reports.employee_expense
+      API_END_POINT.reports.employee_expense + (params ? params : '/')
     );
   }
 

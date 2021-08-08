@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DayTypes, MasterDataService } from 'src/app/core';
@@ -23,6 +24,7 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
   employeeList: any[] = [];
   workTypeList: any[] = [];
   dayList: any[] = [];
+  hasResult = false;
 
   subscriptionArray: Subscription[] = [];
 
@@ -47,7 +49,7 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
     this.getEmployeeList();
     this.getWorkTypeList();
     this.detectFilterForms();
-    this.dayList = DayTypes
+    this.dayList = DayTypes;
   }
 
   detectFilterForms(): void {
@@ -130,43 +132,61 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.displayedColumns = [
-      'id',
-      'created_on',
-      'updated_on',
-      'agreement',
+      'work_date',
       'name',
+      'location',
       'day',
       'work_type_details',
+      'kooli',
+      'kooli_paid',
+      'paid_date',
+      'agreement',
     ];
+    this.getReportData();
+  }
+
+  getReportData(): void {
     this.loaderService.show();
-    this.resportService.getEmployeeReport().subscribe((data) => {
-      this.loaderService.hide();
-      if (data) {
-        this.employeeData = data.results;
-      }
-    });
+    const resultSub = this.resportService
+      .getEmployeeReport()
+      .subscribe((data) => {
+        this.loaderService.hide();
+        if (data && data.results) {
+          this.employeeData = data.results;
+          this.hasResult = data.results.length > 0 ? true : false;
+        }
+      });
+    this.subscriptionArray.push(resultSub);
   }
 
   searchNow(): void {
     const paramList = [];
     let paramUrl = '';
     if (this.agreementFilter.value.agreement) {
-      paramList.push(`agreement_id=${this.agreementFilter.value.agreement}`);
+      paramList.push(`agreement=${this.agreementFilter.value.agreement}`);
     }
     if (this.agreementFilter.value.employee) {
-      paramList.push(`employee_id=${this.agreementFilter.value.employee}`);
+      paramList.push(`name=${this.agreementFilter.value.employee}`);
     }
     if (this.agreementFilter.value.workType) {
-      paramList.push(`work_type_id=${this.agreementFilter.value.workType}`);
+      paramList.push(`work_type=${this.agreementFilter.value.workType}`);
     }
     if (this.agreementFilter.value.startDate) {
-      paramList.push(`work_type_id=${this.agreementFilter.value.startDate}`);
+      paramList.push(
+        `from_date=${moment(this.agreementFilter.value.startDate).format(
+          'YYYY-MM-DD'
+        )}`
+      );
     }
     if (this.agreementFilter.value.endDate) {
-      paramList.push(`work_type_id=${this.agreementFilter.value.endDate}`);
+      paramList.push(
+        `to_date=${moment(this.agreementFilter.value.endDate).format(
+          'YYYY-MM-DD'
+        )}`
+      );
     }
     if (this.agreementFilter.value.day) {
-      paramList.push(`work_type_id=${this.agreementFilter.value.day}`);
+      paramList.push(`day=${this.agreementFilter.value.day}`);
     }
     if (this.agreementFilter.value.search) {
       paramList.push(`search=${this.agreementFilter.value.search}`);
@@ -180,13 +200,19 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
 
     this.loaderService.show();
     this.resportService
-      .getEmployeeWiseReport(`?` + paramUrl.slice(0, -1))
+      .getEmployeeReport(`?` + paramUrl.slice(0, -1))
       .subscribe((data) => {
         this.loaderService.hide();
-        if (data) {
+        if (data && data.results) {
           this.employeeData = data.results;
+          this.hasResult = data.results.length > 0 ? true : false;
         }
       });
+  }
+
+  resetSearch(): void {
+    this.agreementFilter.reset();
+    this.getReportData();
   }
 
   ngOnDestroy(): void {

@@ -28,6 +28,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
   vehicleTypeList: ResultDataModel[] = [];
   materialItemList: ResultDataModel[] = [];
   employeeList: any;
+  locationList: any;
 
   editMode = {
     isActive: false,
@@ -72,6 +73,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     this.setVehicleTypeList();
     this.setMaterialList();
     this.setEmployeeList();
+    this.setLocationList();
   }
 
   patchFormData(): void {
@@ -157,6 +159,19 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
         this.loaderService.hide();
         if (data && data.results) {
           this.employeeList = data.results;
+        }
+      });
+
+    this.subscriptionsArray.push(employSubs);
+  }
+
+  setLocationList(): void {
+    this.loaderService.show();
+    const employSubs = this.masterDataService.getLocationsList()
+      .subscribe((data) => {
+        this.loaderService.hide();
+        if (data && data.results) {
+          this.locationList = data.results;
         }
       });
 

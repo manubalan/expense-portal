@@ -38,7 +38,9 @@
       <li>
         <mat-form-field>
           <mat-label>Material From Location</mat-label>
-          <input type="text" matInput formControlName="materialFrom">
+          <mat-select formControlName="materialFrom">
+            <mat-option *ngFor="let item of locationList" [value]="item.id"> {{item.name}} </mat-option>
+          </mat-select>
         </mat-form-field>
       </li>
       <li>
