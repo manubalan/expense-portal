@@ -1,18 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostBinding,
+  HostListener,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { MenuModel } from 'src/app/core';
 import { environment } from 'src/environments/environment';
-import { animateText, onSideNavChange } from '../../animations/animations';
 import { SidebarService } from './sidebar.service';
 
 @Component({
   selector: 'ems-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
-  animations: [onSideNavChange, animateText],
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent {
+  @HostBinding('class.expanded') expanded: boolean = false;
+  private wasInside = false;
+  public selectedIndex: number;
   public sideNavState = false;
   public linkText = false;
+
+  @Output()
+  menuExpanded = new EventEmitter<boolean>();
 
   public pages: MenuModel[] = [
     { name: 'Dashboard', link: '/dashboard', icon: 'grid_view' },
@@ -25,8 +36,8 @@ export class SidebarComponent implements OnInit {
           name: 'Agreements Details',
           link: '/dashboard/agreement/',
           icon: 'description',
-        }
-      ]
+        },
+      ],
     },
     {
       name: 'Reports',
@@ -35,21 +46,22 @@ export class SidebarComponent implements OnInit {
       children: [
         {
           name: 'Employee Expense',
-          link: '/dashboard/reports/exployee-expense',
-          icon: 'supervisor_account',
-        },
-        {
-          name: 'Employee Wise Expense',
           link: '/dashboard/reports/exployee-wise-expense',
           icon: 'supervisor_account',
         },
         {
-          name: 'Vehicle Expense',
+          name: 'Employee Expense (Date Wise)',
+          link: '/dashboard/reports/exployee-expense',
+          icon: 'supervisor_account',
+        },
+
+        {
+          name: 'Material Expense',
           link: '/dashboard/reports/vehicle-expense',
           icon: 'local_shipping',
         },
         {
-          name: 'Driver Wise Expense',
+          name: 'Vehicle Expense',
           link: '/dashboard/reports/driver-wise-expense',
           icon: 'people_alt',
         },
@@ -64,16 +76,46 @@ export class SidebarComponent implements OnInit {
     // { name: 'Send email', link: 'some-link', icon: 'face' },
   ];
 
-  constructor(private sidenavService: SidebarService) {}
+  constructor(private sidenavService: SidebarService) {
+    this.selectedIndex = -1;
+  }
+
   baseUrl = environment.BASE_URL;
-  ngOnInit(): void {}
 
-  onSinenavToggle(): void {
-    this.sideNavState = !this.sideNavState;
+  @HostListener('click')
+  clickInside() {
+    this.wasInside = true;
+  }
 
-    setTimeout(() => {
-      this.linkText = this.sideNavState;
-    }, 200);
-    this.sidenavService.sideNavState$.next(this.sideNavState);
+  @HostListener('document:click')
+  clickout() {
+    if (!this.wasInside) {
+      this.selectedIndex = -1;
+    }
+    this.wasInside = false;
+  }
+
+  expandMenu(): void {
+    this.expanded = !this.expanded;
+    this.selectedIndex = -1;
+    this.menuExpanded.emit(this.expanded);
+  }
+
+  setIndex(item: MenuModel, index: number): boolean {
+    if (this.selectedIndex === index) {
+      this.selectedIndex = -1;
+      return false;
+    }
+
+    this.selectedIndex = index;
+    if (item.children && item.children?.length > 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  menuSelected(): void {
+    this.selectedIndex = -1;
   }
 }

@@ -1,7 +1,9 @@
-<nav class="main-nav">
-<div>Search</div>
-<div>Date</div>
-<div>
+<div class="top-navigation__search">
+  <div class="search-box">
+    <mat-icon>search</mat-icon>
+    <input class="top-navigation__search-input" placeholder="Search..." />
+  </div>
+
   <div class="user-profile" [matMenuTriggerFor]="menu">
     <img src="{{baseUrl}}/assets/image/user-profile.jpg" alt="">
   </div>
@@ -21,7 +23,6 @@
     </button>
   </mat-menu>
 </div>
-</nav>
 
 
 <!-- <mat-toolbar color="primary">
