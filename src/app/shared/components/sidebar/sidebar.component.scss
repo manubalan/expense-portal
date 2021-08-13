@@ -177,34 +177,3 @@
     }
   }
 }
-
-.has-tool-tip {
-  position: relative;
-
-  &:hover {
-    .tool-tip {
-      display: flex;
-    }
-  }
-
-  .tool-tip {
-    text-overflow: ellipsis;
-    display: none;
-    position: absolute;
-    left: 52px;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 20px;
-    min-width: 75px;
-    background-color: #9182ec;
-    color: white;
-    font-size: 12px;
-    align-items: center;
-    line-height: 1;
-    padding: 5px 10px;
-    border-radius: 5px;
-    white-space: nowrap;
-    max-width: 200px;
-    overflow: hidden;
-  }
-}

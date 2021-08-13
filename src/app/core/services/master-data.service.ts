@@ -33,7 +33,7 @@ export class MasterDataService {
   getVehicletypesList(params?: string): Observable<MasterDataModel> {
     return this.http.get<MasterDataModel>(
       params
-        ? `${API_END_POINT.masterData.vehicle_type_params}${params}`
+        ? `${API_END_POINT.masterData.vehicle_type}${params}`
         : API_END_POINT.masterData.vehicle_type
     );
   }
@@ -41,7 +41,7 @@ export class MasterDataService {
   getMaterialsList(params?: string): Observable<MasterDataModel> {
     return this.http.get<MasterDataModel>(
       params
-        ? `${API_END_POINT.masterData.materials_params}${params}`
+        ? `${API_END_POINT.masterData.materials}${params}`
         : API_END_POINT.masterData.materials
     );
   }
@@ -49,7 +49,7 @@ export class MasterDataService {
   getEmployeesList(params?: string): Observable<MasterDataModel> {
     return this.http.get<MasterDataModel>(
       params
-        ? `${API_END_POINT.masterData.employees_params}${params}`
+        ? `${API_END_POINT.masterData.employees}${params}`
         : API_END_POINT.masterData.employees
     );
   }
@@ -57,7 +57,7 @@ export class MasterDataService {
   getWorktypesList(params?: string): Observable<MasterDataModel> {
     return this.http.get<MasterDataModel>(
       params
-        ? `${API_END_POINT.masterData.worktypes_params}${params}`
+        ? `${API_END_POINT.masterData.worktypes}${params}`
         : API_END_POINT.masterData.worktypes
     );
   }

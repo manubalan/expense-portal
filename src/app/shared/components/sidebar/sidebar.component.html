@@ -6,17 +6,16 @@
   <ul class="main-menu">
     <li class="item" *ngFor="let page of pages; let i = index">
       <a [href]="page.link" class="main-achor has-tool-tip" (click)="setPageIndex(page, i)"
-        [ngClass]="{'active': i === selectedPage}">
+        [ngClass]="{'active': i === selectedPage}" matTooltip={{page?.name}} [matTooltipPosition]="'right'">
         <mat-icon>{{ page?.icon }}</mat-icon>
         <label class="menu-label">{{ page?.name }}</label>
-        <span class="tool-tip" *ngIf="!expanded">{{ page?.name }}</span>
       </a>
       <ul class="sub-menu">
         <li *ngFor="let child of page.children; let j = index" [ngClass]="{'active': j === selectedChild}">
-          <a [href]="child.link" [routerLink]="child.link" (click)="setChildIndex(j)" class=" has-tool-tip">
+          <a [href]="child.link" [routerLink]="child.link" (click)="setChildIndex(j)" matTooltip={{child?.name}}
+            [matTooltipPosition]="'right'">
             <mat-icon>{{child?.icon}}</mat-icon>
             <label class="menu-label"> {{ child?.name }}</label>
-            <span class="tool-tip" *ngIf="!expanded">{{ child?.name }}</span>
           </a>
         </li>
       </ul>
