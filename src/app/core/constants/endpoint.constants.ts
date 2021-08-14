@@ -10,7 +10,7 @@ export const API_END_POINT = {
     district: `${endPoints.master_data_EndPoint}districts/`,
     district_params: `${endPoints.master_data_EndPoint}districts/?state=`,
     location: `${endPoints.master_data_EndPoint}locations/`,
-    location_params: `${endPoints.master_data_EndPoint}locations/?district=`,
+    location_params: `${endPoints.master_data_EndPoint}locations/`,
     vehicle_type: `${endPoints.master_data_EndPoint}vehicle-types/`,
     materials: `${endPoints.master_data_EndPoint}materials/`,
     employees: `${endPoints.master_data_EndPoint}employees/`,
@@ -19,8 +19,8 @@ export const API_END_POINT = {
   agreement: {
     data_operations: `${endPoints.base_api_EndPoint}agreements/`,
     validate_item: `${endPoints.base_api_EndPoint}agreements/validate_agreement_number/?agreement_number=`,
-    vehicle_expense: `${endPoints.base_api_EndPoint}vehicle-expenses`,
-    employee_expense: `${endPoints.base_api_EndPoint}employees-expenses`,
+    vehicle_expense: `${endPoints.base_api_EndPoint}vehicle-expenses/`,
+    employee_expense: `${endPoints.base_api_EndPoint}employees-expenses/`,
   },
   reports: {
     employee_expense: `${endPoints.base_api_EndPoint}employees-expenses`,

@@ -5,6 +5,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -44,7 +45,8 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     private masterDataService: MasterDataService,
     private agreementService: AgreementService,
     private loaderService: LoaderService,
-    private snackBarService: SnackBarService
+    private snackBarService: SnackBarService,
+    private dialogRef: MatDialogRef<AddVehicleExpensesComponent >
   ) {
     this.addVehicleExpenseForm = this.fbuilder.group({
       no: new FormControl('', Validators.required),
@@ -74,6 +76,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     this.setMaterialList();
     this.setEmployeeList();
     this.setLocationList();
+    this.detectFields();
   }
 
   patchFormData(): void {
@@ -108,11 +111,13 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     }
   }
 
-  setAgreementList(): void {
+  setAgreementList(search?: string): void {
     this.loaderService.show();
     this.agreementList = [];
     const agreementSubs = this.agreementService
-      .getAgreements()
+      .getAgreements(
+        search !== undefined && search !== null ? '?search=' + search : ''
+      )
       .subscribe((data) => {
         this.loaderService.hide();
         if (data && data.results) {
@@ -123,10 +128,16 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     this.subscriptionsArray.push(agreementSubs);
   }
 
-  setVehicleTypeList(): void {
+  public agreementOptionView(option: any): string {
+    return option ? `${option.agreement_number} - ${option.name}` : '';
+  }
+
+  setVehicleTypeList(search?: string): void {
     this.loaderService.show();
     const vehicleSubs = this.masterDataService
-      .getVehicletypesList()
+      .getVehicletypesList(
+        search !== undefined && search !== null ? '?search=' + search : ''
+      )
       .subscribe((data) => {
         this.loaderService.hide();
         if (data && data.results) {
@@ -137,10 +148,12 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     this.subscriptionsArray.push(vehicleSubs);
   }
 
-  setMaterialList(): void {
+  setMaterialList(search?: string): void {
     this.loaderService.show();
     const materialSubs = this.masterDataService
-      .getMaterialsList()
+      .getMaterialsList(
+        search !== undefined && search !== null ? '?search=' + search : ''
+      )
       .subscribe((data) => {
         this.loaderService.hide();
         if (data && data.results) {
@@ -151,10 +164,12 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     this.subscriptionsArray.push(materialSubs);
   }
 
-  setEmployeeList(): void {
+  setEmployeeList(search?: string): void {
     this.loaderService.show();
     const employSubs = this.masterDataService
-      .getEmployeesList()
+      .getEmployeesList(
+        search !== undefined && search !== null ? '?search=' + search : ''
+      )
       .subscribe((data) => {
         this.loaderService.hide();
         if (data && data.results) {
@@ -165,9 +180,13 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     this.subscriptionsArray.push(employSubs);
   }
 
-  setLocationList(): void {
+  setLocationList(search?: string): void {
     this.loaderService.show();
-    const employSubs = this.masterDataService.getLocationsList()
+    const employSubs = this.masterDataService
+      .getLocationsList(
+        0,
+        search !== undefined && search !== null ? 'search=' + search : ''
+      )
       .subscribe((data) => {
         this.loaderService.hide();
         if (data && data.results) {
@@ -176,6 +195,73 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
       });
 
     this.subscriptionsArray.push(employSubs);
+  }
+
+  public autoListView(option: any): string {
+    return option ? `${option.name}` : '';
+  }
+
+  detectFields(): void {
+    this.detectAgreement();
+    this.detectVehicleType();
+    this.detectDriverName();
+    this.detectLocation();
+    this.detectMaterial();
+  }
+
+  detectAgreement(): void {
+    this.addVehicleExpenseForm
+      .get('no')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (value && value !== null && typeof value === 'string') {
+          this.setAgreementList(value);
+        }
+      });
+  }
+
+  detectVehicleType(): void {
+    this.addVehicleExpenseForm
+      .get('vehicleType')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (value && value !== null && typeof value === 'string') {
+          this.setVehicleTypeList(value);
+        }
+      });
+  }
+
+  detectDriverName(): void {
+    this.addVehicleExpenseForm
+      .get('driverName')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (value && value !== null && typeof value === 'string') {
+          this.setEmployeeList(value);
+        }
+      });
+  }
+
+  detectLocation(): void {
+    this.addVehicleExpenseForm
+      .get('materialFrom')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (value && value !== null && typeof value === 'string') {
+          this.setLocationList(value);
+        }
+      });
+  }
+
+  detectMaterial(): void {
+    this.addVehicleExpenseForm
+      .get('materialItem')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (value && value !== null && typeof value === 'string') {
+          this.setMaterialList(value);
+        }
+      });
   }
 
   postFormData(): void {
@@ -246,23 +332,27 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
           : null,
       vehicle_type:
         this.addVehicleExpenseForm.value &&
-        this.addVehicleExpenseForm.value.vehicleType
-          ? this.addVehicleExpenseForm.value.vehicleType
+        this.addVehicleExpenseForm.value.vehicleType &&
+        this.addVehicleExpenseForm.value.vehicleType.id
+          ? this.addVehicleExpenseForm.value.vehicleType.id
           : null,
       driver_name:
         this.addVehicleExpenseForm.value &&
-        this.addVehicleExpenseForm.value.driverName
-          ? this.addVehicleExpenseForm.value.driverName
+        this.addVehicleExpenseForm.value.driverName &&
+        this.addVehicleExpenseForm.value.driverName.id
+          ? this.addVehicleExpenseForm.value.driverName.id
           : null,
       materials_from:
         this.addVehicleExpenseForm.value &&
-        this.addVehicleExpenseForm.value.materialFrom
-          ? this.addVehicleExpenseForm.value.materialFrom
+        this.addVehicleExpenseForm.value.materialFrom &&
+        this.addVehicleExpenseForm.value.materialFrom.id
+          ? this.addVehicleExpenseForm.value.materialFrom.id
           : null,
       materials:
         this.addVehicleExpenseForm.value &&
-        this.addVehicleExpenseForm.value.materialItem
-          ? Number(this.addVehicleExpenseForm.value.materialItem)
+        this.addVehicleExpenseForm.value.materialItem &&
+        this.addVehicleExpenseForm.value.materialItem.id
+          ? Number(this.addVehicleExpenseForm.value.materialItem.id)
           : null,
     };
 
@@ -283,9 +373,9 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
               'Done'
             );
             this.addVehicleExpenseForm.reset();
+            if (this.editMode.isActive) this.dialogRef.close();
           }
           this.loaderService.hide();
-          console.log('response');
         },
         (error) => {
           console.log(error);

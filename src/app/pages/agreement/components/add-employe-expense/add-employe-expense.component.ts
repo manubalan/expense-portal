@@ -5,8 +5,10 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {
   AgreementListResultModel,
   ConstantDataModel,
@@ -40,7 +42,8 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
     private masterDataService: MasterDataService,
     private agreementService: AgreementService,
     private loaderService: LoaderService,
-    private snackBarService: SnackBarService
+    private snackBarService: SnackBarService,
+    private dialogRef: MatDialogRef<AddEmployeExpenseComponent>
   ) {
     this.addEmployeExpenseForm = this.fbuilder.group({
       agreementNo: new FormControl('', Validators.required),
@@ -60,6 +63,9 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
     this.setAgreementList();
     this.setWorkTypeList();
     this.setEmployeeList();
+    this.detectAgreement();
+    this.detectEmployeName();
+    this.detectWorkType();
   }
 
   patchFormData(): void {
@@ -86,11 +92,13 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
     }
   }
 
-  setAgreementList(): void {
+  setAgreementList(search?: string): void {
     this.loaderService.show();
     this.agreementList = [];
     const agreementSubs = this.agreementService
-      .getAgreements()
+      .getAgreements(
+        search !== undefined && search !== null ? '?search=' + search : ''
+      )
       .subscribe((data) => {
         this.loaderService.hide();
         if (data && data.results) {
@@ -101,9 +109,19 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
     this.subscriptionsArray.push(agreementSubs);
   }
 
-  setWorkTypeList(): void {
+  public agreementOptionView(option: any): string {
+    return option ? `${option.agreement_number} - ${option.name}` : '';
+  }
+
+  public autoListView(option: any): string {
+    return option ? `${option.name}` : '';
+  }
+
+  setWorkTypeList(search?: string): void {
     const workSubs = this.masterDataService
-      .getWorktypesList()
+      .getWorktypesList(
+        search !== undefined && search !== null ? '?search=' + search : ''
+      )
       .subscribe((data) => {
         if (data && data.results) {
           this.workTypeList = data.results;
@@ -113,10 +131,12 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
     this.subscriptionsArray.push(workSubs);
   }
 
-  setEmployeeList(): void {
+  setEmployeeList(search?: string): void {
     this.loaderService.show();
     const employSubs = this.masterDataService
-      .getEmployeesList()
+      .getEmployeesList(
+        search !== undefined && search !== null ? '?search=' + search : ''
+      )
       .subscribe((data) => {
         this.loaderService.hide();
         if (data && data.results) {
@@ -127,13 +147,47 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
     this.subscriptionsArray.push(employSubs);
   }
 
+  detectAgreement(): void {
+    this.addEmployeExpenseForm
+      .get('agreementNo')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (value && value !== null && typeof value === 'string') {
+          this.setAgreementList(value);
+        }
+      });
+  }
+
+  detectEmployeName(): void {
+    this.addEmployeExpenseForm
+      .get('employeeName')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (value && value !== null && typeof value === 'string') {
+          this.setEmployeeList(value);
+        }
+      });
+  }
+
+  detectWorkType(): void {
+    this.addEmployeExpenseForm
+      .get('workType')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (value && value !== null && typeof value === 'string') {
+          this.setWorkTypeList(value);
+        }
+      });
+  }
+
   postFormData(): void {
     this.loaderService.show();
     const requestBody = {
       agreement:
         this.addEmployeExpenseForm.value &&
-        this.addEmployeExpenseForm.value.agreementNo
-          ? this.addEmployeExpenseForm.value.agreementNo
+        this.addEmployeExpenseForm.value.agreementNo &&
+        this.addEmployeExpenseForm.value.agreementNo.id
+          ? this.addEmployeExpenseForm.value.agreementNo.id
           : null,
       day:
         this.addEmployeExpenseForm.value &&
@@ -142,13 +196,15 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
           : null,
       name:
         this.addEmployeExpenseForm.value &&
-        this.addEmployeExpenseForm.value.employeeName
-          ? this.addEmployeExpenseForm.value.employeeName
+        this.addEmployeExpenseForm.value.employeeName &&
+        this.addEmployeExpenseForm.value.employeeName.id
+          ? this.addEmployeExpenseForm.value.employeeName.id
           : null,
       work_type:
         this.addEmployeExpenseForm.value &&
-        this.addEmployeExpenseForm.value.workType
-          ? this.addEmployeExpenseForm.value.workType
+        this.addEmployeExpenseForm.value.workType &&
+        this.addEmployeExpenseForm.value.workType.id
+          ? this.addEmployeExpenseForm.value.workType.id
           : null,
       work_date:
         this.addEmployeExpenseForm.value &&
@@ -196,9 +252,9 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
               'Done'
             );
             this.addEmployeExpenseForm.reset();
+            if (this.editMode.isActive) this.dialogRef.close();
           }
           this.loaderService.hide();
-          console.log('response');
         },
         (error) => {
           console.log(error);

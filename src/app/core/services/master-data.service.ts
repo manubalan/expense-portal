@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_END_POINT } from '../constants/endpoint.constants';
-import { MasterDataModel } from '../models/master-data.model';
+import { MasterDataModel, ResultDataModel } from '../models/master-data.model';
 
 @Injectable({
   providedIn: 'root',
@@ -22,43 +22,56 @@ export class MasterDataService {
     );
   }
 
-  getLocationsList(params?: number, search?: string): Observable<MasterDataModel> {
+  getLocationsList(
+    params?: number,
+    search?: string
+  ): Observable<MasterDataModel> {
     return this.http.get<MasterDataModel>(
-      params
-        ? `${API_END_POINT.masterData.location_params}${params !== 0 ? params : ''}`
-        : `${API_END_POINT.masterData.location}${search !== null && search !== undefined ? search : ''}`
+      `${API_END_POINT.masterData.location_params}${
+        params !== undefined || (search !== undefined && search !== null)
+          ? '?'
+          : ''
+      }${params !== undefined && params > 0 ? 'district=' + params : ''}${
+        search !== null && search !== undefined ? search : ''
+      }`
+    );
+  }
+
+  getLocations(id: number): Observable<ResultDataModel> {
+    return this.http.get<ResultDataModel>(
+      `${API_END_POINT.masterData.location}${id}`
     );
   }
 
   getVehicletypesList(params?: string): Observable<MasterDataModel> {
     return this.http.get<MasterDataModel>(
-      params
-        ? `${API_END_POINT.masterData.vehicle_type}${params}`
-        : API_END_POINT.masterData.vehicle_type
+      `${API_END_POINT.masterData.vehicle_type}${
+        params !== undefined && params !== null ? params : ''
+      }`
     );
   }
 
   getMaterialsList(params?: string): Observable<MasterDataModel> {
     return this.http.get<MasterDataModel>(
-      params
-        ? `${API_END_POINT.masterData.materials}${params}`
-        : API_END_POINT.masterData.materials
+      `${API_END_POINT.masterData.materials}${
+        params !== undefined && params !== null ? params : ''
+      }`
     );
   }
 
   getEmployeesList(params?: string): Observable<MasterDataModel> {
     return this.http.get<MasterDataModel>(
-      params
-        ? `${API_END_POINT.masterData.employees}${params}`
-        : API_END_POINT.masterData.employees
+      `${API_END_POINT.masterData.employees}${
+        params !== undefined && params !== null ? params : ''
+      }`
     );
   }
 
   getWorktypesList(params?: string): Observable<MasterDataModel> {
     return this.http.get<MasterDataModel>(
-      params
-        ? `${API_END_POINT.masterData.worktypes}${params}`
-        : API_END_POINT.masterData.worktypes
+      `${API_END_POINT.masterData.worktypes}${
+        params !== undefined && params !== null ? params : ''
+      }`
     );
   }
 }

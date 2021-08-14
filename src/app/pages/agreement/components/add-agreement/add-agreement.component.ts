@@ -26,6 +26,7 @@ import * as moment from 'moment';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { LoaderService } from 'src/app/shared/components/loader/loader.component';
 import { SnackBarService } from 'src/app/shared/components/snack-bar/snack-bar.service';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'ems-add-agreement',
@@ -61,15 +62,22 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
     private masterDataService: MasterDataService,
     private agreementService: AgreementService,
     private loaderService: LoaderService,
-    private snackBarService: SnackBarService
+    private snackBarService: SnackBarService,
+    private dialogRef: MatDialogRef<AddAgreementComponent >
   ) {
     this.addAgreementForm = this.fbuilder.group({
       no: new FormControl('', Validators.required),
       name: new FormControl('', Validators.required),
       amount: new FormControl('', Validators.required),
-      location: new FormControl('', Validators.required),
-      district: new FormControl('', Validators.required),
       state: new FormControl('', Validators.required),
+      district: new FormControl(
+        { value: '', disabled: true },
+        Validators.required
+      ),
+      location: new FormControl(
+        { value: '', disabled: true },
+        Validators.required
+      ),
       startDate: new FormControl('', Validators.required),
       endDate: new FormControl(''),
       naration: new FormControl(''),
@@ -81,6 +89,7 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
     this.setStateData();
     this.detectStateData();
     this.detectDistrictData();
+    this.detectLocationData();
     this.detectAgreementNumber();
   }
 
@@ -94,13 +103,13 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
               no: data.agreement_number,
               name: data.name,
               amount: data.amount,
-              location: data.location,
               district: data.district,
               state: data.state,
               startDate: data.start_date,
               endDate: data.end_date,
               naration: data.narration,
             });
+            this.getLocation(data.location);
           }
         });
 
@@ -138,10 +147,15 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
     this.subscriptions.push(stateDataSub);
   }
 
-  setLocationData(params?: number): void {
+  setLocationData(params?: number, search?: string): void {
     this.loaderService.show();
     const stateDataSub = this.masterDataService
-      .getLocationsList(params)
+      .getLocationsList(
+        params,
+        search !== null && search !== undefined
+          ? `&search=${search}`
+          : undefined
+      )
       .subscribe((data) => {
         this.loaderService.hide();
         if (data !== null && data.results) {
@@ -151,6 +165,23 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
       });
 
     this.subscriptions.push(stateDataSub);
+  }
+
+  public locationListOptionView(option: any): any {
+    return option ? `${option.name}` : '';
+  }
+
+  getLocation(id: number) {
+    const locationSub = this.masterDataService
+      .getLocations(id)
+      .subscribe((data) => {
+        if (data) {
+          this.addAgreementForm.patchValue({
+            location: data,
+          });
+        }
+      });
+    this.subscriptions.push(locationSub);
   }
 
   detectAgreementNumber(): void {
@@ -170,12 +201,13 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
         }
       });
 
-    // this.subscriptions.push(validateSubscription);
+    if (validateSubscription) this.subscriptions.push(validateSubscription);
   }
 
   detectStateData(): void {
     this.addAgreementForm.get('state')?.valueChanges.subscribe((value: any) => {
       if (value) {
+        this.addAgreementForm.controls.district.enable();
         this.setDistrictData(value);
       }
     });
@@ -186,14 +218,31 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
       .get('district')
       ?.valueChanges.subscribe((value: any) => {
         if (value) {
+          this.addAgreementForm.controls.location.enable();
           this.setLocationData(value);
+        }
+      });
+  }
+
+  detectLocationData(): void {
+    this.addAgreementForm
+      .get('location')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (value && value !== null && typeof value === 'string') {
+          this.setLocationData(
+            this.addAgreementForm.value.district !== null &&
+              this.addAgreementForm.value.district !== undefined
+              ? this.addAgreementForm.value.district
+              : 0,
+            value
+          );
         }
       });
   }
 
   postFormData(): void {
     this.loaderService.show();
-
     const request: AgreementRequestModel = {
       agreement_number: this.addAgreementForm.value.no
         ? this.addAgreementForm.value.no
@@ -213,9 +262,11 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
       narration: this.addAgreementForm.value.naration
         ? this.addAgreementForm.value.naration
         : '',
-      location: this.addAgreementForm.value.location
-        ? this.addAgreementForm.value.location
-        : '',
+      location:
+        this.addAgreementForm.value.location &&
+        this.addAgreementForm.value.location.id
+          ? this.addAgreementForm.value.location.id
+          : '',
       district: this.addAgreementForm.value.district
         ? this.addAgreementForm.value.district
         : '',
@@ -240,16 +291,14 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
             'Done'
           );
 
+          if (this.editMode.isActive) this.dialogRef.close();
+
           this.addAgreementForm.reset();
           this.validateAgreement.showNow = false;
           this.loaderService.hide();
         }
         this.loaderService.hide();
       });
-  }
-
-  closeDialogBox(): void {
-    this.closeDialog.emit();
   }
 
   ngOnDestroy(): void {

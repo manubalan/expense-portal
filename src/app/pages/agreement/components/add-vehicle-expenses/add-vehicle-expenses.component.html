@@ -5,50 +5,100 @@
   <section>
     <ul [formGroup]="addVehicleExpenseForm">
       <li>
-        <mat-form-field appearance="legacy">
+        <!-- <mat-form-field appearance="legacy">
           <mat-label>Agreement No.</mat-label>
           <mat-select formControlName="no">
             <mat-option *ngFor="let item of agreementList" [value]="item.id"> {{item.name}} </mat-option>
           </mat-select>
+        </mat-form-field> -->
+
+        <mat-form-field>
+          <mat-label>Agreement</mat-label>
+          <input type="text" matInput formControlName="no" [matAutocomplete]="agreement">
+          <mat-autocomplete #agreement="matAutocomplete" [displayWith]="agreementOptionView">
+            <mat-option *ngFor="let option of agreementList" [value]="option">
+              {{option.agreement_number}} - {{option?.name}}
+            </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
       </li>
       <li>
-        <mat-form-field>
+        <!-- <mat-form-field>
           <mat-label>Vehicle Type</mat-label>
           <mat-select formControlName="vehicleType">
             <mat-option *ngFor="let item of vehicleTypeList" [value]="item.id"> {{item.name}} </mat-option>
           </mat-select>
+        </mat-form-field> -->
+
+        <mat-form-field>
+          <mat-label>Vehicle Type</mat-label>
+          <input type="text" matInput formControlName="vehicleType" [matAutocomplete]="vehicleType">
+          <mat-autocomplete #vehicleType="matAutocomplete" [displayWith]="autoListView">
+            <mat-option *ngFor="let option of vehicleTypeList" [value]="option">
+              {{option?.name}}
+            </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
       </li>
       <li>
         <mat-form-field>
           <mat-label>Vehicle Details</mat-label>
           <input type="text" matInput formControlName="vehicleDetails">
-          <mat-hint>Vehicle number is prefered</mat-hint>
+          <!-- <mat-hint>Vehicle number is prefered </mat-hint> -->
         </mat-form-field>
       </li>
       <li>
-        <mat-form-field>
+        <!-- <mat-form-field>
           <mat-label>Driver Name</mat-label>
           <mat-select formControlName="driverName">
             <mat-option *ngFor="let item of employeeList" [value]="item.id"> {{item.name}} </mat-option>
           </mat-select>
+        </mat-form-field> -->
+
+        <mat-form-field>
+          <mat-label>Driver Name</mat-label>
+          <input type="text" matInput formControlName="driverName" [matAutocomplete]="driverName">
+          <mat-autocomplete #driverName="matAutocomplete" [displayWith]="autoListView">
+            <mat-option *ngFor="let option of employeeList" [value]="option">
+              {{option?.name}}
+            </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
       </li>
       <li>
-        <mat-form-field>
+        <!-- <mat-form-field>
           <mat-label>Material From Location</mat-label>
           <mat-select formControlName="materialFrom">
             <mat-option *ngFor="let item of locationList" [value]="item.id"> {{item.name}} </mat-option>
           </mat-select>
+        </mat-form-field> -->
+
+        <mat-form-field>
+          <mat-label>Material From Location</mat-label>
+          <input type="text" matInput formControlName="materialFrom" [matAutocomplete]="location">
+          <mat-autocomplete #location="matAutocomplete" [displayWith]="autoListView">
+            <mat-option *ngFor="let option of locationList" [value]="option">
+              {{option?.name}}
+            </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
       </li>
       <li>
-        <mat-form-field>
+        <!-- <mat-form-field>
           <mat-label>Material Item</mat-label>
           <mat-select formControlName="materialItem">
             <mat-option *ngFor="let item of materialItemList" [value]="item.id"> {{item.name}} </mat-option>
           </mat-select>
+        </mat-form-field> -->
+
+        <mat-form-field>
+          <mat-label>Material Item</mat-label>
+          <input type="text" matInput formControlName="materialItem" [matAutocomplete]="materialItem">
+          <mat-autocomplete #materialItem="matAutocomplete" [displayWith]="autoListView">
+            <mat-option *ngFor="let option of materialItemList" [value]="option">
+              {{option?.name}}
+            </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
       </li>
       <li>

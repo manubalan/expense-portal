@@ -127,7 +127,7 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
       .getLocationsList(
         0,
         search !== null && search !== undefined
-          ? `?search=${search}`
+          ? `search=${search}`
           : undefined
       )
       .subscribe((data) => {

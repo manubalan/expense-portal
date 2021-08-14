@@ -46,9 +46,12 @@
       <li>
         <mat-form-field>
           <mat-label>Location</mat-label>
-          <mat-select formControlName="location">
-            <mat-option *ngFor="let item of locationList" [value]="item.id"> {{item.name}} </mat-option>
-          </mat-select>
+          <input type="text" matInput formControlName="location" [matAutocomplete]="location">
+          <mat-autocomplete #location="matAutocomplete" [displayWith]="locationListOptionView">
+            <mat-option *ngFor="let option of locationList" [value]="option">
+              {{option?.name}}
+            </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
       </li>
       <li>
@@ -80,8 +83,7 @@
       (click)="postFormData();">
       {{ editMode.isActive ? 'Update Agreement' : 'Add Agreement'}}
     </button>
-    <button class="add-button" mat-stroked-button color="warn" (click)="closeDialogBox();"
-      [mat-dialog-close]="true">Completed !</button>
+    <button class="add-button" mat-stroked-button color="warn" [mat-dialog-close]="true">Completed !</button>
   </footer>
 
 </div>
