@@ -75,10 +75,28 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
         .subscribe((data) => {
           if (data) {
             this.addEmployeExpenseForm.patchValue({
-              agreementNo: data.agreement,
+              agreementNo: {
+                id: data.agreement,
+                agreement_number: data.agreement_details?.agreement_number
+                  ? data.agreement_details?.agreement_number
+                  : '',
+                name: data.agreement_details?.agreement_number
+                  ? data.agreement_details?.agreement_number
+                  : '',
+              },
               dayType: data.day,
-              employeeName: data.name,
-              workType: data.work_type,
+              employeeName: {
+                id: data.name,
+                name: data.employee_name_details?.name
+                  ? data.employee_name_details?.name
+                  : '',
+              },
+              workType: {
+                id: data.work_type,
+                name: data.work_type_details?.name
+                  ? data.work_type_details?.name
+                  : '',
+              },
               work_date: data.work_date,
               kooli: data.kooli,
               kooliPaid: data.kooli_paid,
@@ -150,7 +168,7 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
   detectAgreement(): void {
     this.addEmployeExpenseForm
       .get('agreementNo')
-      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value: any) => {
         if (value && value !== null && typeof value === 'string') {
           this.setAgreementList(value);
@@ -161,7 +179,7 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
   detectEmployeName(): void {
     this.addEmployeExpenseForm
       .get('employeeName')
-      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value: any) => {
         if (value && value !== null && typeof value === 'string') {
           this.setEmployeeList(value);
@@ -172,7 +190,7 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
   detectWorkType(): void {
     this.addEmployeExpenseForm
       .get('workType')
-      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value: any) => {
         if (value && value !== null && typeof value === 'string') {
           this.setWorkTypeList(value);

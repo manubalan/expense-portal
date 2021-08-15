@@ -40,7 +40,7 @@ export const PAGE_ATTR_DATA: PageAttrModel = {
   totalRecord: 0,
   currentPage: 0,
   prevPage: 0,
-  pageSize: 5,
-  pageSizeOpt: [5, 10, 25, 50],
+  pageSize: 25,
+  pageSizeOpt: [25, 50, 100, 200, 250],
   firstLastEnable: true,
 };

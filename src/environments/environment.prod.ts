@@ -20,5 +20,4 @@ export const endPoints = {
   authentication_EndPoint: `${environment.AUTH_ENDPOINT}:${environment.AUTH_PORT}/${environment.AUTH_PREFIX}/`,
   master_data_EndPoint: `${environment.MASTER_ENDPOINT}:${environment.MASTER_PORT}/${environment.MASTER_PREFIX}/`,
   base_api_EndPoint: `${environment.BASE_ENDPOINT}:${environment.BASE_PORT}/${environment.BASE_PREFIX}/`,
-  master_data: 'http://localhost:4040/assets/data/agreement.json',
 };

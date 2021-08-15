@@ -46,7 +46,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     private agreementService: AgreementService,
     private loaderService: LoaderService,
     private snackBarService: SnackBarService,
-    private dialogRef: MatDialogRef<AddVehicleExpensesComponent >
+    private dialogRef: MatDialogRef<AddVehicleExpensesComponent>
   ) {
     this.addVehicleExpenseForm = this.fbuilder.group({
       no: new FormControl('', Validators.required),
@@ -86,12 +86,40 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
         .subscribe((data) => {
           if (data) {
             this.addVehicleExpenseForm.patchValue({
-              no: data.agreement,
-              vehicleType: data.vehicle_type,
+              no: {
+                id: data.agreement,
+                agreement_number: data.agreement_details?.agreement_number
+                  ? data.agreement_details?.agreement_number
+                  : '',
+                name: data.agreement_details?.name
+                  ? data.agreement_details?.name
+                  : '',
+              },
+              vehicleType: {
+                id: data.vehicle_type,
+                name: data.vehicle_type_details?.name
+                  ? data.vehicle_type_details?.name
+                  : '',
+              },
               vehicleDetails: data.vehicle_details,
-              driverName: data.driver_name,
-              materialFrom: data.materials_from,
-              materialItem: data.materials,
+              driverName: {
+                id: data.driver_name,
+                name: data.driver_name_details?.name
+                  ? data.driver_name_details?.name
+                  : '',
+              },
+              materialFrom: {
+                id: data.materials_from,
+                name: data.materials_from_details?.name
+                  ? data.materials_from_details?.name
+                  : '',
+              },
+              materialItem: {
+                id: data.materials,
+                name: data.materials_details?.name
+                  ? data.materials_details?.name
+                  : '',
+              },
               qtyType: data.qty_type,
               quantity: data.quantity,
               deliveryDate: data.delivery_date,
@@ -212,7 +240,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
   detectAgreement(): void {
     this.addVehicleExpenseForm
       .get('no')
-      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value: any) => {
         if (value && value !== null && typeof value === 'string') {
           this.setAgreementList(value);
@@ -223,7 +251,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
   detectVehicleType(): void {
     this.addVehicleExpenseForm
       .get('vehicleType')
-      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value: any) => {
         if (value && value !== null && typeof value === 'string') {
           this.setVehicleTypeList(value);
@@ -234,7 +262,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
   detectDriverName(): void {
     this.addVehicleExpenseForm
       .get('driverName')
-      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value: any) => {
         if (value && value !== null && typeof value === 'string') {
           this.setEmployeeList(value);
@@ -245,7 +273,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
   detectLocation(): void {
     this.addVehicleExpenseForm
       .get('materialFrom')
-      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value: any) => {
         if (value && value !== null && typeof value === 'string') {
           this.setLocationList(value);
@@ -256,7 +284,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
   detectMaterial(): void {
     this.addVehicleExpenseForm
       .get('materialItem')
-      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value: any) => {
         if (value && value !== null && typeof value === 'string') {
           this.setMaterialList(value);
@@ -266,6 +294,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
 
   postFormData(): void {
     this.loaderService.show();
+
     const requestBody = {
       vehicle_details:
         this.addVehicleExpenseForm.value &&
@@ -327,8 +356,10 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
           ? this.addVehicleExpenseForm.value.narration
           : '',
       agreement:
-        this.addVehicleExpenseForm.value && this.addVehicleExpenseForm.value.no
-          ? this.addVehicleExpenseForm.value.no
+        this.addVehicleExpenseForm.value &&
+        this.addVehicleExpenseForm.value.no &&
+        this.addVehicleExpenseForm.value.no.id
+          ? this.addVehicleExpenseForm.value.no.id
           : null,
       vehicle_type:
         this.addVehicleExpenseForm.value &&

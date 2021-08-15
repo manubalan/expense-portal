@@ -63,7 +63,7 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
     private agreementService: AgreementService,
     private loaderService: LoaderService,
     private snackBarService: SnackBarService,
-    private dialogRef: MatDialogRef<AddAgreementComponent >
+    private dialogRef: MatDialogRef<AddAgreementComponent>
   ) {
     this.addAgreementForm = this.fbuilder.group({
       no: new FormControl('', Validators.required),
@@ -108,8 +108,13 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
               startDate: data.start_date,
               endDate: data.end_date,
               naration: data.narration,
+              location: {
+                id: data.location,
+                name: data.location_details?.name
+                  ? data.location_details?.name
+                  : '',
+              },
             });
-            this.getLocation(data.location);
           }
         });
 
@@ -171,19 +176,6 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
     return option ? `${option.name}` : '';
   }
 
-  getLocation(id: number) {
-    const locationSub = this.masterDataService
-      .getLocations(id)
-      .subscribe((data) => {
-        if (data) {
-          this.addAgreementForm.patchValue({
-            location: data,
-          });
-        }
-      });
-    this.subscriptions.push(locationSub);
-  }
-
   detectAgreementNumber(): void {
     const validateSubscription = this.addAgreementForm
       .get('no')
@@ -227,7 +219,7 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
   detectLocationData(): void {
     this.addAgreementForm
       .get('location')
-      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value: any) => {
         if (value && value !== null && typeof value === 'string') {
           this.setLocationData(

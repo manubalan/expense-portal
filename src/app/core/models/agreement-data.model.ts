@@ -132,6 +132,7 @@ export interface VehicleExpenseListResultModel {
 
 export interface AgreementDetailsModel {
   agreement_number: string;
+  name?: string;
 }
 
 export interface EmployeeExpenseResponseModel extends GetResponseMode {
