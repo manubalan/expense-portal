@@ -83,7 +83,18 @@ export class SidebarComponent {
         },
       ],
     },
-    { name: 'Master Data', link: '/dashboard/master-data', icon: 'storage' },
+    {
+      name: 'Master Data',
+      link: '',
+      icon: 'storage',
+      children: [
+        {
+          name: 'View Data',
+          link: '/dashboard/master-data/view',
+          icon: 'supervisor_account',
+        },
+      ],
+    },
   ];
 
   constructor(private sidenavService: SidebarService) {

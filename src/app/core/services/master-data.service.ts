@@ -74,4 +74,16 @@ export class MasterDataService {
       }`
     );
   }
+
+  getQuantityType(): Observable<MasterDataModel> {
+    return this.http.get<MasterDataModel>(
+      `${API_END_POINT.masterData.quantityType}`
+    );
+  }
+
+  getWorkDayType(): Observable<MasterDataModel> {
+    return this.http.get<MasterDataModel>(
+      `${API_END_POINT.masterData.workDayType}`
+    );
+  }
 }

@@ -15,6 +15,8 @@ export const API_END_POINT = {
     materials: `${endPoints.master_data_EndPoint}materials/`,
     employees: `${endPoints.master_data_EndPoint}employees/`,
     worktypes: `${endPoints.master_data_EndPoint}worktypes/`,
+    quantityType: `${endPoints.master_data_EndPoint}si-units/`,
+    workDayType: `${endPoints.master_data_EndPoint}work-day-types/`
   },
   agreement: {
     data_operations: `${endPoints.base_api_EndPoint}agreements/`,

@@ -65,7 +65,7 @@
           <mat-form-field>
             <mat-label>Day</mat-label>
             <mat-select formControlName="day">
-              <mat-option *ngFor="let item of dayList" [value]="item.value"> {{item.label}} </mat-option>
+              <mat-option *ngFor="let item of dayList" [value]="item.id"> {{item.name}} </mat-option>
             </mat-select>
           </mat-form-field>
 
@@ -83,11 +83,6 @@
 
         <ng-container *ngIf="hasResult; else elseTemplate">
           <mat-card-content>
-            <!-- <mat-form-field appearance="standard">
-      <mat-label>Filter</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input>
-    </mat-form-field> -->
-
             <div class="mat-elevation-z0">
               <table mat-table [dataSource]="employeeData" matSort>
 
@@ -143,7 +138,7 @@
 
                 <ng-container matColumnDef="day">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header> Day </th>
-                  <td mat-cell *matCellDef="let row"> {{row?.day}} </td>
+                  <td mat-cell *matCellDef="let row"> {{row?.work_type_day_details?.name}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="work_type_details">

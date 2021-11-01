@@ -55,8 +55,7 @@ export interface ValidateAgreementResponseModel {
 
 export interface ConstantDataModel {
   id: number;
-  label: string;
-  value: string;
+  name: string;
 }
 
 export interface VehicleTypeListModel extends GetResponseMode {
@@ -112,7 +111,7 @@ export interface VehicleExpenseListResultModel {
   created_on: string;
   updated_on: string;
   vehicle_details: string;
-  qty_type: string;
+  si_unit: string;
   quantity: number;
   delivery_date: string;
   amount: number;
@@ -146,7 +145,7 @@ export interface EmployeeExpenseListResultModel {
   work_type_details: DetailsModel;
   created_on: string;
   updated_on: string;
-  day: string;
+  day_type: string;
   work_date: string;
   kooli: number;
   kooli_paid: number;

@@ -27,7 +27,7 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
   addEmployeExpenseForm: FormGroup;
   agreementList: AgreementListResultModel[] = [];
   workTypeList: ResultDataModel[] = [];
-  dayTypeList: ConstantDataModel[] = DAY_TYPES;
+  dayTypeList: ConstantDataModel[] = [];
   employeeList: any;
 
   editMode = {
@@ -65,6 +65,7 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
     this.setEmployeeList();
     this.detectAgreement();
     this.detectEmployeName();
+    this.setWorkDayType();
     this.detectWorkType();
   }
 
@@ -84,7 +85,7 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
                   ? data.agreement_details?.agreement_number
                   : '',
               },
-              dayType: data.day,
+              dayType: data.day_type,
               employeeName: {
                 id: data.name,
                 name: data.employee_name_details?.name
@@ -165,6 +166,14 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
     this.subscriptionsArray.push(employSubs);
   }
 
+  setWorkDayType(): void {
+    this.masterDataService.getWorkDayType().subscribe((data) => {
+      if (data && data.results) {
+        this.dayTypeList = data.results;
+      }
+    });
+  }
+
   detectAgreement(): void {
     this.addEmployeExpenseForm
       .get('agreementNo')
@@ -207,7 +216,7 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
         this.addEmployeExpenseForm.value.agreementNo.id
           ? this.addEmployeExpenseForm.value.agreementNo.id
           : null,
-      day:
+      day_type:
         this.addEmployeExpenseForm.value &&
         this.addEmployeExpenseForm.value.dayType
           ? this.addEmployeExpenseForm.value.dayType

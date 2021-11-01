@@ -58,6 +58,10 @@ ems-root {
     justify-content: flex-start;
     row-gap: 30px;
 
+    &.tile {
+      column-gap: 30px;
+    }
+
     .full-width-card {
       width: 100%;
 
@@ -76,6 +80,10 @@ ems-root {
       display: flex;
       width: 100%;
       column-gap: 30px;
+
+      &.tile {
+        width: calc(33.333% - 20px);
+      }
 
       mat-accordion {
         width: 100%;

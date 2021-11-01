@@ -13,7 +13,6 @@ import {
   AgreementListResultModel,
   ConstantDataModel,
   MasterDataService,
-  QUANTITY_TYPES,
   ResultDataModel,
 } from 'src/app/core';
 import { LoaderService, SnackBarService } from 'src/app/shared/components';
@@ -28,6 +27,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
   agreementList: AgreementListResultModel[] = [];
   vehicleTypeList: ResultDataModel[] = [];
   materialItemList: ResultDataModel[] = [];
+  qtyTypeList: ConstantDataModel[] = [];
   employeeList: any;
   locationList: any;
 
@@ -35,8 +35,6 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     isActive: false,
     agreementID: 0,
   };
-
-  qtyTypeList: ConstantDataModel[] = QUANTITY_TYPES;
 
   private subscriptionsArray: Subscription[] = [];
 
@@ -76,6 +74,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     this.setMaterialList();
     this.setEmployeeList();
     this.setLocationList();
+    this.setQuantityType();
     this.detectFields();
   }
 
@@ -120,7 +119,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
                   ? data.materials_details?.name
                   : '',
               },
-              qtyType: data.qty_type,
+              qtyType: data.si_unit,
               quantity: data.quantity,
               deliveryDate: data.delivery_date,
               amount: data.amount,
@@ -158,6 +157,14 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
 
   public agreementOptionView(option: any): string {
     return option ? `${option.agreement_number} - ${option.name}` : '';
+  }
+
+  setQuantityType(): void {
+    this.masterDataService.getQuantityType().subscribe((data) => {
+      if (data && data.results) {
+        this.qtyTypeList = data.results;
+      }
+    });
   }
 
   setVehicleTypeList(search?: string): void {
@@ -301,7 +308,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
         this.addVehicleExpenseForm.value.vehicleDetails
           ? this.addVehicleExpenseForm.value.vehicleDetails
           : '',
-      qty_type:
+      si_unit:
         this.addVehicleExpenseForm.value &&
         this.addVehicleExpenseForm.value.qtyType
           ? this.addVehicleExpenseForm.value.qtyType

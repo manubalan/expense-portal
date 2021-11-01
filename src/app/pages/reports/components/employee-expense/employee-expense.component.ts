@@ -56,7 +56,7 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
     this.getEmployeeList();
     this.getWorkTypeList();
     this.detectFilterForms();
-    this.dayList = DAY_TYPES;
+    this.getWorkDayType();
   }
 
   ngOnInit(): void {
@@ -104,6 +104,14 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
         }
       });
     if (workSubs) this.subscriptionArray.push(workSubs);
+  }
+
+  getWorkDayType(): void {
+    this.masterService.getWorkDayType().subscribe((data) => {
+      if (data && data.results) {
+        this.dayList = data.results;
+      }
+    });
   }
 
   getAgreementList(search?: string): void {
@@ -206,7 +214,7 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
       );
     }
     if (this.agreementFilter.value.day) {
-      paramList.push(`day=${this.agreementFilter.value.day}`);
+      paramList.push(`day_type=${this.agreementFilter.value.day}`);
     }
     if (this.agreementFilter.value.search) {
       paramList.push(`search=${this.agreementFilter.value.search}`);
