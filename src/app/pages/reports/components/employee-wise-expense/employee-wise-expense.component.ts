@@ -147,7 +147,7 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
     if (this.pageAttributes.pageSize > 0) {
       paramList.push(`limit=${this.pageAttributes.pageSize}`);
     }
-    if (this.pageAttributes.currentPage) {
+    if (this.pageAttributes.currentPage >= 0) {
       paramList.push(`offset=${this.pageAttributes.currentPage}`);
     }
     if (
@@ -201,9 +201,11 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
     this.pageAttributes.pageSize = event.pageSize
       ? event.pageSize
       : this.pageAttributes.pageSize;
-    this.pageAttributes.currentPage = event.pageIndex
-      ? event.pageIndex
-      : this.pageAttributes.currentPage;
+      if (event.pageIndex !== undefined)
+      this.pageAttributes.currentPage =
+        event.pageIndex >= 0
+          ? event.pageIndex
+          : this.pageAttributes.currentPage;
     this.pageAttributes.prevPage = event.previousPageIndex
       ? event.previousPageIndex
       : this.pageAttributes.prevPage;

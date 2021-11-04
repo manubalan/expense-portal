@@ -82,7 +82,20 @@ ems-root {
       column-gap: 30px;
 
       &.tile {
-        width: calc(33.333% - 20px);
+        width: calc(50% - 20px);
+        @media (max-width: 720px) { 
+          width: 100%;
+         }
+
+        @media (min-width: 1600px) { 
+          width: calc(33.333% - 20px);
+         }
+    
+
+        ems-data-view {
+          width: 100%;
+          display: flex;
+        }
       }
 
       mat-accordion {
