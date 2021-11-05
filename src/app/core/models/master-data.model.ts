@@ -23,9 +23,18 @@ export interface ChildMenuModel {
   icon: string;
 }
 
+export type FIELD_TYPE = 'text' | 'select';
+
 export interface MasterDataGridModel {
   gridTitle: string;
   apiEnd: string;
+  filedLabels: string[];
+  extraField?: FormFieldModel;
+}
+
+export interface FormFieldModel {
+  endPoint: string;
+  type: FIELD_TYPE;
 }
 export interface MasterDataResponseModel {
   count: number;
@@ -45,4 +54,9 @@ export interface MasterDataResponseBodyModel {
 
 export interface DataDetailsModel {
   name: string;
+}
+
+export interface ValidateModel {
+  message: string;
+  is_exist: boolean;
 }

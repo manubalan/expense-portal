@@ -7,6 +7,7 @@ import { DataViewComponent } from './components/data-view/data-view.component';
 import { MaterialModule } from 'src/app/shared/material.module';
 import { MasterDataViewService } from './components/data-view/data-view.service';
 import {CdkTableModule} from '@angular/cdk/table';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import {CdkTableModule} from '@angular/cdk/table';
     CommonModule,
     MasterDataRoutingModule,
     MaterialModule,
-    CdkTableModule
+    CdkTableModule,
+    ReactiveFormsModule
   ],
   providers: [MasterDataViewService]
 })

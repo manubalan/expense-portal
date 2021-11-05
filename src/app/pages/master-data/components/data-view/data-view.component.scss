@@ -1,7 +1,22 @@
 ::ng-deep {
-    .mat-table {
-        .mat-column-actions {
-            width: 60px;
-        }
+  .add-block {
+    display: flex;
+    column-gap: 20px;
+    align-items: center;
+
+    .submit-btn {
+      padding: 10px 20px;
+      height: 40px;
+
+      .mat-button-wrapper {
+          height: 20px;
+      }
     }
+  }
+
+  .mat-table {
+    .mat-column-actions {
+      width: 60px;
+    }
+  }
 }

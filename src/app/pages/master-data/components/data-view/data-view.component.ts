@@ -1,4 +1,14 @@
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {
   MasterDataGridModel,
   MasterDataResponseModel,
@@ -15,7 +25,7 @@ import { MasterDataViewService } from './data-view.service';
   templateUrl: './data-view.component.html',
   styleUrls: ['./data-view.component.scss'],
 })
-export class DataViewComponent implements OnInit {
+export class DataViewComponent implements OnChanges, OnDestroy {
   columns: Array<any> = [];
   displayedColumns: Array<any> = [];
   dataSource: MasterDataResponseModel = {
@@ -24,10 +34,20 @@ export class DataViewComponent implements OnInit {
     previous: null,
     results: [],
   };
-
-  expandedElement: any;
+  masterDataForm: FormGroup;
+  extraDropList: any = [];
+  extraFormVisible = {
+    text: false,
+    select: false,
+  };
+  errorMessage = {
+    active: false,
+    message: '',
+  };
 
   pageAttributes: PageAttrModel = { ...PAGE_ATTR_DATA };
+
+  subscriptionArray: Subscription[] = [];
 
   @Input() public gridInfo: MasterDataGridModel | undefined;
 
@@ -42,12 +62,41 @@ export class DataViewComponent implements OnInit {
 
   constructor(
     private masterViewService: MasterDataViewService,
-    private loaderService: LoaderService
-  ) {}
+    private loaderService: LoaderService,
+    private fBuilder: FormBuilder
+  ) {
+    this.masterDataForm = this.fBuilder.group({
+      mainField: ['', Validators.required],
+      extraField: ['', Validators.required],
+      extraDropDown: [null, Validators.required],
+    });
 
-  ngOnInit(): void {}
+    this.detectMainFieldData();
+  }
+
+  public locationListOptionView(option: any): any {
+    return option ? `${option.name}` : '';
+  }
 
   private setTableData(): void {
+    if (this.gridInfo && this.gridInfo.extraField) {
+      if (this.gridInfo.extraField.type === 'select') {
+        this.extraFormVisible.select = true;
+
+        const dataSub = this.masterViewService
+          .getFieldData(this.gridInfo.extraField.endPoint)
+          .subscribe((data) => {
+            if (data && data.results) {
+              this.extraDropList = data.results;
+            } else {
+              this.extraDropList = [];
+            }
+          });
+        this.subscriptionArray.push(dataSub);
+      } else if (this.gridInfo.extraField.type === 'text')
+        this.extraFormVisible.text = true;
+    }
+
     if (this.gridInfo && this.gridInfo.apiEnd) {
       const paramList = [];
       let paramUrl = '';
@@ -65,7 +114,7 @@ export class DataViewComponent implements OnInit {
       }
 
       this.loaderService.show();
-      this.masterViewService
+      const tableSub = this.masterViewService
         .getGridData(this.gridInfo.apiEnd + `?` + paramUrl.slice(0, -1))
         .subscribe((data) => {
           this.loaderService.hide();
@@ -75,6 +124,8 @@ export class DataViewComponent implements OnInit {
             this.setTable(data);
           }
         });
+
+      this.subscriptionArray.push(tableSub);
     }
   }
 
@@ -121,11 +172,56 @@ export class DataViewComponent implements OnInit {
     this.setTableData();
   }
 
+  private detectMainFieldData(): void {
+    const formSub = this.masterDataForm
+      .get('mainField')
+      ?.valueChanges.pipe(distinctUntilChanged(), debounceTime(800))
+      .subscribe((value) => {
+        if (value) {
+          this.masterViewService
+            .validateFieldData(
+              this.gridInfo?.apiEnd ? this.gridInfo.apiEnd : '',
+              value
+            )
+            .subscribe((response) => {
+              if (response) {
+                if (response.is_exist) {
+                  this.errorMessage = {
+                    active : response.is_exist,
+                    message : response.message,
+                  };
+                } else {
+                  this.errorMessage = {
+                    active : response.is_exist,
+                    message : response.message,
+                  };
+                }
+              }
+            });
+        }
+      });
+
+    if (formSub) this.subscriptionArray.push(formSub);
+  }
+
+  public addMasterData(): void {
+    const request = {
+      name: this.masterDataForm.value.mainField
+        ? this.masterDataForm.value.mainField
+        : null,
+    };
+  }
+
   public editMasterData(rowIndex: any): void {
     console.log('INDEX =>', rowIndex);
   }
 
   public deleteMasterData(rowIndex: any): void {
     console.log('INDEX =>', rowIndex);
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscriptionArray.length > 0)
+      this.subscriptionArray.map((sub) => sub.unsubscribe());
   }
 }
