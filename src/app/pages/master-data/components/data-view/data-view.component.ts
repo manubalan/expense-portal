@@ -187,13 +187,13 @@ export class DataViewComponent implements OnChanges, OnDestroy {
               if (response) {
                 if (response.is_exist) {
                   this.errorMessage = {
-                    active : response.is_exist,
-                    message : response.message,
+                    active: response.is_exist,
+                    message: response.message,
                   };
                 } else {
                   this.errorMessage = {
-                    active : response.is_exist,
-                    message : response.message,
+                    active: response.is_exist,
+                    message: response.message,
                   };
                 }
               }
@@ -212,8 +212,16 @@ export class DataViewComponent implements OnChanges, OnDestroy {
     };
   }
 
-  public editMasterData(rowIndex: any): void {
-    console.log('INDEX =>', rowIndex);
+  public editMasterData(element: any, rowIndex: any): void {
+    this.masterDataForm.patchValue({
+      mainField: element.name,
+      extraField: element.phone,
+      extraDropDown: element.state_details
+        ? element.state_details
+        : element.district_details
+        ? element.district_details
+        : '',
+    });
   }
 
   public deleteMasterData(rowIndex: any): void {
