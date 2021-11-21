@@ -8,6 +8,8 @@ import { MaterialModule } from 'src/app/shared/material.module';
 import { MasterDataViewService } from './components/data-view/data-view.service';
 import {CdkTableModule} from '@angular/cdk/table';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -19,7 +21,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     MasterDataRoutingModule,
     MaterialModule,
     CdkTableModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatButtonToggleModule,
+    MatTooltipModule
   ],
   providers: [MasterDataViewService]
 })

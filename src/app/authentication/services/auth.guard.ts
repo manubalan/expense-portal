@@ -6,12 +6,14 @@ import {
   RouterStateSnapshot,
   CanLoad,
 } from '@angular/router';
+import { MENU } from 'src/app/core';
 
 import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
-export class AuthGuard implements CanActivate, CanLoad {
+export class AuthGuard implements CanActivate {
   currentState: any;
+  role: string = '';
   constructor(
     private router: Router,
     private authenticationService: AuthService
@@ -26,32 +28,25 @@ export class AuthGuard implements CanActivate, CanLoad {
     state: RouterStateSnapshot
   ): boolean {
     this.currentState = state;
+    if (this.authenticationService.activeUser.user?.role_details.name)
+      this.role =
+        this.authenticationService?.activeUser?.user?.role_details?.name;
+
     if (this.authenticationService.isAuthenticated) {
-      // if (route.data.roles && route.data.roles.indexOf(currentUser.role) === -1) {
-      //     // role not authorised so redirect to home page
-      //     this.router.navigate(['/']);
-      //     return false;
-      // }
+      const navObj = MENU.filter(
+        (el) =>
+          el.link.toLowerCase().replace('/', '') ===
+          route.routeConfig?.path?.toLowerCase()
+      );
+      if (!(navObj.length > 0 && navObj[0]?.hasAcess.includes(this.role))) {
+        this.router.navigate(['/']);
+        return false;
+      }
 
       return true;
     }
 
     this.router.navigate(['/auth'], { queryParams: { returnUrl: state.url } });
-    return false;
-  }
-
-  canLoad(): boolean {
-    if (this.authenticationService.isAuthenticated) {
-      // if (route.data.roles && route.data.roles.indexOf(currentUser.role) === -1) {
-      //     // role not authorised so redirect to home page
-      //     this.router.navigate(['/']);
-      //     return false;
-      // }
-
-      return true;
-    }
-
-    this.router.navigate(['/auth']);
     return false;
   }
 }

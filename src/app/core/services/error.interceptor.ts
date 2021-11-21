@@ -32,6 +32,12 @@ export class ErrorInterceptor implements HttpInterceptor {
           Authorization: `Bearer ${currentUser.token.access}`,
         },
       });
+
+      if (request.method.toUpperCase() === 'POST' || request.method.toUpperCase() === 'PUT') {
+        request = request.clone({
+          body: { ...request.body, user: currentUser?.user?.id ? currentUser?.user?.id : null},
+        });
+      }
     }
 
     return next.handle(request).pipe(

@@ -28,7 +28,8 @@ export type FIELD_TYPE = 'text' | 'select';
 export interface MasterDataGridModel {
   gridTitle: string;
   apiEnd: string;
-  filedLabels: string[];
+  fieldLabels: string[];
+  fields: string[];
   extraField?: FormFieldModel;
 }
 
@@ -59,4 +60,9 @@ export interface DataDetailsModel {
 export interface ValidateModel {
   message: string;
   is_exist: boolean;
+}
+
+export interface UpdateDataModel {
+  active: boolean;
+  selected: number;
 }

@@ -6,19 +6,22 @@
 
         <div class="add-block" [formGroup]="masterDataForm">
 
-            <mat-form-field appearance="legacy" f>
-                <mat-label> {{gridInfo && gridInfo.filedLabels ? gridInfo.filedLabels[0]: ''}} </mat-label>
+            <mat-form-field appearance="outline" class="input-boxes name-box">
+                <mat-label> {{gridInfo && gridInfo.fieldLabels ? gridInfo.fieldLabels[0]: ''}} </mat-label>
                 <input matInput formControlName="mainField">
-                <mat-error > {{errorMessage.message}} </mat-error>
+                <mat-icon *ngIf="errorMessage.active && !errorMessage.init" class="error-message"
+                    matTooltip="Not Available">close</mat-icon>
+                <mat-icon *ngIf="!errorMessage.active && !errorMessage.init" class="success-message"
+                    matTooltip="Available">done</mat-icon>
             </mat-form-field>
 
-            <mat-form-field appearance="legacy" *ngIf="extraFormVisible.text">
-                <mat-label>{{gridInfo && gridInfo.filedLabels ? gridInfo.filedLabels[1]: ''}}</mat-label>
+            <mat-form-field appearance="outline" *ngIf="extraFormVisible.text" class="input-boxes">
+                <mat-label>{{gridInfo && gridInfo.fieldLabels ? gridInfo.fieldLabels[1]: ''}}</mat-label>
                 <input matInput formControlName="extraField">
             </mat-form-field>
 
-            <mat-form-field *ngIf="extraFormVisible.select">
-                <mat-label>{{gridInfo && gridInfo.filedLabels ? gridInfo.filedLabels[1]: ''}}</mat-label>
+            <mat-form-field appearance="outline" *ngIf="extraFormVisible.select" class="input-boxes">
+                <mat-label>{{gridInfo && gridInfo.fieldLabels ? gridInfo.fieldLabels[1]: ''}}</mat-label>
                 <input type="text" matInput formControlName="extraDropDown" [matAutocomplete]="location">
                 <mat-autocomplete #location="matAutocomplete" [displayWith]="locationListOptionView">
                     <mat-option *ngFor="let option of extraDropList" [value]="option">
@@ -27,43 +30,88 @@
                 </mat-autocomplete>
             </mat-form-field>
 
-            <button class="submit-btn" mat-stroked-button color="primary" (click)="addMasterData()">Add Now</button>
+            <button class="submit-btn" mat-flat-button color="primary" (click)="addMasterData()"
+                [disabled]="!masterDataForm.valid" matTooltip="Save">
+                <mat-icon>done</mat-icon>
+            </button>
+            <button class="submit-btn" mat-flat-button color="warn" (click)="resetMasterData()"
+                [disabled]="!masterDataForm.valid" matTooltip="Clear">
+                <mat-icon>close</mat-icon>
+            </button>
         </div>
 
-        <table mat-table [dataSource]="dataSource.results" class="mat-elevation-z0 demo-table">
-            <!--  Column 1 -->
-            <ng-container *ngFor="let column of columns" [cdkColumnDef]="column.columnDef">
-                <th mat-header-cell *matHeaderCellDef style="text-transform: uppercase; font-weight: bold;">
-                    {{ column.header }}
-                </th>
-                <td mat-cell *matCellDef="let row"> {{ column.cell(row) }} </td>
-            </ng-container>
+        <div class="view-block">
+            <div class="filter-block" *ngIf="toggleFilterBox">
+                <header class="title-box">
+                    <h4>Filter {{gridInfo?.gridTitle}}</h4>
+                    <button mat-icon-button aria-label="Filter List" (click)="closeFilterBox()"
+                        matTooltip="Close Filter Box">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </header>
+                <section class="filter-filed-box"  [formGroup]="masterFilterForm">
+                    <mat-form-field appearance="outline" class="input-boxes">
+                        <mat-label> {{gridInfo && gridInfo.fieldLabels ? gridInfo.fieldLabels[0]: ''}} </mat-label>
+                        <input matInput formControlName="mainField">
+                    </mat-form-field>
 
-            <!-- Actions Column -->
-            <ng-container matColumnDef="actions" stickyEnd>
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let element; let i = index">
-                    <mat-icon [matMenuTriggerFor]="menu">more_vert</mat-icon>
-                    <mat-menu #menu="matMenu" xPosition="before">
-                        <button mat-menu-item (click)="editMasterData(element, i)">
-                            <mat-icon>edit</mat-icon>
-                            <span>Edit</span>
+                    <!-- <mat-form-field appearance="outline" *ngIf="extraFormVisible.text" class="input-boxes">
+                        <mat-label>{{gridInfo && gridInfo.fieldLabels ? gridInfo.fieldLabels[1]: ''}}</mat-label>
+                        <input matInput formControlName="extraField">
+                    </mat-form-field>
+        
+                    <mat-form-field appearance="outline" *ngIf="extraFormVisible.select" class="input-boxes">
+                        <mat-label>{{gridInfo && gridInfo.fieldLabels ? gridInfo.fieldLabels[1]: ''}}</mat-label>
+                        <input type="text" matInput formControlName="extraDropDown" [matAutocomplete]="location">
+                        <mat-autocomplete #location="matAutocomplete" [displayWith]="locationListOptionView">
+                            <mat-option *ngFor="let option of extraDropList" [value]="option">
+                                {{option?.name}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field> -->
+                </section>
+            </div>
+
+            <table mat-table [dataSource]="dataSource.results" class="mat-elevation-z0 demo-table">
+                <!--  Column 1 -->
+                <ng-container *ngFor="let column of columns" [cdkColumnDef]="column.columnDef">
+                    <th mat-header-cell *matHeaderCellDef style="text-transform: uppercase; font-weight: bold;">
+                        {{ column.header }}
+                    </th>
+                    <td mat-cell *matCellDef="let row"> {{ column.cell(row) }} </td>
+                </ng-container>
+
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions" stickyEnd>
+                    <th mat-header-cell *matHeaderCellDef>
+                        <button mat-icon-button aria-label="Filter List" (click)="openFilterBox()"
+                            matTooltip="Open Filter Box">
+                            <mat-icon>search</mat-icon>
                         </button>
-                        <button mat-menu-item color="danger" (click)="deleteMasterData(element)">
-                            <mat-icon>delete</mat-icon>
-                            <span>Delete</span>
-                        </button>
-                    </mat-menu>
-                </td>
-            </ng-container>
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index">
+                        <mat-icon [matMenuTriggerFor]="menu">more_vert</mat-icon>
+                        <mat-menu #menu="matMenu" xPosition="before" matTooltip="More Options">
+                            <button mat-menu-item (click)="editMasterData(element, i)">
+                                <mat-icon>edit</mat-icon>
+                                <span>Edit</span>
+                            </button>
+                            <button mat-menu-item color="danger" (click)="deleteMasterData(element.id)">
+                                <mat-icon>delete</mat-icon>
+                                <span>Delete</span>
+                            </button>
+                        </mat-menu>
+                    </td>
+                </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row1; columns: displayedColumns;"></tr>
-        </table>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row1; columns: displayedColumns;"></tr>
+            </table>
 
-        <mat-paginator [length]="pageAttributes.totalRecord" [pageIndex]="pageAttributes.currentPage"
-            [pageSize]="pageAttributes.pageSize" [pageSizeOptions]="pageAttributes.pageSizeOpt"
-            [showFirstLastButtons]="pageAttributes.firstLastEnable" (page)="handlePage($event)">
-        </mat-paginator>
+            <mat-paginator [length]="pageAttributes.totalRecord" [pageIndex]="pageAttributes.currentPage"
+                [pageSize]="pageAttributes.pageSize" [pageSizeOptions]="pageAttributes.pageSizeOpt"
+                [showFirstLastButtons]="pageAttributes.firstLastEnable" (page)="handlePage($event)">
+            </mat-paginator>
+        </div>
     </mat-expansion-panel>
 </mat-accordion>

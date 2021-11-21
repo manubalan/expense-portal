@@ -20,11 +20,14 @@ export class AuthInterceptor implements HttpInterceptor {
     const isLoggedIn = currentUser && currentUser.token;
     const isApiUrl = true;
     if (isLoggedIn && isApiUrl) {
+      debugger;
       request = request.clone({
         setHeaders: {
           Authorization: `Bearer ${currentUser.token.access}`,
         },
       });
+
+
     }
 
     return next.handle(request);

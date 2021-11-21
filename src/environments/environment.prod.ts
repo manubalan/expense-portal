@@ -1,18 +1,21 @@
+export const APP_BASE_URL = 'https://pullattugroup.com';
+export const BASE_PORT = '8000';
+
 export const environment = {
   production: true,
 
-  BASE_URL: 'http://18.118.104.163/',
+  BASE_URL: APP_BASE_URL + '/',
 
-  AUTH_ENDPOINT: 'http://18.118.104.163',
-  AUTH_PORT: '8000',
+  AUTH_ENDPOINT: APP_BASE_URL,
+  AUTH_PORT: BASE_PORT,
   AUTH_PREFIX: 'api',
 
-  MASTER_ENDPOINT: 'http://18.118.104.163',
-  MASTER_PORT: '8000',
+  MASTER_ENDPOINT: APP_BASE_URL,
+  MASTER_PORT: BASE_PORT,
   MASTER_PREFIX: 'api',
 
-  BASE_ENDPOINT: 'http://18.118.104.163',
-  BASE_PORT: '8000',
+  BASE_ENDPOINT: APP_BASE_URL,
+  BASE_PORT: BASE_PORT,
   BASE_PREFIX: 'api',
 };
 

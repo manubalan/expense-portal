@@ -1,14 +1,53 @@
 <div class="top-navigation__search">
-  <div class="search-box">
+  <div class="app-title">
+    <h1>Pullattu Group</h1>
+  </div>
+  <!-- <div class="search-box">
     <mat-icon>search</mat-icon>
     <input class="top-navigation__search-input" placeholder="Search..." />
+  </div> -->
+
+  <div class="user-profile">
+    <div class="pic-box nav-block" (click)="toggleProfile()" #profileTrigger>
+      <img *ngIf="profilePic.active" src="{{ profilePic.url }}" alt="" />
+      <div *ngIf="!profilePic.active" class="no-pic">{{name.firstName }}{{name.lastName }}</div>
+    </div>
+
+    <div class="profile-box" *ngIf="profileBox" #profileView>
+      <div class="user-data">
+        <div class="pic-box">
+          <img *ngIf="profilePic.active" src="{{ profilePic.url }}" alt="" />
+          <div *ngIf="!profilePic.active" class="no-pic">{{name.firstName }}{{name.lastName }}</div>
+        </div>
+        <h3>{{currentUser?.first_name ? currentUser.first_name: 'No' | titlecase }}
+          {{currentUser?.last_name ? currentUser.last_name: 'Name'  | titlecase }}
+        </h3>
+        <p>{{currentUser?.role_details?.name ? currentUser.role_details?.name : 'No Role'  | titlecase }}</p>
+      </div>
+      <ul>
+        <!-- <li>
+          <button mat-menu-item>
+            <mat-icon>manage_accounts</mat-icon>
+            <span>My Account</span>
+          </button>
+        </li>
+        <li>
+          <button mat-menu-item>
+            <mat-icon>settings</mat-icon>
+            <span>Settings</span>
+          </button>
+        </li> -->
+        <li>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </li>
+      </ul>
+    </div>
   </div>
 
-  <div class="user-profile" [matMenuTriggerFor]="menu">
-    <img src="{{baseUrl}}/assets/image/user-profile.jpg" alt="">
-  </div>
-
-  <mat-menu #menu="matMenu">
+  <!-- <mat-menu #menu="matMenu">
     <button mat-menu-item>
       <mat-icon>manage_accounts</mat-icon>
       <span>My Account</span>
@@ -21,42 +60,5 @@
       <mat-icon>logout</mat-icon>
       <span>Logout</span>
     </button>
-  </mat-menu>
+  </mat-menu> -->
 </div>
-
-
-<!-- <mat-toolbar color="primary">
-  <div>
-    <button mat-icon-button aria-label="menu icon" (click)="sidenav.toggle();">
-      <mat-icon>menu</mat-icon>
-    </button>
-    <span>My App</span>
-  </div>
-
-  <div>
-    <span class="example-spacer"></span>
-    <button
-      mat-icon-button
-      class="example-icon favorite-icon"
-      aria-label="Example icon-button with heart icon"
-    >
-      <mat-icon>logout</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      class="example-icon"
-      aria-label="Example icon-button with share icon"
-    >
-      <mat-icon>share</mat-icon>
-    </button>
-  </div>
-</mat-toolbar> -->
-<!-- <div fxFlex="row" fxLayoutAlign="center center" fxLayoutGap="10px" class="header">
-  <button mat-icon-button (click)="sidenav.toggle();">
-    <mat-icon>menu</mat-icon>
-  </button>
-
-  <span>Inbox</span>
-  <span class="spacer"></span>
-
-</div> -->

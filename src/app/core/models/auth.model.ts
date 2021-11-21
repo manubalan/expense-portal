@@ -15,7 +15,12 @@ export interface UserModel {
   username: string;
   email?: string;
   is_superuser?: boolean;
-  profile_pic?: null;
+  role_details: {
+    name: string;
+  };
+  profile_pic?: string;
+  first_name?: string;
+  last_name?: string;
 }
 
 export interface RoleModel {
@@ -30,7 +35,7 @@ export interface LoggedUserModel {
   is_authenticated?: boolean;
 }
 
-export interface ActiveUserModel{
+export interface ActiveUserModel {
   user?: UserModel;
   is_authenticated?: boolean;
 }

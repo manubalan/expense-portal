@@ -3,10 +3,9 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  OnInit,
   SimpleChanges,
 } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {
@@ -15,8 +14,13 @@ import {
   PageAttrEventModel,
   PageAttrModel,
   PAGE_ATTR_DATA,
+  UpdateDataModel,
 } from 'src/app/core';
-import { LoaderService } from 'src/app/shared';
+import {
+  DialogBoxService,
+  LoaderService,
+  SnackBarService,
+} from 'src/app/shared';
 import { endPoints } from 'src/environments/environment';
 import { MasterDataViewService } from './data-view.service';
 
@@ -35,6 +39,7 @@ export class DataViewComponent implements OnChanges, OnDestroy {
     results: [],
   };
   masterDataForm: FormGroup;
+  masterFilterForm: FormGroup;
   extraDropList: any = [];
   extraFormVisible = {
     text: false,
@@ -42,8 +47,16 @@ export class DataViewComponent implements OnChanges, OnDestroy {
   };
   errorMessage = {
     active: false,
+    init: true,
     message: '',
   };
+
+  updateMode: UpdateDataModel = {
+    active: false,
+    selected: 0,
+  };
+  toggleFilterBox = false;
+  paramList: string[] = [`ordering=name`];
 
   pageAttributes: PageAttrModel = { ...PAGE_ATTR_DATA };
 
@@ -63,15 +76,24 @@ export class DataViewComponent implements OnChanges, OnDestroy {
   constructor(
     private masterViewService: MasterDataViewService,
     private loaderService: LoaderService,
-    private fBuilder: FormBuilder
+    private fBuilder: FormBuilder,
+    private dialogeService: DialogBoxService,
+    private snackBarService: SnackBarService
   ) {
     this.masterDataForm = this.fBuilder.group({
       mainField: ['', Validators.required],
-      extraField: ['', Validators.required],
-      extraDropDown: [null, Validators.required],
+      extraField: [''],
+      extraDropDown: [null],
+    });
+
+    this.masterFilterForm = this.fBuilder.group({
+      mainField: [''],
+      extraField: [''],
+      extraDropDown: [null],
     });
 
     this.detectMainFieldData();
+    this.detectMainFilterFieldData();
   }
 
   public locationListOptionView(option: any): any {
@@ -98,21 +120,26 @@ export class DataViewComponent implements OnChanges, OnDestroy {
     }
 
     if (this.gridInfo && this.gridInfo.apiEnd) {
-      const paramList = [];
       let paramUrl = '';
       if (this.pageAttributes.pageSize > 0) {
-        paramList.push(`limit=${this.pageAttributes.pageSize}`);
+        this.paramList.push(`limit=${this.pageAttributes.pageSize}`);
       }
-      if (this.pageAttributes.currentPage >= 0) {
-        paramList.push(`offset=${this.pageAttributes.currentPage}`);
+      if (this.pageAttributes.currentPage > 0) {
+        this.paramList.push(
+          `offset=${
+            this.pageAttributes.currentPage * this.pageAttributes.pageSize
+          }`
+        );
+      } else if (this.pageAttributes.currentPage === 0) {
+        this.paramList.push(`offset=${this.pageAttributes.currentPage}`);
       }
-
-      if (paramList.length > 0) {
-        paramList.map((par) => {
+      
+      if (this.paramList.length > 0) {
+        this.paramList.map((par) => {
           paramUrl = paramUrl + par + '&';
         });
       }
-
+      this.paramList = [`ordering=name`];
       this.loaderService.show();
       const tableSub = this.masterViewService
         .getGridData(this.gridInfo.apiEnd + `?` + paramUrl.slice(0, -1))
@@ -188,11 +215,13 @@ export class DataViewComponent implements OnChanges, OnDestroy {
                 if (response.is_exist) {
                   this.errorMessage = {
                     active: response.is_exist,
+                    init: false,
                     message: response.message,
                   };
                 } else {
                   this.errorMessage = {
                     active: response.is_exist,
+                    init: false,
                     message: response.message,
                   };
                 }
@@ -205,30 +234,118 @@ export class DataViewComponent implements OnChanges, OnDestroy {
   }
 
   public addMasterData(): void {
-    const request = {
-      name: this.masterDataForm.value.mainField
+    if (this.gridInfo?.fields) {
+      let request = this.gridInfo?.fields.reduce(
+        (acc: any, curr: any) => ((acc[curr] = ''), acc),
+        {}
+      );
+
+      request[this.gridInfo?.fields[0]] = this.masterDataForm.value.mainField
         ? this.masterDataForm.value.mainField
-        : null,
+        : '';
+
+      if (this.gridInfo?.fields.length === 2)
+        request[this.gridInfo?.fields[1]] = this.masterDataForm.value.extraField
+          ? this.masterDataForm.value.extraField
+          : this.masterDataForm.value.extraDropDown
+          ? this.masterDataForm.value.extraDropDown.id
+          : '';
+
+      this.loaderService.show();
+      const tableSub = this.masterViewService
+        .addMasterData(this.gridInfo.apiEnd, request, this.updateMode)
+        .subscribe((response) => {
+          this.setTableData();
+          this.resetMasterData();
+          this.snackBarService.success(
+            `New ${this.gridInfo?.gridTitle} created Successfully !`,
+            'Done'
+          );
+          this.loaderService.hide();
+        });
+
+      if (tableSub) this.subscriptionArray.push(tableSub);
+    }
+  }
+
+  public resetMasterData(): void {
+    this.masterDataForm.reset();
+    this.updateMode = {
+      active: false,
+      selected: 0,
+    };
+    this.errorMessage = {
+      active: false,
+      init: true,
+      message: '',
     };
   }
 
   public editMasterData(element: any, rowIndex: any): void {
-    this.masterDataForm.patchValue({
-      mainField: element.name,
-      extraField: element.phone,
-      extraDropDown: element.state_details
-        ? element.state_details
-        : element.district_details
-        ? element.district_details
-        : '',
+    this.masterDataForm.patchValue(
+      {
+        mainField: element.name,
+        extraField: element.phone,
+        extraDropDown: element.state_details
+          ? element.state_details
+          : element.district_details
+          ? element.district_details
+          : '',
+      },
+      { emitEvent: false }
+    );
+
+    this.updateMode = { active: true, selected: element.id };
+  }
+
+  public deleteMasterData(index: number): void {
+    const ref = this.dialogeService.openDialog('Are sure want to delete ?');
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed && this.gridInfo?.apiEnd) {
+        this.loaderService.show();
+        const tableSub = this.masterViewService
+          .deleteMasterData(this.gridInfo.apiEnd, index.toString())
+          .subscribe((response) => {
+            this.setTableData();
+            this.snackBarService.success(
+              `${this.gridInfo?.gridTitle} removed Successfully !`,
+              'Done'
+            );
+            this.loaderService.hide();
+          });
+
+        if (tableSub) this.subscriptionArray.push(tableSub);
+      }
     });
   }
 
-  public deleteMasterData(rowIndex: any): void {
-    console.log('INDEX =>', rowIndex);
+  // Filter list
+  public openFilterBox(): void {
+    this.toggleFilterBox = true;
   }
 
-  ngOnDestroy(): void {
+  public closeFilterBox(): void {
+    this.toggleFilterBox = false;
+    this.masterFilterForm.reset();
+    this.setTableData();
+  }
+
+  private detectMainFilterFieldData(): void {
+    const formSub = this.masterFilterForm.valueChanges
+      .pipe(distinctUntilChanged(), debounceTime(800))
+      .subscribe((value) => {
+        if (value) {
+          if (value.mainField) {
+            this.paramList.push(`search=${value.mainField}`);
+          }
+          this.setTableData();
+        }
+      });
+
+    if (formSub) this.subscriptionArray.push(formSub);
+  }
+
+  public ngOnDestroy(): void {
     if (this.subscriptionArray.length > 0)
       this.subscriptionArray.map((sub) => sub.unsubscribe());
   }

@@ -1,5 +1,5 @@
-.loader-bg{
-  background-color: rgba(0,0,0,.4);
+.loader-bg {
+  background-color: rgba(0, 0, 0, 0.4);
   position: fixed;
   top: 0;
   left: 0;
@@ -10,50 +10,122 @@
   align-items: center;
 }
 
-.clock-loader {
-  --clock-color: hsl(196deg 78% 61%);
-  --clock-width: 4rem;
-  --clock-radius: calc(var(--clock-width) / 2);
-  --clock-minute-length: calc(var(--clock-width) * 0.4);
-  --clock-hour-length: calc(var(--clock-width) * 0.2);
-  --clock-thickness: 0.2rem;
-
+.loader {
+  --background: linear-gradient(135deg, #23c4f8, #275efe);
+  --shadow: #{rgba(#275efe, 0.28)};
+  --text: #6c7486;
+  --page: #{rgba(#fff, 0.36)};
+  --page-fold: #{rgba(#fff, 0.52)};
+  --duration: 3s;
+  width: 90px;
+  height: 60px;
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: var(--clock-width);
-  height: var(--clock-width);
-  border: 3px solid var(--clock-color);
-  border-radius: 50%;
-  background-color: #fff;
 
-  &::before,
-  &::after {
-    position: absolute;
+  &:before,
+  &:after {
+    --r: -6deg;
     content: "";
-    top: calc(var(--clock-radius) * 0.25);
-    width: var(--clock-thickness);
-    background: var(--clock-color);
-    border-radius: 10px;
-    transform-origin: center calc(100% - calc(var(--clock-thickness) / 2));
-    animation: spin infinite linear;
+    position: absolute;
+    bottom: 8px;
+    width: 120px;
+    top: 80%;
+    box-shadow: 0 16px 12px var(--shadow);
+    transform: rotate(var(--r));
   }
 
-  &::before {
-    height: var(--clock-minute-length);
-    animation-duration: 2s;
+  &:before {
+    left: 4px;
   }
 
-  &::after {
-    top: calc(var(--clock-radius) * 0.25 + var(--clock-hour-length));
-    height: var(--clock-hour-length);
-    animation-duration: 15s;
+  &:after {
+    --r: 6deg;
+    right: 4px;
+  }
+
+  div {
+    width: 100%;
+    height: 100%;
+    border-radius: 7px;
+    position: relative;
+    z-index: 1;
+    perspective: 600px;
+    box-shadow: 0 4px 6px var(--shadow);
+    background-image: var(--background);
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      position: relative;
+
+      li {
+        --r: 180deg;
+        --o: 0;
+        --c: var(--page);
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        transform-origin: 100% 50%;
+        color: var(--c);
+        opacity: var(--o);
+        transform: rotateY(var(--r));
+        animation: var(--duration) ease infinite;
+
+        $i: 2;
+        @while $i < 6 {
+          &:nth-child(#{$i}) {
+            --c: var(--page-fold);
+            animation-name: page-#{$i};
+          }
+          $i: $i + 1;
+        }
+
+        svg {
+          width: 40px;
+          height: 50px;
+          display: block;
+        }
+
+        &:first-child {
+          --r: 0deg;
+          --o: 1;
+        }
+
+        &:last-child {
+          --o: 1;
+        }
+      }
+    }
+  }
+  
+  span {
+    display: block;
+    left: 0;
+    right: 0;
+    top: 100%;
+    margin-top: 10px;
+    text-align: center;
+    color: #fff;
   }
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(1turn);
+$i: 2;
+@while $i < 6 {
+  $delay: $i * 15 - 30;
+  @keyframes page-#{$i} {
+    #{0 + $delay}% {
+      transform: rotateY(180deg);
+      opacity: 0;
+    }
+    #{20 + $delay}% {
+      opacity: 1;
+    }
+    #{35 + $delay}%, 100% {
+      opacity: 0;
+    }
+    #{50 + $delay}%, 100% {
+      transform: rotateY(0deg);
+    }
   }
+  $i: $i + 1;
 }

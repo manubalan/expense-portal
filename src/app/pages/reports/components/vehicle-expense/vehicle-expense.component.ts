@@ -167,9 +167,16 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
     if (this.pageAttributes.pageSize > 0) {
       paramList.push(`limit=${this.pageAttributes.pageSize}`);
     }
-    if (this.pageAttributes.currentPage >= 0) {
+    if (this.pageAttributes.currentPage > 0) {
+      paramList.push(
+        `offset=${
+          this.pageAttributes.currentPage * this.pageAttributes.pageSize
+        }`
+      );
+    } else if (this.pageAttributes.currentPage === 0) {
       paramList.push(`offset=${this.pageAttributes.currentPage}`);
     }
+    
     if (
       this.vehicleFilterForm.value.agreement &&
       this.vehicleFilterForm.value.agreement.id
