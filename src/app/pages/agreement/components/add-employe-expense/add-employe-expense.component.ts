@@ -179,9 +179,19 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
       .get('agreementNo')
       ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value: any) => {
-        if (value && value !== null && typeof value === 'string') {
+        if (
+          value !== undefined &&
+          value !== null &&
+          typeof value === 'string'
+        ) {
           this.setAgreementList(value);
+          this.addEmployeExpenseForm
+            .get('agreementNo')
+            ?.setErrors(Validators.required);
         }
+
+        if (typeof value === 'object')
+          this.addEmployeExpenseForm.get('agreementNo')?.clearValidators();
       });
   }
 
@@ -192,7 +202,13 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
       .subscribe((value: any) => {
         if (value && value !== null && typeof value === 'string') {
           this.setEmployeeList(value);
+          this.addEmployeExpenseForm
+            .get('employeeName')
+            ?.setErrors(Validators.required);
         }
+
+        if (typeof value === 'object')
+          this.addEmployeExpenseForm.get('employeeName')?.clearValidators();
       });
   }
 
@@ -203,7 +219,13 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
       .subscribe((value: any) => {
         if (value && value !== null && typeof value === 'string') {
           this.setWorkTypeList(value);
+          this.addEmployeExpenseForm
+            .get('workType')
+            ?.setErrors(Validators.required);
         }
+
+        if (typeof value === 'object')
+          this.addEmployeExpenseForm.get('workType')?.clearValidators();
       });
   }
 

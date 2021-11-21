@@ -53,8 +53,8 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
       driverName: new FormControl(''),
       materialFrom: new FormControl(''),
       materialItem: new FormControl(''),
-      qtyType: new FormControl(''),
-      quantity: new FormControl(''),
+      qtyType: new FormControl('', Validators.required),
+      quantity: new FormControl('', Validators.required),
       deliveryDate: new FormControl(''),
       amount: new FormControl(0),
       amountPaid: new FormControl(0),
@@ -249,9 +249,17 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
       .get('no')
       ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value: any) => {
-        if (value && value !== null && typeof value === 'string') {
+        if (
+          value !== undefined &&
+          value !== null &&
+          typeof value === 'string'
+        ) {
           this.setAgreementList(value);
+          this.addVehicleExpenseForm.get('no')?.setErrors(Validators.required);
         }
+
+        if (typeof value === 'object')
+          this.addVehicleExpenseForm.get('no')?.clearValidators();
       });
   }
 
@@ -260,9 +268,19 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
       .get('vehicleType')
       ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value: any) => {
-        if (value && value !== null && typeof value === 'string') {
+        if (
+          value !== undefined &&
+          value !== null &&
+          typeof value === 'string'
+        ) {
           this.setVehicleTypeList(value);
+          this.addVehicleExpenseForm
+            .get('vehicleType')
+            ?.setErrors(Validators.required);
         }
+
+        if (typeof value === 'object')
+          this.addVehicleExpenseForm.get('vehicleType')?.clearValidators();
       });
   }
 
@@ -271,9 +289,19 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
       .get('driverName')
       ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value: any) => {
-        if (value && value !== null && typeof value === 'string') {
+        if (
+          value !== undefined &&
+          value !== null &&
+          typeof value === 'string'
+        ) {
           this.setEmployeeList(value);
+          this.addVehicleExpenseForm
+            .get('driverName')
+            ?.setErrors(Validators.required);
         }
+
+        if (typeof value === 'object')
+          this.addVehicleExpenseForm.get('driverName')?.clearValidators();
       });
   }
 
@@ -282,9 +310,19 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
       .get('materialFrom')
       ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value: any) => {
-        if (value && value !== null && typeof value === 'string') {
+        if (
+          value !== undefined &&
+          value !== null &&
+          typeof value === 'string'
+        ) {
           this.setLocationList(value);
+          this.addVehicleExpenseForm
+            .get('materialFrom')
+            ?.setErrors(Validators.required);
         }
+
+        if (typeof value === 'object')
+          this.addVehicleExpenseForm.get('materialFrom')?.clearValidators();
       });
   }
 
@@ -293,15 +331,23 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
       .get('materialItem')
       ?.valueChanges.pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value: any) => {
-        if (value && value !== null && typeof value === 'string') {
+        if (
+          value !== undefined &&
+          value !== null &&
+          typeof value === 'string'
+        ) {
           this.setMaterialList(value);
+          this.addVehicleExpenseForm
+            .get('materialItem')
+            ?.setErrors(Validators.required);
         }
+
+        if (typeof value === 'object')
+          this.addVehicleExpenseForm.get('materialItem')?.clearValidators();
       });
   }
 
   postFormData(): void {
-    this.loaderService.show();
-
     const requestBody = {
       vehicle_details:
         this.addVehicleExpenseForm.value &&
@@ -394,34 +440,42 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
           : null,
     };
 
-    const postDatSubs = this.agreementService
-      .postVehicleExpense(
-        requestBody,
-        this.editMode.isActive ? true : false,
-        this.editMode.agreementID ? this.editMode.agreementID : 0
-      )
-      .subscribe(
-        (resposne) => {
-          if (resposne) {
-            this.agreementService.vehicleExpUpdated$.next(true);
-            this.snackBarService.success(
-              this.editMode.isActive
-                ? 'Vehicle Expense updated Successfully'
-                : 'Vehicle Expense added Successfully ! ',
-              'Done'
-            );
-            this.addVehicleExpenseForm.reset();
-            if (this.editMode.isActive) this.dialogRef.close();
+    if (typeof this.addVehicleExpenseForm.value.no === 'object') {
+      this.loaderService.show();
+      const postDatSubs = this.agreementService
+        .postVehicleExpense(
+          requestBody,
+          this.editMode.isActive ? true : false,
+          this.editMode.agreementID ? this.editMode.agreementID : 0
+        )
+        .subscribe(
+          (resposne) => {
+            if (resposne) {
+              this.agreementService.vehicleExpUpdated$.next(true);
+              this.snackBarService.success(
+                this.editMode.isActive
+                  ? 'Vehicle Expense updated Successfully'
+                  : 'Vehicle Expense added Successfully ! ',
+                'Done'
+              );
+              this.addVehicleExpenseForm.reset();
+              if (this.editMode.isActive) this.dialogRef.close();
+            }
+            this.loaderService.hide();
+          },
+          (error) => {
+            console.log(error);
+            this.loaderService.hide();
           }
-          this.loaderService.hide();
-        },
-        (error) => {
-          console.log(error);
-          this.loaderService.hide();
-        }
-      );
+        );
 
-    this.subscriptionsArray.push(postDatSubs);
+      this.subscriptionsArray.push(postDatSubs);
+    } else {
+      this.snackBarService.error(
+        'Unable to create ! Agreement field is not valid ',
+        'Done'
+      );
+    }
   }
 
   closeDialogBox(): void {}

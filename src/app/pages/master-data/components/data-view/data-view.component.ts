@@ -133,7 +133,7 @@ export class DataViewComponent implements OnChanges, OnDestroy {
       } else if (this.pageAttributes.currentPage === 0) {
         this.paramList.push(`offset=${this.pageAttributes.currentPage}`);
       }
-      
+
       if (this.paramList.length > 0) {
         this.paramList.map((par) => {
           paramUrl = paramUrl + par + '&';
@@ -157,13 +157,14 @@ export class DataViewComponent implements OnChanges, OnDestroy {
   }
 
   private setTable(data: MasterDataResponseModel): void {
-    const columns = data.results
+    let columns = data.results
       .reduce((columns: any, row) => {
         return [...columns, ...Object.keys(row)];
       }, [])
       .reduce((columns: any, column: any) => {
         return columns.includes(column) ? columns : [...columns, column];
-      }, []);
+      }, [])
+      .filter((el: any) => el !== 'state' && el !== 'district');
 
     this.columns = columns.map((column: any) => {
       return {
@@ -179,9 +180,13 @@ export class DataViewComponent implements OnChanges, OnDestroy {
           }`,
       };
     });
+
     this.displayedColumns = this.columns.map((c) => c.columnDef);
     this.displayedColumns.shift();
+    this.displayedColumns.pop();
     this.displayedColumns.push('actions');
+
+    this.columns.map((el) => (el.header = el.header.split('_').shift()));
   }
 
   handlePage(event: PageAttrEventModel): void {

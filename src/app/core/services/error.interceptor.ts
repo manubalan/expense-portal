@@ -9,6 +9,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, filter, switchMap, take, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/authentication/services/auth.service';
 import { TokenModel } from '../models/auth.model';
+import { SnackBarService } from 'src/app/shared';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -70,6 +71,11 @@ export class ErrorInterceptor implements HttpInterceptor {
         }
         if ([403].indexOf(err.status) !== -1) {
           this.authenticationService.logout();
+        }
+
+        if ([400].indexOf(err.status) !== -1) {
+console.log('---------------- ',err);
+
         }
 
         const error = err.error.message;

@@ -53,7 +53,6 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const subjectSubs = this.agreementService.vehicleExpUpdated$.subscribe(
       (update) => {
-        debugger;
         if (update) {
           this.getVehicleExpenseList();
         }

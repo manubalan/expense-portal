@@ -125,7 +125,7 @@ export class AgreementService {
 
   getEmpExpense(): Observable<EmployeeExpenseResponseModel> {
     return this.http.get<EmployeeExpenseResponseModel>(
-      'http://18.118.104.163:8000/api/employees-expenses/'
+      API_END_POINT.agreement.employee_expense,
     );
   }
 
