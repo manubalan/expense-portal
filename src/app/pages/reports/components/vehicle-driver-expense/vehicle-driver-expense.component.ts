@@ -216,6 +216,8 @@ export class VehicleDriverExpenseComponent implements OnInit, OnDestroy {
 
   resetSearch(): void {
     this.vehicleFilterForm.reset();
+    this.pageAttributes.pageSize = this.pageAttributes.pageSizeOpt[0];
+    this.pageAttributes.currentPage = 0;
     this.searchNow();
   }
 

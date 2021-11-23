@@ -1,5 +1,5 @@
-export const APP_BASE_URL = 'http://18.118.104.163';
-export const BASE_PORT = '5000';
+export const APP_BASE_URL = 'https://pullattugroup.com';
+export const BASE_PORT = '8000';
 
 export const environment = {
   production: false,

@@ -179,6 +179,8 @@ export class DriverExpenseComponent implements OnInit, OnDestroy {
 
   resetSearch(): void {
     this.driverFilterForm.reset();
+    this.pageAttributes.pageSize = this.pageAttributes.pageSizeOpt[0];
+    this.pageAttributes.currentPage = 0;
     this.searchNow();
   }
 
