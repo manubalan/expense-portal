@@ -36,7 +36,7 @@ import { AddVehicleExpensesComponent } from '../add-vehicle-expenses/add-vehicle
 export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [];
   dataSource: any;
-  pageAttributes: PageAttrModel = PAGE_ATTR_DATA;
+  pageAttributes: PageAttrModel = {...PAGE_ATTR_DATA};
 
   subscriptionArray: Subscription[] = [];
 

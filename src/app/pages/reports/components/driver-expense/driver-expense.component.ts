@@ -21,7 +21,7 @@ export class DriverExpenseComponent implements OnInit, OnDestroy {
   agreementList: any[] = [];
   driverList: any[] = [];
   hasResult = false;
-  pageAttributes: PageAttrModel = PAGE_ATTR_DATA;
+  pageAttributes: PageAttrModel = {...PAGE_ATTR_DATA};
 
   subscriptionArray: Subscription[] = [];
 

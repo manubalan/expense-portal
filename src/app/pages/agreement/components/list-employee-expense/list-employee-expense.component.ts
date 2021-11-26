@@ -21,7 +21,7 @@ import { AddEmployeExpenseComponent } from '../add-employe-expense/add-employe-e
 export class ListEmployeeExpenseComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [];
   dataSource: any;
-  pageAttributes: PageAttrModel = PAGE_ATTR_DATA;
+  pageAttributes: PageAttrModel = {...PAGE_ATTR_DATA};
 
   subscriptionArray: Subscription[] = [];
 

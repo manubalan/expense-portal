@@ -40,7 +40,7 @@ import { AddAgreementComponent } from '../add-agreement/add-agreement.component'
 export class ListAgreementComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [];
   agreementListData: AgreementListResultModel[] = [];
-  pageAttributes: PageAttrModel = PAGE_ATTR_DATA;
+  pageAttributes: PageAttrModel = {...PAGE_ATTR_DATA};
 
   subscriptionArray: Subscription[] = [];
 

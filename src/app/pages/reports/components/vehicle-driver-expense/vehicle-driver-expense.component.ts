@@ -28,7 +28,7 @@ export class VehicleDriverExpenseComponent implements OnInit, OnDestroy {
   agreementList: any[] = [];
   employeeList: any[] = [];
   hasResult = false;
-  pageAttributes: PageAttrModel = PAGE_ATTR_DATA;
+  pageAttributes: PageAttrModel = {...PAGE_ATTR_DATA};
 
   subscriptionArray: Subscription[] = [];
 

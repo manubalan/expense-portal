@@ -24,7 +24,7 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
   locationList: any[] = [];
   materialList: any[] = [];
   hasResult = false;
-  pageAttributes: PageAttrModel = PAGE_ATTR_DATA;
+  pageAttributes: PageAttrModel = {...PAGE_ATTR_DATA};
 
   subscriptionArray: Subscription[] = [];
 

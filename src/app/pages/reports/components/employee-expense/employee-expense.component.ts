@@ -31,7 +31,7 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
   workTypeList: any[] = [];
   dayList: any[] = [];
   hasResult = false;
-  pageAttributes: PageAttrModel = PAGE_ATTR_DATA;
+  pageAttributes: PageAttrModel = {...PAGE_ATTR_DATA};
 
   subscriptionArray: Subscription[] = [];
 

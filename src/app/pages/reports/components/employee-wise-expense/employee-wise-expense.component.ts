@@ -23,7 +23,7 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
   employeList: any[] = [];
   workTypeList: any[] = [];
   hasResults = false;
-  pageAttributes: PageAttrModel = PAGE_ATTR_DATA;
+  pageAttributes: PageAttrModel = {...PAGE_ATTR_DATA};
 
   subscriptionArray: Subscription[] = [];
 
