@@ -14,6 +14,7 @@ import {
   ListEmployeeExpenseComponent,
   ListVehicleExpenseComponent,
 } from './components';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,6 @@ import {
     AgreementRoutingModule,
     ReactiveFormsModule,
     MaterialModule,
-  ],
+  ]
 })
 export class AgreementModule {}

@@ -5,6 +5,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { DateAdapter } from '@angular/material/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -43,7 +44,8 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
     private agreementService: AgreementService,
     private loaderService: LoaderService,
     private snackBarService: SnackBarService,
-    private dialogRef: MatDialogRef<AddEmployeExpenseComponent>
+    private dialogRef: MatDialogRef<AddEmployeExpenseComponent>,
+    private dateAdapter: DateAdapter<Date>
   ) {
     this.addEmployeExpenseForm = this.fbuilder.group({
       agreementNo: new FormControl('', Validators.required),
@@ -56,6 +58,7 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
       paid_date: new FormControl(''),
       narration: new FormControl(''),
     });
+    this.dateAdapter.setLocale('en-GB'); 
   }
 
   ngOnInit(): void {

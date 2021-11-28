@@ -7,5 +7,5 @@ import { MasterDataGridModel, MASTER_DATA_GRID } from 'src/app/core';
   styleUrls: ['./master-data.component.scss'],
 })
 export class MasterDataComponent {
-  masterDataGrids: MasterDataGridModel[] = MASTER_DATA_GRID;
+  masterDataGrids: MasterDataGridModel[] = [...MASTER_DATA_GRID];
 }

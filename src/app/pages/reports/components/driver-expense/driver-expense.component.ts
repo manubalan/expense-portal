@@ -46,7 +46,7 @@ export class DriverExpenseComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.displayedColumns = ['driver_name__name', 'betha', 'betha_paid'];
+    this.displayedColumns = ['driver_name__name', 'betha', 'betha_paid', 'balance'];
     this.searchNow();
   }
 

@@ -27,6 +27,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { LoaderService } from 'src/app/shared/components/loader/loader.component';
 import { SnackBarService } from 'src/app/shared/components/snack-bar/snack-bar.service';
 import { MatDialogRef } from '@angular/material/dialog';
+import { DateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'ems-add-agreement',
@@ -63,7 +64,8 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
     private agreementService: AgreementService,
     private loaderService: LoaderService,
     private snackBarService: SnackBarService,
-    private dialogRef: MatDialogRef<AddAgreementComponent>
+    private dialogRef: MatDialogRef<AddAgreementComponent>,
+    private dateAdapter: DateAdapter<Date>
   ) {
     this.addAgreementForm = this.fbuilder.group({
       no: new FormControl('', Validators.required),
@@ -82,6 +84,7 @@ export class AddAgreementComponent implements OnInit, OnDestroy {
       endDate: new FormControl(''),
       naration: new FormControl(''),
     });
+    this.dateAdapter.setLocale('en-GB'); 
   }
 
   ngOnInit(): void {

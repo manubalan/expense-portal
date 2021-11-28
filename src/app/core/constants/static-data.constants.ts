@@ -187,7 +187,7 @@ export const MASTER_DATA_GRID: MasterDataGridModel[] = [
   {
     gridTitle: 'Location',
     apiEnd: 'locations',
-    fieldLabels: ['Location', 'States'],
+    fieldLabels: ['Location', 'Districts'],
     fields: ['name', 'district'],
     extraField: {
       endPoint: 'districts/',

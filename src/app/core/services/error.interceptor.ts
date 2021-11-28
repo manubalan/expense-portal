@@ -74,8 +74,6 @@ export class ErrorInterceptor implements HttpInterceptor {
         }
 
         if ([400].indexOf(err.status) !== -1) {
-console.log('---------------- ',err);
-
         }
 
         const error = err.error.message;

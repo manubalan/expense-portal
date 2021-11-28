@@ -43,7 +43,7 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.displayedColumnsWise = ['name__name', 'kooli', 'kooli_paid'];
+    this.displayedColumnsWise = ['name__name', 'kooli', 'kooli_paid', 'balance'];
     this.searchNow();
     this.getAgreementList();
     this.getEmployeeList();

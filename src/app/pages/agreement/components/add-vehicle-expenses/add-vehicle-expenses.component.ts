@@ -5,6 +5,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { DateAdapter } from '@angular/material/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -44,7 +45,8 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     private agreementService: AgreementService,
     private loaderService: LoaderService,
     private snackBarService: SnackBarService,
-    private dialogRef: MatDialogRef<AddVehicleExpensesComponent>
+    private dialogRef: MatDialogRef<AddVehicleExpensesComponent>,
+    private dateAdapter: DateAdapter<Date>
   ) {
     this.addVehicleExpenseForm = this.fbuilder.group({
       no: new FormControl('', Validators.required),
@@ -65,6 +67,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
       narration: new FormControl(''),
       totalAmount: new FormControl(0),
     });
+    this.dateAdapter.setLocale('en-GB');
   }
 
   ngOnInit(): void {
