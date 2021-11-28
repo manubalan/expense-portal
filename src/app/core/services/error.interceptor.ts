@@ -69,6 +69,7 @@ export class ErrorInterceptor implements HttpInterceptor {
             }
           }
         }
+        
         if ([403].indexOf(err.status) !== -1) {
           this.authenticationService.logout();
         }
