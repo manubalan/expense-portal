@@ -277,8 +277,8 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
           : 0,
       paid_date:
         this.addEmployeExpenseForm.value &&
-        this.addEmployeExpenseForm.value.date
-          ? moment(this.addEmployeExpenseForm.value.date).format('YYYY-MM-DD')
+        this.addEmployeExpenseForm.value.paid_date
+          ? moment(this.addEmployeExpenseForm.value.paid_date).format('YYYY-MM-DD')
           : null,
       narration:
         this.addEmployeExpenseForm.value &&
@@ -286,7 +286,7 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
           ? this.addEmployeExpenseForm.value.narration
           : '',
     };
-
+debugger
     const postDatSubs = this.agreementService
       .postEmployeeExpense(
         requestBody,
