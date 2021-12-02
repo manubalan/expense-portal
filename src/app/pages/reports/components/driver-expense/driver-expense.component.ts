@@ -2,7 +2,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { MasterDataService, PageAttrEventModel, PageAttrModel, PAGE_ATTR_DATA } from 'src/app/core';
+import {
+  MasterDataService,
+  PageAttrEventModel,
+  PageAttrModel,
+  PAGE_ATTR_DATA,
+} from 'src/app/core';
 import { AgreementService } from 'src/app/pages/agreement/services';
 import { LoaderService } from 'src/app/shared';
 import { ReportService } from '../../services/report.services';
@@ -21,7 +26,7 @@ export class DriverExpenseComponent implements OnInit, OnDestroy {
   agreementList: any[] = [];
   driverList: any[] = [];
   hasResult = false;
-  pageAttributes: PageAttrModel = {...PAGE_ATTR_DATA};
+  pageAttributes: PageAttrModel = { ...PAGE_ATTR_DATA };
 
   subscriptionArray: Subscription[] = [];
 
@@ -46,7 +51,12 @@ export class DriverExpenseComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.displayedColumns = ['driver_name__name', 'betha', 'betha_paid', 'balance'];
+    this.displayedColumns = [
+      'driver_name__name',
+      'betha',
+      'betha_paid',
+      'balance',
+    ];
     this.searchNow();
   }
 
@@ -55,9 +65,7 @@ export class DriverExpenseComponent implements OnInit, OnDestroy {
       .get('agreement')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value: any) => {
-        if (value && value !== null && typeof value === 'string') {
-          this.getAgreementList(value);
-        }
+        if (typeof value === 'string') this.getAgreementList(value);
       });
     if (detectSubs) this.subscriptionArray.push(detectSubs);
 
@@ -65,9 +73,7 @@ export class DriverExpenseComponent implements OnInit, OnDestroy {
       .get('driverName')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value: any) => {
-        if (value && value !== null && typeof value === 'string') {
-          this.getDriverList(value);
-        }
+        if (typeof value === 'string') this.getDriverList(value);
       });
     if (empSubs) this.subscriptionArray.push(empSubs);
   }
@@ -126,7 +132,7 @@ export class DriverExpenseComponent implements OnInit, OnDestroy {
     } else if (this.pageAttributes.currentPage === 0) {
       paramList.push(`offset=${this.pageAttributes.currentPage}`);
     }
-    
+
     if (
       this.driverFilterForm.value.agreement &&
       this.driverFilterForm.value.agreement.id
@@ -166,7 +172,7 @@ export class DriverExpenseComponent implements OnInit, OnDestroy {
     this.pageAttributes.pageSize = event.pageSize
       ? event.pageSize
       : this.pageAttributes.pageSize;
-      if (event.pageIndex !== undefined)
+    if (event.pageIndex !== undefined)
       this.pageAttributes.currentPage =
         event.pageIndex >= 0
           ? event.pageIndex
@@ -182,6 +188,10 @@ export class DriverExpenseComponent implements OnInit, OnDestroy {
     this.pageAttributes.pageSize = this.pageAttributes.pageSizeOpt[0];
     this.pageAttributes.currentPage = 0;
     this.searchNow();
+  }
+
+  downloadNow(): void {
+    return;
   }
 
   ngOnDestroy(): void {

@@ -63,14 +63,16 @@
       </mat-expansion-panel>
 
       <mat-expansion-panel hideToggle [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Reports
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
         <ng-container *ngIf="hasResults; else elseTemplate">
           <mat-card-content>
-            <!-- <mat-form-field appearance="standard">
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input>
-  </mat-form-field> -->
 
-            <div class="mat-elevation-z0">
+            <div class="mat-elevation-z0 table-container">
               <table mat-table [dataSource]="employeeWiseData" matSort>
 
                 <ng-container matColumnDef="name__name">
@@ -97,16 +99,24 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumnsWise;"></tr>
               </table>
 
-              <mat-paginator [length]="pageAttributes.totalRecord" [pageIndex]="pageAttributes.currentPage"
-                [pageSize]="pageAttributes.pageSize" [pageSizeOptions]="pageAttributes.pageSizeOpt"
-                [showFirstLastButtons]="pageAttributes.firstLastEnable" (page)="handlePage($event)">
-              </mat-paginator>
+              <footer class="card-footer">
+                <button mat-stroked-button color="primary" (click)="downloadNow()">Download <mat-icon>download
+                  </mat-icon>
+                </button>
+
+                <mat-paginator [length]="pageAttributes.totalRecord" [pageIndex]="pageAttributes.currentPage"
+                  [pageSize]="pageAttributes.pageSize" [pageSizeOptions]="pageAttributes.pageSizeOpt"
+                  [showFirstLastButtons]="pageAttributes.firstLastEnable" (page)="handlePage($event)">
+                </mat-paginator>
+              </footer>
+
             </div>
           </mat-card-content>
         </ng-container>
         <ng-template #elseTemplate>
-          <mat-card-content>
-            <h5>No Data</h5>
+          <mat-card-content class="no-data-block">
+            <mat-icon>mood_bad</mat-icon>
+            <h5>No Results</h5>
           </mat-card-content>
         </ng-template>
 

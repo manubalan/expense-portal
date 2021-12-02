@@ -88,9 +88,11 @@ export class AgreementService {
     }
   }
 
-  getVehicleExpense(): Observable<VehicleExpenseResponseModel> {
+  getVehicleExpense(param?: string): Observable<VehicleExpenseResponseModel> {
     return this.http.get<VehicleExpenseResponseModel>(
-      API_END_POINT.agreement.vehicle_expense
+      `${API_END_POINT.agreement.vehicle_expense}${
+        param !== undefined ? param : ''
+      }`
     );
   }
 
@@ -123,9 +125,11 @@ export class AgreementService {
     }
   }
 
-  getEmpExpense(): Observable<EmployeeExpenseResponseModel> {
+  getEmpExpense(param?: string): Observable<EmployeeExpenseResponseModel> {
     return this.http.get<EmployeeExpenseResponseModel>(
-      API_END_POINT.agreement.employee_expense,
+      `${API_END_POINT.agreement.employee_expense}${
+        param !== undefined ? param : ''
+      }`
     );
   }
 

@@ -31,7 +31,7 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
   workTypeList: any[] = [];
   dayList: any[] = [];
   hasResult = false;
-  pageAttributes: PageAttrModel = {...PAGE_ATTR_DATA};
+  pageAttributes: PageAttrModel = { ...PAGE_ATTR_DATA };
 
   subscriptionArray: Subscription[] = [];
 
@@ -79,9 +79,7 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
       .get('agreement')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value: any) => {
-        if (value && value !== null && typeof value === 'string') {
-          this.getAgreementList(value);
-        }
+        if (typeof value === 'string') this.getAgreementList(value);
       });
     if (detectSubs) this.subscriptionArray.push(detectSubs);
 
@@ -89,9 +87,7 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
       .get('employee')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value: any) => {
-        if (value && value !== null && typeof value === 'string') {
-          this.getEmployeeList(value);
-        }
+        if (typeof value === 'string') this.getEmployeeList(value);
       });
     if (empSubs) this.subscriptionArray.push(empSubs);
 
@@ -99,9 +95,7 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
       .get('workType')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value: any) => {
-        if (value && value !== null && typeof value === 'string') {
-          this.getWorkTypeList(value);
-        }
+        if (typeof value === 'string') this.getWorkTypeList(value);
       });
     if (workSubs) this.subscriptionArray.push(workSubs);
   }
@@ -187,7 +181,7 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
     } else if (this.pageAttributes.currentPage === 0) {
       paramList.push(`offset=${this.pageAttributes.currentPage}`);
     }
-    
+
     if (
       this.agreementFilter.value.agreement &&
       this.agreementFilter.value.agreement.id
@@ -250,7 +244,7 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
     this.pageAttributes.pageSize = event.pageSize
       ? event.pageSize
       : this.pageAttributes.pageSize;
-      if (event.pageIndex !== undefined)
+    if (event.pageIndex !== undefined)
       this.pageAttributes.currentPage =
         event.pageIndex >= 0
           ? event.pageIndex
@@ -266,6 +260,10 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
     this.pageAttributes.pageSize = this.pageAttributes.pageSizeOpt[0];
     this.pageAttributes.currentPage = 0;
     this.searchNow();
+  }
+
+  downloadNow(): void {
+    return;
   }
 
   ngOnDestroy(): void {

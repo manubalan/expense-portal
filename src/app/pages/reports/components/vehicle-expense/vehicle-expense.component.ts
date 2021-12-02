@@ -3,7 +3,12 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { MasterDataService, PageAttrEventModel, PageAttrModel, PAGE_ATTR_DATA } from 'src/app/core';
+import {
+  MasterDataService,
+  PageAttrEventModel,
+  PageAttrModel,
+  PAGE_ATTR_DATA,
+} from 'src/app/core';
 import { AgreementService } from 'src/app/pages/agreement/services';
 import { LoaderService } from 'src/app/shared';
 import { ReportService } from '../../services/report.services';
@@ -24,7 +29,7 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
   locationList: any[] = [];
   materialList: any[] = [];
   hasResult = false;
-  pageAttributes: PageAttrModel = {...PAGE_ATTR_DATA};
+  pageAttributes: PageAttrModel = { ...PAGE_ATTR_DATA };
 
   subscriptionArray: Subscription[] = [];
 
@@ -75,9 +80,7 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
       .get('agreement')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value: any) => {
-        if (value && value !== null && typeof value === 'string') {
-          this.getAgreementList(value);
-        }
+        if (typeof value === 'string') this.getAgreementList(value);
       });
     if (detectSubs) this.subscriptionArray.push(detectSubs);
 
@@ -85,9 +88,7 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
       .get('location')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value: any) => {
-        if (value && value !== null && typeof value === 'string') {
-          this.getLocationList(value);
-        }
+        if (typeof value === 'string') this.getLocationList(value);
       });
     if (empSubs) this.subscriptionArray.push(empSubs);
 
@@ -95,9 +96,7 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
       .get('material')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value: any) => {
-        if (value && value !== null && typeof value === 'string') {
-          this.getMaterialList(value);
-        }
+        if (typeof value === 'string') this.getMaterialList(value);
       });
     if (workSubs) this.subscriptionArray.push(workSubs);
   }
@@ -126,9 +125,7 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
     const empSubs = this.masterService
       .getLocationsList(
         0,
-        search !== null && search !== undefined
-          ? `search=${search}`
-          : undefined
+        search !== null && search !== undefined ? `search=${search}` : undefined
       )
       .subscribe((data) => {
         if (data && data.results) {
@@ -176,7 +173,7 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
     } else if (this.pageAttributes.currentPage === 0) {
       paramList.push(`offset=${this.pageAttributes.currentPage}`);
     }
-    
+
     if (
       this.vehicleFilterForm.value.agreement &&
       this.vehicleFilterForm.value.agreement.id
@@ -241,7 +238,7 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
     this.pageAttributes.pageSize = event.pageSize
       ? event.pageSize
       : this.pageAttributes.pageSize;
-      if (event.pageIndex !== undefined)
+    if (event.pageIndex !== undefined)
       this.pageAttributes.currentPage =
         event.pageIndex >= 0
           ? event.pageIndex
@@ -257,6 +254,10 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
     this.pageAttributes.pageSize = this.pageAttributes.pageSizeOpt[0];
     this.pageAttributes.currentPage = 0;
     this.searchNow();
+  }
+
+  downloadNow(): void {
+    return;
   }
 
   ngOnDestroy(): void {

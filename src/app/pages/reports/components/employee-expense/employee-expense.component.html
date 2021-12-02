@@ -80,10 +80,15 @@
       </mat-expansion-panel>
 
       <mat-expansion-panel hideToggle [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Reports
+          </mat-panel-title>
+        </mat-expansion-panel-header>
 
         <ng-container *ngIf="hasResult; else elseTemplate">
           <mat-card-content>
-            <div class="mat-elevation-z0">
+            <div class="mat-elevation-z0 table-container">
               <table mat-table [dataSource]="employeeData" matSort>
 
                 <ng-container matColumnDef="id">
@@ -93,12 +98,12 @@
 
                 <ng-container matColumnDef="created_on">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header> From Date </th>
-                  <td mat-cell *matCellDef="let row"> {{row?.created_on | date}} </td>
+                  <td mat-cell *matCellDef="let row"> {{row?.created_on | date: 'dd/MM/YYY'}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="work_date">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header> Work Date </th>
-                  <td mat-cell *matCellDef="let row"> {{row?.work_date | date}} </td>
+                  <td mat-cell *matCellDef="let row"> {{row?.work_date | date: 'dd/MM/YYY'}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="location">
@@ -118,12 +123,12 @@
 
                 <ng-container matColumnDef="paid_date">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header> Paid Date</th>
-                  <td mat-cell *matCellDef="let row"> {{row?.paid_date | date}} </td>
+                  <td mat-cell *matCellDef="let row"> {{row?.paid_date | date: 'dd/MM/YYY'}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="updated_on">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header> To Date </th>
-                  <td mat-cell *matCellDef="let row"> {{row?.updated_on | date}} </td>
+                  <td mat-cell *matCellDef="let row"> {{row?.updated_on | date: 'dd/MM/YYY'}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="agreement">
@@ -146,20 +151,28 @@
                   <td mat-cell *matCellDef="let row"> {{row?.work_type_details?.name}} </td>
                 </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
               </table>
 
-              <mat-paginator [length]="pageAttributes.totalRecord" [pageIndex]="pageAttributes.currentPage"
-                [pageSize]="pageAttributes.pageSize" [pageSizeOptions]="pageAttributes.pageSizeOpt"
-                [showFirstLastButtons]="pageAttributes.firstLastEnable" (page)="handlePage($event)">
-              </mat-paginator>
+              <footer class="card-footer">
+                <button mat-stroked-button color="primary" (click)="downloadNow()">Download <mat-icon>download
+                  </mat-icon>
+                </button>
+
+                <mat-paginator [length]="pageAttributes.totalRecord" [pageIndex]="pageAttributes.currentPage"
+                  [pageSize]="pageAttributes.pageSize" [pageSizeOptions]="pageAttributes.pageSizeOpt"
+                  [showFirstLastButtons]="pageAttributes.firstLastEnable" (page)="handlePage($event)">
+                </mat-paginator>
+              </footer>
+
             </div>
           </mat-card-content>
         </ng-container>
         <ng-template #elseTemplate>
-          <mat-card-content>
-            <h5>No Data</h5>
+          <mat-card-content class="no-data-block">
+            <mat-icon>mood_bad</mat-icon>
+            <h5>No Results</h5>
           </mat-card-content>
         </ng-template>
 

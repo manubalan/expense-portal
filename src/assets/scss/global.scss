@@ -185,7 +185,8 @@ ems-root {
 
   .main-wrap {
     background-color: #f6f8fa;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: auto;
 
     @media screen and (max-width: $medium) {
       padding: 70px 20px 20px 20px;
@@ -303,3 +304,47 @@ ems-root {
     color: #fff;
   }
 }
+
+.mat-expansion-panel-header-title{
+  font-size: 18px;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+}
+
+.no-data-block {
+  min-height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  row-gap: 10px;
+
+  mat-icon{
+    color: #ccc;
+    font-size: 72px;
+    height: 72px;
+    width: 72px;
+  }
+
+  h5 {
+    color: #ccc;
+    font-size: 18px;
+    font-weight: 400;
+  }
+}
+
+ems-root .card-footer .mat-button-base .mat-button-wrapper {
+  height: 40px;
+}
+
+.card-footer{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// .table-container {
+//   max-height: calc(100vh - 180px);
+//   max-width: 100%;
+//   overflow: auto;
+// }

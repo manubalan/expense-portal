@@ -1,11 +1,14 @@
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { PageAttrEventModel, PageAttrModel, PAGE_ATTR_DATA } from 'src/app/core';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {
+  MasterDataService,
+  PageAttrEventModel,
+  PageAttrModel,
+  PAGE_ATTR_DATA,
+} from 'src/app/core';
 import {
   DialogBoxService,
   LoaderService,
@@ -21,25 +24,40 @@ import { AddEmployeExpenseComponent } from '../add-employe-expense/add-employe-e
 export class ListEmployeeExpenseComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [];
   dataSource: any;
-  pageAttributes: PageAttrModel = {...PAGE_ATTR_DATA};
+  pageAttributes: PageAttrModel = { ...PAGE_ATTR_DATA };
 
   subscriptionArray: Subscription[] = [];
+
+  hasResult = false;
+  employeeFilterForm: FormGroup;
+  agreementList: any[] = [];
+  employeeList: any[] = [];
+  workTypeList: any[] = [];
 
   constructor(
     public dialog: MatDialog,
     private agreementService: AgreementService,
     private loaderService: LoaderService,
     private dialogeService: DialogBoxService,
-    private snackBarService: SnackBarService
+    private snackBarService: SnackBarService,
+    private fBuilder: FormBuilder,
+    private masterService: MasterDataService
   ) {
-    this.getEmpExpenseList();
+    this.employeeFilterForm = this.fBuilder.group({
+      agreement: new FormControl(null),
+      employee: new FormControl(null),
+      workType: new FormControl(null),
+    });
+
+    this.setFilterLists();
+    this.searchNow();
   }
 
   ngOnInit(): void {
     const subjectSubs = this.agreementService.vehicleExpUpdated$.subscribe(
       (update) => {
         if (update) {
-          this.getEmpExpenseList();
+          this.searchNow();
         }
       }
     );
@@ -57,38 +75,6 @@ export class ListEmployeeExpenseComponent implements OnInit, OnDestroy {
       'paid_date',
       'action',
     ];
-  }
-
-  getEmpExpenseList(): void {
-    const paramList = [];
-    let paramUrl = '';
-    if (this.pageAttributes.pageSize > 0) {
-      paramList.push(`limit=${this.pageAttributes.pageSize}`);
-    }
-    if (this.pageAttributes.currentPage > 0) {
-      paramList.push(
-        `offset=${
-          this.pageAttributes.currentPage * this.pageAttributes.pageSize
-        }`
-      );
-    } else if (this.pageAttributes.currentPage === 0) {
-      paramList.push(`offset=${this.pageAttributes.currentPage}`);
-    }
-
-    if (paramList.length > 0) {
-      paramList.map((par) => {
-        paramUrl = paramUrl + par + '&';
-      });
-    }
-
-    this.loaderService.show();
-    this.agreementService.getEmpExpense().subscribe((data) => {
-      this.loaderService.hide();
-      if (data && data.results) {
-        this.dataSource = data.results;
-        if (data.count) this.pageAttributes.totalRecord = data.count;
-      }
-    });
   }
 
   editEmployeeExpense(ID: number): void {
@@ -126,7 +112,7 @@ export class ListEmployeeExpenseComponent implements OnInit, OnDestroy {
     this.pageAttributes.pageSize = event.pageSize
       ? event.pageSize
       : this.pageAttributes.pageSize;
-      if (event.pageIndex !== undefined)
+    if (event.pageIndex !== undefined)
       this.pageAttributes.currentPage =
         event.pageIndex >= 0
           ? event.pageIndex
@@ -134,7 +120,158 @@ export class ListEmployeeExpenseComponent implements OnInit, OnDestroy {
     this.pageAttributes.prevPage = event.previousPageIndex
       ? event.previousPageIndex
       : this.pageAttributes.prevPage;
-    this.getEmpExpenseList();
+    this.searchNow();
+  }
+
+  // Filter Functions
+  public employeeOptionView(option: any): string {
+    return option ? option.name : '';
+  }
+
+  public agreementOptionView(option: any): string {
+    return option ? `${option.agreement_number} - ${option.name}` : '';
+  }
+
+  setFilterLists(): void {
+    this.setAgreementList();
+    this.setEmployeeList();
+    this.setWorkTypeList();
+    this.detectFilterForms();
+  }
+
+  setAgreementList(search?: string): void {
+    const agreementSubs = this.agreementService
+      .getAgreements(
+        search !== null && search !== undefined
+          ? `?search=${search}`
+          : undefined
+      )
+      .subscribe((data) => {
+        if (data && data.results) {
+          this.agreementList = data.results;
+        }
+      });
+
+    this.subscriptionArray.push(agreementSubs);
+  }
+
+  setEmployeeList(search?: string): void {
+    const empSubs = this.masterService
+      .getEmployeesList(
+        search !== null && search !== undefined
+          ? `?search=${search}`
+          : undefined
+      )
+      .subscribe((data) => {
+        if (data && data.results) {
+          this.employeeList = data.results;
+        }
+      });
+    this.subscriptionArray.push(empSubs);
+  }
+
+  setWorkTypeList(search?: string): void {
+    const workSubs = this.masterService
+      .getWorktypesList(
+        search !== null && search !== undefined
+          ? `?search=${search}`
+          : undefined
+      )
+      .subscribe((data) => {
+        if (data && data.results) {
+          this.workTypeList = data.results;
+        }
+      });
+    this.subscriptionArray.push(workSubs);
+  }
+
+  detectFilterForms(): void {
+    const detectSubs = this.employeeFilterForm
+      .get('agreement')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (typeof value === 'string') this.setAgreementList(value);
+      });
+    if (detectSubs) this.subscriptionArray.push(detectSubs);
+
+    const empSubs = this.employeeFilterForm
+      .get('employee')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (typeof value === 'string') this.setEmployeeList(value);
+      });
+    if (empSubs) this.subscriptionArray.push(empSubs);
+
+    const workSubs = this.employeeFilterForm
+      .get('workType')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (typeof value === 'string') this.setWorkTypeList(value);
+      });
+    if (workSubs) this.subscriptionArray.push(workSubs);
+  }
+
+  searchNow(): void {
+    const paramList = [];
+    let paramUrl = '';
+    if (this.pageAttributes.pageSize > 0) {
+      paramList.push(`limit=${this.pageAttributes.pageSize}`);
+    }
+    if (this.pageAttributes.currentPage > 0) {
+      paramList.push(
+        `offset=${
+          this.pageAttributes.currentPage * this.pageAttributes.pageSize
+        }`
+      );
+    } else if (this.pageAttributes.currentPage === 0) {
+      paramList.push(`offset=${this.pageAttributes.currentPage}`);
+    }
+
+    if (
+      this.employeeFilterForm.value.agreement &&
+      this.employeeFilterForm.value.agreement.id
+    ) {
+      paramList.push(`agreement=${this.employeeFilterForm.value.agreement.id}`);
+    }
+
+    if (
+      this.employeeFilterForm.value.employee &&
+      this.employeeFilterForm.value.employee.id
+    ) {
+      paramList.push(`name=${this.employeeFilterForm.value.employee.id}`);
+    }
+
+    if (
+      this.employeeFilterForm.value.workType &&
+      this.employeeFilterForm.value.workType.id
+    ) {
+      paramList.push(`work_type=${this.employeeFilterForm.value.workType.id}`);
+    }
+
+    if (paramList.length > 0) {
+      paramList.map((par) => {
+        paramUrl = paramUrl + par + '&';
+      });
+    }
+
+    this.loaderService.show();
+    this.agreementService
+      .getEmpExpense(`?` + paramUrl.slice(0, -1))
+      .subscribe((data) => {
+        this.loaderService.hide();
+        if (data && data.results) {
+          this.dataSource = data.results;
+          this.hasResult = data.results.length > 0 ? true : false;
+          if (data.count) this.pageAttributes.totalRecord = data.count;
+        }
+      });
+  }
+
+  resetSearch(): void {
+    this.employeeFilterForm.reset();
+    this.pageAttributes.pageSize = this.pageAttributes.pageSizeOpt[0];
+    this.pageAttributes.currentPage = 0;
+    this.searchNow();
   }
 
   ngOnDestroy(): void {

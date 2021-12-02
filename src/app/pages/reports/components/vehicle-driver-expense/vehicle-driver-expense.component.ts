@@ -28,7 +28,7 @@ export class VehicleDriverExpenseComponent implements OnInit, OnDestroy {
   agreementList: any[] = [];
   employeeList: any[] = [];
   hasResult = false;
-  pageAttributes: PageAttrModel = {...PAGE_ATTR_DATA};
+  pageAttributes: PageAttrModel = { ...PAGE_ATTR_DATA };
 
   subscriptionArray: Subscription[] = [];
 
@@ -77,9 +77,7 @@ export class VehicleDriverExpenseComponent implements OnInit, OnDestroy {
       .get('agreement')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value: any) => {
-        if (value && value !== null && typeof value === 'string') {
-          this.getAgreementList(value);
-        }
+        if (typeof value === 'string') this.getAgreementList(value);
       });
     if (detectSubs) this.subscriptionArray.push(detectSubs);
 
@@ -87,9 +85,7 @@ export class VehicleDriverExpenseComponent implements OnInit, OnDestroy {
       .get('employee')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value: any) => {
-        if (value && value !== null && typeof value === 'string') {
-          this.getEmployeeList(value);
-        }
+        if (typeof value === 'string') this.getEmployeeList(value);
       });
     if (empSubs) this.subscriptionArray.push(empSubs);
   }
@@ -148,7 +144,7 @@ export class VehicleDriverExpenseComponent implements OnInit, OnDestroy {
     } else if (this.pageAttributes.currentPage === 0) {
       paramList.push(`offset=${this.pageAttributes.currentPage}`);
     }
-    
+
     if (
       this.vehicleFilterForm.value.agreement &&
       this.vehicleFilterForm.value.agreement.id
@@ -203,7 +199,7 @@ export class VehicleDriverExpenseComponent implements OnInit, OnDestroy {
     this.pageAttributes.pageSize = event.pageSize
       ? event.pageSize
       : this.pageAttributes.pageSize;
-      if (event.pageIndex !== undefined)
+    if (event.pageIndex !== undefined)
       this.pageAttributes.currentPage =
         event.pageIndex >= 0
           ? event.pageIndex
@@ -219,6 +215,10 @@ export class VehicleDriverExpenseComponent implements OnInit, OnDestroy {
     this.pageAttributes.pageSize = this.pageAttributes.pageSizeOpt[0];
     this.pageAttributes.currentPage = 0;
     this.searchNow();
+  }
+
+  downloadNow(): void {
+    return;
   }
 
   ngOnDestroy(): void {

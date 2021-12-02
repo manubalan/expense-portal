@@ -13,8 +13,10 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {
   MasterDataService,
   PageAttrEventModel,
@@ -36,25 +38,40 @@ import { AddVehicleExpensesComponent } from '../add-vehicle-expenses/add-vehicle
 export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [];
   dataSource: any;
-  pageAttributes: PageAttrModel = {...PAGE_ATTR_DATA};
+  pageAttributes: PageAttrModel = { ...PAGE_ATTR_DATA };
 
   subscriptionArray: Subscription[] = [];
+
+  hasResult = false;
+  vehicleFilterForm: FormGroup;
+  agreementList: any[] = [];
+  vehicleTypeList: any[] = [];
+  driverList: any[] = [];
 
   constructor(
     public dialog: MatDialog,
     private agreementService: AgreementService,
     private loaderService: LoaderService,
     private dialogeService: DialogBoxService,
-    private snackBarService: SnackBarService
+    private snackBarService: SnackBarService,
+    private fBuilder: FormBuilder,
+    private masterService: MasterDataService
   ) {
-    this.getVehicleExpenseList();
+    this.vehicleFilterForm = this.fBuilder.group({
+      agreement: new FormControl(null),
+      vehicleType: new FormControl(null),
+      driver: new FormControl(null),
+    });
+
+    this.setFilterLists();
+    this.searchNow();
   }
 
   ngOnInit(): void {
     const subjectSubs = this.agreementService.vehicleExpUpdated$.subscribe(
       (update) => {
         if (update) {
-          this.getVehicleExpenseList();
+          this.searchNow();
         }
       }
     );
@@ -78,38 +95,6 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
       'total_amount',
       'action',
     ];
-  }
-
-  getVehicleExpenseList(): void {
-    const paramList = [];
-    let paramUrl = '';
-    if (this.pageAttributes.pageSize > 0) {
-      paramList.push(`limit=${this.pageAttributes.pageSize}`);
-    }
-    if (this.pageAttributes.currentPage > 0) {
-      paramList.push(
-        `offset=${
-          this.pageAttributes.currentPage * this.pageAttributes.pageSize
-        }`
-      );
-    } else if (this.pageAttributes.currentPage === 0) {
-      paramList.push(`offset=${this.pageAttributes.currentPage}`);
-    }
-
-    if (paramList.length > 0) {
-      paramList.map((par) => {
-        paramUrl = paramUrl + par + '&';
-      });
-    }
-
-    this.loaderService.show();
-    this.agreementService.getVehicleExpense().subscribe((data) => {
-      this.loaderService.hide();
-      if (data) {
-        this.dataSource = data.results;
-        if (data.count) this.pageAttributes.totalRecord = data.count;
-      }
-    });
   }
 
   editVehicleExpense(ID: number): void {
@@ -144,7 +129,7 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
     this.pageAttributes.pageSize = event.pageSize
       ? event.pageSize
       : this.pageAttributes.pageSize;
-      if (event.pageIndex !== undefined)
+    if (event.pageIndex !== undefined)
       this.pageAttributes.currentPage =
         event.pageIndex >= 0
           ? event.pageIndex
@@ -152,7 +137,161 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
     this.pageAttributes.prevPage = event.previousPageIndex
       ? event.previousPageIndex
       : this.pageAttributes.prevPage;
-    this.getVehicleExpenseList();
+    this.searchNow();
+  }
+
+  // Filter Functions
+  public employeeOptionView(option: any): string {
+    return option ? option.name : '';
+  }
+
+  public agreementOptionView(option: any): string {
+    return option ? `${option.agreement_number} - ${option.name}` : '';
+  }
+
+  setFilterLists(): void {
+    this.setAgreementList();
+    this.setVehicleTypeList();
+    this.setDriverList();
+    this.detectFilterForms();
+  }
+
+  setAgreementList(search?: string): void {
+    const agreementSubs = this.agreementService
+      .getAgreements(
+        search !== null && search !== undefined
+          ? `?search=${search}`
+          : undefined
+      )
+      .subscribe((data) => {
+        if (data && data.results) {
+          this.agreementList = data.results;
+        }
+      });
+
+    this.subscriptionArray.push(agreementSubs);
+  }
+
+  setVehicleTypeList(search?: string): void {
+    this.loaderService.show();
+    const vehicleSubs = this.masterService
+      .getVehicletypesList(
+        search !== undefined && search !== null ? '?search=' + search : ''
+      )
+      .subscribe((data) => {
+        this.loaderService.hide();
+        if (data && data.results) {
+          this.vehicleTypeList = data.results;
+        }
+      });
+
+    this.subscriptionArray.push(vehicleSubs);
+  }
+
+  setDriverList(search?: string): void {
+    const empSubs = this.masterService
+      .getEmployeesList(
+        search !== null && search !== undefined
+          ? `?search=${search}`
+          : undefined
+      )
+      .subscribe((data) => {
+        if (data && data.results) {
+          this.driverList = data.results;
+        }
+      });
+    this.subscriptionArray.push(empSubs);
+  }
+
+  detectFilterForms(): void {
+    const detectSubs = this.vehicleFilterForm
+      .get('agreement')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (typeof value === 'string') this.setAgreementList(value);
+      });
+    if (detectSubs) this.subscriptionArray.push(detectSubs);
+
+    const empSubs = this.vehicleFilterForm
+      .get('vehicleType')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (typeof value === 'string') this.setVehicleTypeList(value);
+      });
+    if (empSubs) this.subscriptionArray.push(empSubs);
+
+    const workSubs = this.vehicleFilterForm
+      .get('driver')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (typeof value === 'string') this.setDriverList(value);
+      });
+    if (workSubs) this.subscriptionArray.push(workSubs);
+  }
+
+  searchNow(): void {
+    const paramList = [];
+    let paramUrl = '';
+    if (this.pageAttributes.pageSize > 0) {
+      paramList.push(`limit=${this.pageAttributes.pageSize}`);
+    }
+    if (this.pageAttributes.currentPage > 0) {
+      paramList.push(
+        `offset=${
+          this.pageAttributes.currentPage * this.pageAttributes.pageSize
+        }`
+      );
+    } else if (this.pageAttributes.currentPage === 0) {
+      paramList.push(`offset=${this.pageAttributes.currentPage}`);
+    }
+
+    if (
+      this.vehicleFilterForm.value.agreement &&
+      this.vehicleFilterForm.value.agreement.id
+    ) {
+      paramList.push(`agreement=${this.vehicleFilterForm.value.agreement.id}`);
+    }
+
+    if (
+      this.vehicleFilterForm.value.driver &&
+      this.vehicleFilterForm.value.driver.id
+    ) {
+      paramList.push(`driver=${this.vehicleFilterForm.value.driver.id}`);
+    }
+
+    if (
+      this.vehicleFilterForm.value.vehicleType &&
+      this.vehicleFilterForm.value.vehicleType.id
+    ) {
+      paramList.push(
+        `vehicle_type=${this.vehicleFilterForm.value.vehicleType.id}`
+      );
+    }
+
+    if (paramList.length > 0) {
+      paramList.map((par) => {
+        paramUrl = paramUrl + par + '&';
+      });
+    }
+
+    this.loaderService.show();
+    this.agreementService
+      .getVehicleExpense(`?` + paramUrl.slice(0, -1))
+      .subscribe((data) => {
+        this.loaderService.hide();
+        if (data && data.results) {
+          this.dataSource = data.results;
+          this.hasResult = data.results.length > 0 ? true : false;
+          if (data.count) this.pageAttributes.totalRecord = data.count;
+        }
+      });
+  }
+
+  resetSearch(): void {
+    this.vehicleFilterForm.reset();
+    this.pageAttributes.pageSize = this.pageAttributes.pageSizeOpt[0];
+    this.pageAttributes.currentPage = 0;
+    this.searchNow();
   }
 
   ngOnDestroy(): void {

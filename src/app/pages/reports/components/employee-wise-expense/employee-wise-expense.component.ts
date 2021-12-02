@@ -2,7 +2,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { MasterDataService, PageAttrEventModel, PageAttrModel, PAGE_ATTR_DATA } from 'src/app/core';
+import {
+  MasterDataService,
+  PageAttrEventModel,
+  PageAttrModel,
+  PAGE_ATTR_DATA,
+} from 'src/app/core';
 import { AgreementService } from 'src/app/pages/agreement/services';
 import { LoaderService } from 'src/app/shared';
 import { ReportService } from '../../services/report.services';
@@ -23,7 +28,7 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
   employeList: any[] = [];
   workTypeList: any[] = [];
   hasResults = false;
-  pageAttributes: PageAttrModel = {...PAGE_ATTR_DATA};
+  pageAttributes: PageAttrModel = { ...PAGE_ATTR_DATA };
 
   subscriptionArray: Subscription[] = [];
 
@@ -43,7 +48,12 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.displayedColumnsWise = ['name__name', 'kooli', 'kooli_paid', 'balance'];
+    this.displayedColumnsWise = [
+      'name__name',
+      'kooli',
+      'kooli_paid',
+      'balance',
+    ];
     this.searchNow();
     this.getAgreementList();
     this.getEmployeeList();
@@ -56,9 +66,7 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
       .get('agreement')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value) => {
-        if (value && value !== null && typeof value === 'string') {
-          this.getAgreementList(value);
-        }
+        if (typeof value === 'string') this.getAgreementList(value);
       });
     if (detectSubs) this.subscriptionArray.push(detectSubs);
 
@@ -66,9 +74,7 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
       .get('employeeId')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value) => {
-        if (value && value !== null && typeof value === 'string') {
-          this.getEmployeeList(value);
-        }
+        if (typeof value === 'string') this.getEmployeeList(value);
       });
     if (empSubs) this.subscriptionArray.push(empSubs);
 
@@ -76,9 +82,7 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
       .get('workType')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value) => {
-        if (value && value !== null && typeof value === 'string') {
-          this.getWorkTypeList(value);
-        }
+        if (typeof value === 'string') this.getWorkTypeList(value);
       });
     if (workSubs) this.subscriptionArray.push(workSubs);
   }
@@ -156,7 +160,7 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
     } else if (this.pageAttributes.currentPage === 0) {
       paramList.push(`offset=${this.pageAttributes.currentPage}`);
     }
-    
+
     if (
       this.agreementWiseFilter.value.agreement &&
       this.agreementWiseFilter.value.agreement.id
@@ -208,7 +212,7 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
     this.pageAttributes.pageSize = event.pageSize
       ? event.pageSize
       : this.pageAttributes.pageSize;
-      if (event.pageIndex !== undefined)
+    if (event.pageIndex !== undefined)
       this.pageAttributes.currentPage =
         event.pageIndex >= 0
           ? event.pageIndex
@@ -224,6 +228,10 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
     this.pageAttributes.pageSize = this.pageAttributes.pageSizeOpt[0];
     this.pageAttributes.currentPage = 0;
     this.searchNow();
+  }
+
+  downloadNow(): void {
+    return;
   }
 
   ngOnDestroy(): void {
