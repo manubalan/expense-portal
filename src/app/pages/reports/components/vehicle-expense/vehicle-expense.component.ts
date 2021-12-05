@@ -257,7 +257,9 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
   }
 
   downloadNow(): void {
-    return;
+    this.resportService.downloadReports('material').subscribe((data) => {
+      if (data) console.log('==== DOWNLOADED ==>', data);
+    });
   }
 
   ngOnDestroy(): void {

@@ -191,7 +191,9 @@ export class DriverExpenseComponent implements OnInit, OnDestroy {
   }
 
   downloadNow(): void {
-    return;
+    this.resportService.downloadReports('driver').subscribe((data) => {
+      if (data) console.log('==== DOWNLOADED ==>', data);
+    });
   }
 
   ngOnDestroy(): void {

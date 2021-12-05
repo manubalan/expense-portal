@@ -231,7 +231,9 @@ export class EmployeeWiseExpenseComponent implements OnInit, OnDestroy {
   }
 
   downloadNow(): void {
-    return;
+    this.resportService.downloadReports('employee').subscribe((data) => {
+      if (data) console.log('==== DOWNLOADED ==>', data);
+    });
   }
 
   ngOnDestroy(): void {
