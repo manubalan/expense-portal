@@ -3,6 +3,15 @@ export interface AuthResponseModel {
   token: TokenModel;
   message?: string;
   is_authenticated: boolean;
+  menu: MenuModel[];
+}
+
+export interface MenuModel {
+  name: string;
+  icon: string;
+  link: string;
+  order?: number;
+  children?: MenuModel[];
 }
 
 export interface TokenModel {
@@ -31,6 +40,7 @@ export interface RoleModel {
 
 export interface LoggedUserModel {
   user?: UserModel;
+  menu?: MenuModel[];
   token?: TokenModel;
   is_authenticated?: boolean;
 }

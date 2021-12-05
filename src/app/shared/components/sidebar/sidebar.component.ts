@@ -6,7 +6,7 @@ import {
   Output,
 } from '@angular/core';
 import { AuthService } from 'src/app/authentication';
-import { MENU, MenuModel } from 'src/app/core';
+import { MenuModel } from 'src/app/core';
 import { environment } from 'src/environments/environment';
 import { SidebarService } from './sidebar.service';
 
@@ -30,12 +30,7 @@ export class SidebarComponent {
   constructor(private authService: AuthService) {
     this.selectedPage = 0;
     this.selectedChild = -1;
-    let role = '';
-    if (this.authService.activeUser.user?.role_details.name)
-      role = this.authService?.activeUser?.user?.role_details?.name
-        ? this.authService?.activeUser?.user?.role_details?.name
-        : '';
-    if (role) this.pages = MENU.filter((item) => item.hasAcess.includes(role));
+    if (this.authService.activeUser.menu) this.pages = this.authService.activeUser.menu;
   }
 
   baseUrl = environment.BASE_URL;

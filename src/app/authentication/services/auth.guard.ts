@@ -6,7 +6,6 @@ import {
   RouterStateSnapshot,
   CanLoad,
 } from '@angular/router';
-import { MENU } from 'src/app/core';
 
 import { AuthService } from './auth.service';
 
@@ -33,15 +32,15 @@ export class AuthGuard implements CanActivate {
         this.authenticationService?.activeUser?.user?.role_details?.name;
 
     if (this.authenticationService.isAuthenticated) {
-      const navObj = MENU.filter(
-        (el) =>
-          el.link.toLowerCase().replace('/', '') ===
-          route.routeConfig?.path?.toLowerCase()
-      );
-      if (!(navObj.length > 0 && navObj[0]?.hasAcess.includes(this.role))) {
-        this.router.navigate(['/']);
-        return false;
-      }
+      // const navObj = MENU.filter(
+      //   (el) =>
+      //     el.link.toLowerCase().replace('/', '') ===
+      //     route.routeConfig?.path?.toLowerCase()
+      // );
+      // if (!(navObj.length > 0 && navObj[0]?.hasAcess.includes(this.role))) {
+      //   this.router.navigate(['/']);
+      //   return false;
+      // }
 
       return true;
     }

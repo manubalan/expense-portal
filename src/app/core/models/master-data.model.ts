@@ -10,19 +10,6 @@ export interface ResultDataModel {
   name: string;
 }
 
-export interface MenuModel {
-  link?: string;
-  name: string;
-  icon: string;
-  children?: ChildMenuModel[];
-}
-
-export interface ChildMenuModel {
-  link: string;
-  name: string;
-  icon: string;
-}
-
 export type FIELD_TYPE = 'text' | 'select';
 
 export interface MasterDataGridModel {
