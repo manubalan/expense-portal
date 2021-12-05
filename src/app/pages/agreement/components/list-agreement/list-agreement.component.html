@@ -29,16 +29,6 @@
         </mat-form-field>
 
         <mat-form-field>
-          <mat-label>Name</mat-label>
-          <input type="text" matInput formControlName="name" [matAutocomplete]="names">
-          <mat-autocomplete #names="matAutocomplete" [displayWith]="employeeOptionView">
-            <mat-option *ngFor="let option of nameList" [value]="option">
-              {{option?.name}}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-
-        <mat-form-field>
           <mat-label>Location</mat-label>
           <input type="text" matInput formControlName="location" [matAutocomplete]="location">
           <mat-autocomplete #location="matAutocomplete" [displayWith]="employeeOptionView">
@@ -150,7 +140,7 @@
             <h5>No Results</h5>
           </mat-card-content>
         </ng-template>
-        
+
       </mat-expansion-panel>
     </mat-accordion>
   </div>

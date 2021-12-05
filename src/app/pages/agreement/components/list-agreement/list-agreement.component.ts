@@ -8,7 +8,6 @@ import {
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {
@@ -64,7 +63,6 @@ export class ListAgreementComponent implements OnInit, OnDestroy {
   ) {
     this.agreementFilterForm = this.fBuilder.group({
       agreement: new FormControl(null),
-      name: new FormControl(null),
       location: new FormControl(null),
     });
 
@@ -249,22 +247,15 @@ export class ListAgreementComponent implements OnInit, OnDestroy {
       this.agreementFilterForm.value.agreement.id
     ) {
       paramList.push(
-        `agreement_number=${this.agreementFilterForm.value.agreement.id}`
+        `agreement_number=${this.agreementFilterForm.value.agreement.agreement_number}`
       );
-    }
-
-    if (
-      this.agreementFilterForm.value.name &&
-      this.agreementFilterForm.value.name.id
-    ) {
-      paramList.push(`name=${this.agreementFilterForm.value.name.id}`);
     }
 
     if (
       this.agreementFilterForm.value.location &&
       this.agreementFilterForm.value.location.id
     ) {
-      paramList.push(`location=${this.agreementFilterForm.value.material.id}`);
+      paramList.push(`location=${this.agreementFilterForm.value.location.id}`);
     }
 
     if (paramList.length > 0) {

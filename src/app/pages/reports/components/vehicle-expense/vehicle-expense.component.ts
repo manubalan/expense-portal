@@ -10,7 +10,11 @@ import {
   PAGE_ATTR_DATA,
 } from 'src/app/core';
 import { AgreementService } from 'src/app/pages/agreement/services';
-import { LoaderService } from 'src/app/shared';
+import {
+  DialogBoxService,
+  LoaderService,
+  SnackBarService,
+} from 'src/app/shared';
 import { ReportService } from '../../services/report.services';
 
 @Component({
@@ -30,6 +34,7 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
   materialList: any[] = [];
   hasResult = false;
   pageAttributes: PageAttrModel = { ...PAGE_ATTR_DATA };
+  filterCriteria = '';
 
   subscriptionArray: Subscription[] = [];
 
@@ -38,7 +43,9 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
     private loaderService: LoaderService,
     private fbuilder: FormBuilder,
     private agreementService: AgreementService,
-    private masterService: MasterDataService
+    private masterService: MasterDataService,
+    private dialogeService: DialogBoxService,
+    private snackBarService: SnackBarService
   ) {
     this.vehicleFilterForm = this.fbuilder.group({
       agreement: new FormControl(''),
@@ -161,18 +168,6 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
   searchNow(): void {
     const paramList = [];
     let paramUrl = '';
-    if (this.pageAttributes.pageSize > 0) {
-      paramList.push(`limit=${this.pageAttributes.pageSize}`);
-    }
-    if (this.pageAttributes.currentPage > 0) {
-      paramList.push(
-        `offset=${
-          this.pageAttributes.currentPage * this.pageAttributes.pageSize
-        }`
-      );
-    } else if (this.pageAttributes.currentPage === 0) {
-      paramList.push(`offset=${this.pageAttributes.currentPage}`);
-    }
 
     if (
       this.vehicleFilterForm.value.agreement &&
@@ -211,8 +206,29 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
         )}`
       );
     }
+
     if (this.vehicleFilterForm.value.search) {
       paramList.push(`search=${this.vehicleFilterForm.value.search}`);
+    }
+
+    if (paramList.length > 0) {
+      paramList.map((par) => {
+        this.filterCriteria = this.filterCriteria + par + '&';
+      });
+    }
+
+    // PAGINATION
+    if (this.pageAttributes.pageSize > 0) {
+      paramList.push(`limit=${this.pageAttributes.pageSize}`);
+    }
+    if (this.pageAttributes.currentPage > 0) {
+      paramList.push(
+        `offset=${
+          this.pageAttributes.currentPage * this.pageAttributes.pageSize
+        }`
+      );
+    } else if (this.pageAttributes.currentPage === 0) {
+      paramList.push(`offset=${this.pageAttributes.currentPage}`);
     }
 
     if (paramList.length > 0) {
@@ -257,8 +273,16 @@ export class VehicleExpenseComponent implements OnInit, OnDestroy {
   }
 
   downloadNow(): void {
-    this.resportService.downloadReports('material').subscribe((data) => {
-      if (data) console.log('==== DOWNLOADED ==>', data);
+    const ref = this.dialogeService.openDialog('Are sure want to Download ?');
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.resportService.downloadReports(
+          'material',
+          this.filterCriteria.slice(0, -1)
+        );
+
+        this.filterCriteria = '';
+      }
     });
   }
 
