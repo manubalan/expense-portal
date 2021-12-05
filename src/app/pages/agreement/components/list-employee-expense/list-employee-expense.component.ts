@@ -1,6 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { DateAdapter } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
+import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {
@@ -41,16 +43,21 @@ export class ListEmployeeExpenseComponent implements OnInit, OnDestroy {
     private dialogeService: DialogBoxService,
     private snackBarService: SnackBarService,
     private fBuilder: FormBuilder,
-    private masterService: MasterDataService
+    private masterService: MasterDataService,
+    private dateAdapter: DateAdapter<Date>
   ) {
     this.employeeFilterForm = this.fBuilder.group({
       agreement: new FormControl(null),
       employee: new FormControl(null),
       workType: new FormControl(null),
+      startDate: new FormControl(null),
+      endDate: new FormControl(null)
     });
 
     this.setFilterLists();
     this.searchNow();
+
+    this.dateAdapter.setLocale('en-GB');
   }
 
   ngOnInit(): void {
@@ -246,6 +253,22 @@ export class ListEmployeeExpenseComponent implements OnInit, OnDestroy {
       this.employeeFilterForm.value.workType.id
     ) {
       paramList.push(`work_type=${this.employeeFilterForm.value.workType.id}`);
+    }
+
+    if (this.employeeFilterForm.value.startDate) {
+      paramList.push(
+        `from_date=${moment(this.employeeFilterForm.value.startDate).format(
+          'YYYY-MM-DD'
+        )}`
+      );
+    }
+
+    if (this.employeeFilterForm.value.endDate) {
+      paramList.push(
+        `to_date=${moment(this.employeeFilterForm.value.endDate).format(
+          'YYYY-MM-DD'
+        )}`
+      );
     }
 
     if (paramList.length > 0) {

@@ -14,7 +14,9 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { DateAdapter } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
+import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {
@@ -45,7 +47,7 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
   hasResult = false;
   vehicleFilterForm: FormGroup;
   agreementList: any[] = [];
-  vehicleTypeList: any[] = [];
+  materialList: any[] = [];
   driverList: any[] = [];
 
   constructor(
@@ -55,16 +57,21 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
     private dialogeService: DialogBoxService,
     private snackBarService: SnackBarService,
     private fBuilder: FormBuilder,
-    private masterService: MasterDataService
+    private masterService: MasterDataService,
+    private dateAdapter: DateAdapter<Date>
   ) {
     this.vehicleFilterForm = this.fBuilder.group({
       agreement: new FormControl(null),
       vehicleType: new FormControl(null),
       driver: new FormControl(null),
+      startDate: new FormControl(null),
+      endDate: new FormControl(null)
     });
 
     this.setFilterLists();
     this.searchNow();
+
+    this.dateAdapter.setLocale('en-GB');
   }
 
   ngOnInit(): void {
@@ -151,7 +158,7 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
 
   setFilterLists(): void {
     this.setAgreementList();
-    this.setVehicleTypeList();
+    this.setMaterialList();
     this.setDriverList();
     this.detectFilterForms();
   }
@@ -172,22 +179,6 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
     this.subscriptionArray.push(agreementSubs);
   }
 
-  setVehicleTypeList(search?: string): void {
-    this.loaderService.show();
-    const vehicleSubs = this.masterService
-      .getVehicletypesList(
-        search !== undefined && search !== null ? '?search=' + search : ''
-      )
-      .subscribe((data) => {
-        this.loaderService.hide();
-        if (data && data.results) {
-          this.vehicleTypeList = data.results;
-        }
-      });
-
-    this.subscriptionArray.push(vehicleSubs);
-  }
-
   setDriverList(search?: string): void {
     const empSubs = this.masterService
       .getEmployeesList(
@@ -203,6 +194,22 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
     this.subscriptionArray.push(empSubs);
   }
 
+  setMaterialList(search?: string): void {
+    this.loaderService.show();
+    const vehicleSubs = this.masterService
+      .getMaterialsList(
+        search !== undefined && search !== null ? '?search=' + search : ''
+      )
+      .subscribe((data) => {
+        this.loaderService.hide();
+        if (data && data.results) {
+          this.materialList = data.results;
+        }
+      });
+
+    this.subscriptionArray.push(vehicleSubs);
+  }
+
   detectFilterForms(): void {
     const detectSubs = this.vehicleFilterForm
       .get('agreement')
@@ -212,14 +219,6 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
       });
     if (detectSubs) this.subscriptionArray.push(detectSubs);
 
-    const empSubs = this.vehicleFilterForm
-      .get('vehicleType')
-      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
-      .subscribe((value: any) => {
-        if (typeof value === 'string') this.setVehicleTypeList(value);
-      });
-    if (empSubs) this.subscriptionArray.push(empSubs);
-
     const workSubs = this.vehicleFilterForm
       .get('driver')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
@@ -227,6 +226,15 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
         if (typeof value === 'string') this.setDriverList(value);
       });
     if (workSubs) this.subscriptionArray.push(workSubs);
+
+    const empSubs = this.vehicleFilterForm
+    .get('materials')
+    ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+    .subscribe((value: any) => {
+      if (typeof value === 'string') this.setMaterialList(value);
+    });
+  if (empSubs) this.subscriptionArray.push(empSubs);
+
   }
 
   searchNow(): void {
@@ -256,7 +264,7 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
       this.vehicleFilterForm.value.driver &&
       this.vehicleFilterForm.value.driver.id
     ) {
-      paramList.push(`driver=${this.vehicleFilterForm.value.driver.id}`);
+      paramList.push(`driver_name=${this.vehicleFilterForm.value.driver.id}`);
     }
 
     if (
@@ -264,7 +272,23 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
       this.vehicleFilterForm.value.vehicleType.id
     ) {
       paramList.push(
-        `vehicle_type=${this.vehicleFilterForm.value.vehicleType.id}`
+        `materials=${this.vehicleFilterForm.value.vehicleType.id}`
+      );
+    }
+
+    if (this.vehicleFilterForm.value.startDate) {
+      paramList.push(
+        `from_date=${moment(this.vehicleFilterForm.value.startDate).format(
+          'YYYY-MM-DD'
+        )}`
+      );
+    }
+
+    if (this.vehicleFilterForm.value.endDate) {
+      paramList.push(
+        `to_date=${moment(this.vehicleFilterForm.value.endDate).format(
+          'YYYY-MM-DD'
+        )}`
       );
     }
 

@@ -249,7 +249,7 @@ export class ListAgreementComponent implements OnInit, OnDestroy {
       this.agreementFilterForm.value.agreement.id
     ) {
       paramList.push(
-        `agreement=${this.agreementFilterForm.value.agreement.id}`
+        `agreement_number=${this.agreementFilterForm.value.agreement.id}`
       );
     }
 

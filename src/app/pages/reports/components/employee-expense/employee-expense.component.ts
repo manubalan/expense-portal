@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { DateAdapter } from '@angular/material/core';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -40,7 +41,8 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
     private loaderService: LoaderService,
     private fbuilder: FormBuilder,
     private agreementService: AgreementService,
-    private masterService: MasterDataService
+    private masterService: MasterDataService,
+    private dateAdapter: DateAdapter<Date>
   ) {
     this.agreementFilter = this.fbuilder.group({
       agreement: new FormControl(''),
@@ -57,6 +59,8 @@ export class EmployeeExpenseComponent implements OnInit, OnDestroy {
     this.getWorkTypeList();
     this.detectFilterForms();
     this.getWorkDayType();
+
+    this.dateAdapter.setLocale('en-GB');
   }
 
   ngOnInit(): void {

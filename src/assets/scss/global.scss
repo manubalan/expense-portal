@@ -341,6 +341,11 @@ ems-root .card-footer .mat-button-base .mat-button-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  .gap{
+    display: flex;
+    flex: 1;
+  }
 }
 
 // .table-container {

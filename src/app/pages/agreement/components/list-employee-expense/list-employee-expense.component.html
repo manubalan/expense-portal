@@ -48,6 +48,20 @@
             </mat-autocomplete>
           </mat-form-field>
 
+          <mat-form-field>
+            <mat-label>From Date</mat-label>
+            <input matInput formControlName="startDate" [matDatepicker]="startDate">
+            <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+            <mat-datepicker #startDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>To Date</mat-label>
+            <input matInput formControlName="endDate" [matDatepicker]="endDate">
+            <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+            <mat-datepicker #endDate></mat-datepicker>
+          </mat-form-field>
+
           <button mat-stroked-button color="primary" (click)="searchNow()">Search Now</button>
           <button mat-stroked-button color="warn" (click)="resetSearch()">Reset</button>
         </div>
