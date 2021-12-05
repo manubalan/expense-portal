@@ -1,1 +1,13 @@
-<p>master-data works!</p>
+<div class="page-header">
+    <header class="header-box">
+        <div>
+            <h1>Master Data</h1>
+        </div>
+    </header>
+</div>
+
+<div class="content-area tile">
+    <div class="wrap-box tile" *ngFor="let grid of masterDataGrids">
+        <ems-data-view [gridInfo]="grid"></ems-data-view>
+    </div>
+</div>

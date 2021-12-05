@@ -1,33 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { AddAgreementComponent } from './components/add-agreement/add-agreement.component';
-import { MasterDataService } from '../../core/services/master-data.service';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'ems-agreement',
-  templateUrl: './agreement.component.html',
-  styleUrls: ['./agreement.component.scss'],
+  template: `
+    <router-outlet></router-outlet>
+    <ems-loader></ems-loader>
+  `,
 })
-export class AgreementComponent implements OnInit {
-  constructor(
-    public dialog: MatDialog,
-    private masterDataService: MasterDataService
-  ) {}
-
-  ngOnInit(): void {
-    this.setMasterDatas();
-  }
-
-  setMasterDatas(): void {
-    // const datas = {
-    //   states: this.masterDataService.stateList.subscribe(el => el),
-    //   district: this.masterDataService.districtsList.subscribe(el => el),
-    //   location: this.masterDataService.locationsList.subscribe(el => el),
-    // };
-    // console.log('=======>', datas);
-  }
-
-  addAgreementDialog(): void {
-    this.dialog.open(AddAgreementComponent);
-  }
-}
+export class AgreementComponent {}

@@ -1,13 +1,25 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AgreementComponent } from './agreement.component';
-import { AddAgreementComponent } from './components/add-agreement/add-agreement.component';
-import { ListAgreementComponent } from './components/list-agreement/list-agreement.component';
+import {
+  ListAgreementComponent,
+  ListEmployeeExpenseComponent,
+  ListVehicleExpenseComponent,
+} from './components';
 
 const routes: Routes = [
   {
     path: '',
     component: AgreementComponent,
+    children: [
+      { path: 'agreements-list', component: ListAgreementComponent },
+      {
+        path: 'vehicle-expenses',
+        component: ListVehicleExpenseComponent,
+      },
+      { path: 'exployee-expense', component: ListEmployeeExpenseComponent },
+      { path: '', redirectTo: 'agreements-list' },
+    ],
   },
 ];
 

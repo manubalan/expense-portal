@@ -22,13 +22,7 @@ ems-root {
   min-height: 100vh;
 
   ems-navigation {
-    display: flex;
-    height: $nav-height;
-    position: fixed;
-    left: 100px;
-    top: 0;
-    right: 0;
-    z-index: 100;
+    z-index: 1010;
 
     mat-toolbar {
       display: flex;
@@ -48,29 +42,123 @@ ems-root {
     display: flex;
     flex-direction: column;
     background-color: white;
-    height: 100vh;
+    min-height: 100vh;
   }
 
   ems-agreement {
     display: flex;
     flex-direction: column;
     width: 100%;
+  }
 
-    .content-area {
+  .content-area {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    row-gap: 30px;
+
+    &.tile {
+      column-gap: 30px;
+    }
+
+    .full-width-card {
+      width: 100%;
+
+      &.full-card {
+        display: flex;
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        row-gap: 30px;
+        padding-bottom: 50px;
+        column-gap: 30px;
+      }
+    }
+
+    .wrap-box {
       display: flex;
       width: 100%;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      row-gap: 30px;
-      padding-bottom: 50px;
+      column-gap: 30px;
 
-      mat-card {
-        width: calc(33.333% - 20px);
+      &.tile {
+        width: calc(50% - 20px);
+        @media (max-width: 720px) {
+          width: 100%;
+        }
+
+        @media (min-width: 1600px) {
+          width: calc(33.333% - 20px);
+        }
+
+        ems-data-view {
+          width: 100%;
+          display: flex;
+        }
+      }
+
+      mat-accordion {
+        width: 100%;
+      }
+
+      .report-box {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        row-gap: 30px;
+      }
+
+      .filter-box {
+        padding: 20px;
+        display: flex;
+        column-gap: 30px;
+        align-items: center;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-wrap: wrap;
+
+        mat-form-field {
+          width: calc(20% - 25px);
+        }
+      }
+    }
+
+    mat-card {
+      &.data-tile-card {
+        width: 100%;
+
+        &.tile {
+          width: calc(33.333% - 20px);
+        }
+
+        mat-card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          mat-card-title {
+            margin: 0;
+            line-height: 1;
+          }
+
+          mat-icon {
+            height: 40px;
+            width: 40px;
+            border: 1px solid var(--gray-300);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+          }
+        }
       }
     }
   }
 
-  ems-list-agreement {
+  ems-list-agreement,
+  ems-list-employee-expense,
+  ems-list-vehicle-expense {
     display: flex;
     width: 100%;
     flex-direction: column;
@@ -95,24 +183,23 @@ ems-root {
     border-right: 2px solid #eef0f6;
   }
 
-  .mat-drawer-container {
-    height: 100%;
+  .main-wrap {
     background-color: #f6f8fa;
+    height: 100vh;
+    overflow: auto;
 
-    .main-wrap {
-      @media screen and (max-width: $medium) {
-        padding: 62px 30px 0 30px;
-      }
-      @media screen and (min-width: $medium + 1) {
-        padding: 100px 70px 0 70px;
-      }
+    @media screen and (max-width: $medium) {
+      padding: 70px 20px 20px 20px;
+    }
+    @media screen and (min-width: ($medium + 1)) {
+      padding: 90px 40px 40px 40px;
+    }
 
-      ems-pages {
-        .screen {
-          max-width: 100%;
-          height: auto;
-          object-fit: cover;
-        }
+    ems-pages {
+      .screen {
+        max-width: 100%;
+        height: auto;
+        object-fit: cover;
       }
     }
   }
@@ -131,7 +218,7 @@ ems-root {
 }
 
 .page-header {
-  margin-bottom: 30px;
+  margin-bottom: 15px;
 
   .header-box {
     width: 100%;
@@ -217,3 +304,52 @@ ems-root {
     color: #fff;
   }
 }
+
+.mat-expansion-panel-header-title{
+  font-size: 18px;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+}
+
+.no-data-block {
+  min-height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  row-gap: 10px;
+
+  mat-icon{
+    color: #ccc;
+    font-size: 72px;
+    height: 72px;
+    width: 72px;
+  }
+
+  h5 {
+    color: #ccc;
+    font-size: 18px;
+    font-weight: 400;
+  }
+}
+
+ems-root .card-footer .mat-button-base .mat-button-wrapper {
+  height: 40px;
+}
+
+.card-footer{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .gap{
+    display: flex;
+    flex: 1;
+  }
+}
+
+// .table-container {
+//   max-height: calc(100vh - 180px);
+//   max-width: 100%;
+//   overflow: auto;
+// }

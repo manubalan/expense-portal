@@ -10,18 +10,24 @@ export const API_END_POINT = {
     district: `${endPoints.master_data_EndPoint}districts/`,
     district_params: `${endPoints.master_data_EndPoint}districts/?state=`,
     location: `${endPoints.master_data_EndPoint}locations/`,
-    location_params: `${endPoints.master_data_EndPoint}locations/?district=`,
+    location_params: `${endPoints.master_data_EndPoint}locations/`,
     vehicle_type: `${endPoints.master_data_EndPoint}vehicle-types/`,
-    vehicle_type_params: `${endPoints.master_data_EndPoint}vehicle-types/${searchKey}`,
     materials: `${endPoints.master_data_EndPoint}materials/`,
-    materials_params: `${endPoints.master_data_EndPoint}materials/${searchKey}`,
     employees: `${endPoints.master_data_EndPoint}employees/`,
-    employees_params: `${endPoints.master_data_EndPoint}employees/${searchKey}`,
     worktypes: `${endPoints.master_data_EndPoint}worktypes/`,
-    worktypes_params: `${endPoints.master_data_EndPoint}worktypes/${searchKey}`,
+    quantityType: `${endPoints.master_data_EndPoint}si-units/`,
+    workDayType: `${endPoints.master_data_EndPoint}work-day-types/`
   },
   agreement: {
     data_operations: `${endPoints.base_api_EndPoint}agreements/`,
     validate_item: `${endPoints.base_api_EndPoint}agreements/validate_agreement_number/?agreement_number=`,
+    vehicle_expense: `${endPoints.base_api_EndPoint}vehicle-expenses/`,
+    employee_expense: `${endPoints.base_api_EndPoint}employees-expenses/`,
+  },
+  reports: {
+    employee_expense: `${endPoints.base_api_EndPoint}employees-expenses`,
+    employee_wise_expense: `${endPoints.base_api_EndPoint}employees-wise-expenses`,
+    vehicle_expense: `${endPoints.base_api_EndPoint}vehicle-expenses`,
+    driver_expense: `${endPoints.base_api_EndPoint}driver-wise-expense`,
   }
 };

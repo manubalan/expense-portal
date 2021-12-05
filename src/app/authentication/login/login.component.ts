@@ -7,6 +7,7 @@ import {
   AuthResponseModel,
   ErrorResponseModel,
 } from 'src/app/core';
+import { LoaderService, SnackBarService } from 'src/app/shared';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../services/auth.service';
 
@@ -18,7 +19,6 @@ import { AuthService } from '../services/auth.service';
 export class LoginComponent implements OnInit {
   hide = true;
   baseUrl = environment.BASE_URL;
-  errorMessage = '';
 
   returnUrl = '';
 
@@ -29,7 +29,9 @@ export class LoginComponent implements OnInit {
     private fBuilder: FormBuilder,
     private authService: AuthService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private loaderService: LoaderService,
+    private snackBarService: SnackBarService
   ) {
     this.loginForm = this.fBuilder.group({
       email: ['', Validators.email],
@@ -61,20 +63,29 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     }
-
+    this.loaderService.show();
     this.authService
       .login(this.fControl.username.value, this.fControl.password.value)
       .pipe(first())
-      .subscribe(
-        (data: AuthResponseModel) => {
-          this.errorMessage =
-            !data.is_authenticated && data.message ? data.message : '';
+      .subscribe((data: AuthResponseModel) => {
+        this.loaderService.hide();
+        if (data) {
+          if (data.is_authenticated)
+            this.snackBarService.success(
+              'Authenticated Successfully !  Redirecting..',
+              'Done'
+            );
+          else
+            this.snackBarService.error(
+              'Authentication failed ! Bad credentials',
+              'Done'
+            );
           this.router.navigate([
             this.route.snapshot.queryParams.returnUrl
               ? this.route.snapshot.queryParams.returnUrl
               : '/',
           ]);
         }
-      );
+      });
   }
 }

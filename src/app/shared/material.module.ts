@@ -23,6 +23,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { LoaderComponent, LoaderService, SnackBarService } from './components';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [LoaderComponent],
@@ -49,6 +50,7 @@ import { LoaderComponent, LoaderService, SnackBarService } from './components';
     MatSidenavModule,
     MatAutocompleteModule,
     MatSnackBarModule,
+    MatTooltipModule,
   ],
   exports: [
     LoaderComponent,
@@ -73,6 +75,7 @@ import { LoaderComponent, LoaderService, SnackBarService } from './components';
     MatSidenavModule,
     MatAutocompleteModule,
     MatSnackBarModule,
+    MatTooltipModule,
   ],
   providers: [LoaderService, SnackBarService],
 })

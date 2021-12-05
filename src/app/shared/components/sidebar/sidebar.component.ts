@@ -1,39 +1,80 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostBinding,
+  HostListener,
+  Output,
+} from '@angular/core';
+import { AuthService } from 'src/app/authentication';
+import { MENU, MenuModel } from 'src/app/core';
 import { environment } from 'src/environments/environment';
-import { animateText, onSideNavChange } from '../../animations/animations';
 import { SidebarService } from './sidebar.service';
-interface Page {
-  link: string;
-  name: string;
-  icon: string;
-}
+
 @Component({
   selector: 'ems-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
-  animations: [onSideNavChange, animateText],
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent {
+  @HostBinding('class.expanded') expanded: boolean = false;
+  private wasInside = false;
+  public selectedPage: number;
+  public selectedChild: number;
   public sideNavState = false;
   public linkText = false;
+  public pages: MenuModel[] = [];
 
-  public pages: Page[] = [
-    { name: 'Dashboard', link: '/home', icon: 'grid_view' },
-    { name: 'Agreement', link: '/dashboard/agreement', icon: 'description' },
-    { name: 'Master Data', link: '/dashboard/master-data', icon: 'storage' },
-    // { name: 'Send email', link: 'some-link', icon: 'face' },
-  ];
+  @Output()
+  menuExpanded = new EventEmitter<boolean>();
 
-  constructor(private sidenavService: SidebarService) {}
+  constructor(private authService: AuthService) {
+    this.selectedPage = 0;
+    this.selectedChild = -1;
+    let role = '';
+    if (this.authService.activeUser.user?.role_details.name)
+      role = this.authService?.activeUser?.user?.role_details?.name
+        ? this.authService?.activeUser?.user?.role_details?.name
+        : '';
+    if (role) this.pages = MENU.filter((item) => item.hasAcess.includes(role));
+  }
+
   baseUrl = environment.BASE_URL;
-  ngOnInit(): void {}
 
-  onSinenavToggle(): void {
-    this.sideNavState = !this.sideNavState;
+  @HostListener('click')
+  clickInside() {
+    this.wasInside = true;
+  }
 
-    setTimeout(() => {
-      this.linkText = this.sideNavState;
-    }, 200);
-    this.sidenavService.sideNavState$.next(this.sideNavState);
+  @HostListener('document:click')
+  clickout() {
+    if (!this.wasInside) {
+      this.selectedPage = -1;
+    }
+    this.wasInside = false;
+  }
+
+  expandMenu(): void {
+    this.expanded = !this.expanded;
+    this.selectedPage = -1;
+    this.menuExpanded.emit(this.expanded);
+  }
+
+  setPageIndex(item: MenuModel, index: number): boolean {
+    if (this.selectedPage === index) {
+      this.selectedPage = -1;
+      return false;
+    }
+
+    this.selectedPage = index;
+    if (item.children && item.children?.length > 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  setChildIndex(index: number): void {
+    this.selectedChild = index;
+    this.selectedPage = -1;
   }
 }

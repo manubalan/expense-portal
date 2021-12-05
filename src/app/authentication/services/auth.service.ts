@@ -34,7 +34,7 @@ export class AuthService {
   public getUser(): UserModel {
     return this.activeUser.user
       ? this.activeUser.user
-      : { id: 0, username: '' };
+      : { id: 0, username: '', role_details: { name: '' } };
   }
 
   public getRole(): RoleModel {

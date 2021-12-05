@@ -26,6 +26,8 @@ export class AuthInterceptor implements HttpInterceptor {
           Authorization: `Bearer ${currentUser.token.access}`,
         },
       });
+
+
     }
 
     return next.handle(request);

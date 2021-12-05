@@ -1,0 +1,9 @@
+.add-block {
+  display: flex;
+  column-gap: 30px;
+
+  .mat-form-field {
+    width: 33.333%;
+    justify-content: center;
+  }
+}

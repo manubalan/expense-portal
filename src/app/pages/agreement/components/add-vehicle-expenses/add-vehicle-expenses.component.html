@@ -1,1 +1,155 @@
-<p>add-vehicle-expenses works!</p>
+<div class="form-pop-up">
+  <header>
+    <h4>{{editMode.isActive ? 'Update' : 'Add New' }} Vehicle Expense</h4>
+  </header>
+  <section>
+    <ul [formGroup]="addVehicleExpenseForm">
+      <li>
+        <mat-form-field>
+          <mat-label>Agreement</mat-label>
+          <input type="text" matInput formControlName="no" [matAutocomplete]="agreement">
+          <mat-autocomplete #agreement="matAutocomplete" [displayWith]="agreementOptionView">
+            <mat-option *ngFor="let option of agreementList" [value]="option">
+              {{option.agreement_number}} - {{option?.name}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </li>
+      <li>
+
+
+        <mat-form-field>
+          <mat-label>Vehicle Type</mat-label>
+          <input type="text" matInput formControlName="vehicleType" [matAutocomplete]="vehicleType">
+          <mat-autocomplete #vehicleType="matAutocomplete" [displayWith]="autoListView">
+            <mat-option *ngFor="let option of vehicleTypeList" [value]="option">
+              {{option?.name}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Vehicle Details</mat-label>
+          <input type="text" matInput formControlName="vehicleDetails">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Driver Name</mat-label>
+          <input type="text" matInput formControlName="driverName" [matAutocomplete]="driverName">
+          <mat-autocomplete #driverName="matAutocomplete" [displayWith]="autoListView">
+            <mat-option *ngFor="let option of employeeList" [value]="option">
+              {{option?.name}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Material From Location</mat-label>
+          <input type="text" matInput formControlName="materialFrom" [matAutocomplete]="location">
+          <mat-autocomplete #location="matAutocomplete" [displayWith]="autoListView">
+            <mat-option *ngFor="let option of locationList" [value]="option">
+              {{option?.name}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Material Item</mat-label>
+          <input type="text" matInput formControlName="materialItem" [matAutocomplete]="materialItem">
+          <mat-autocomplete #materialItem="matAutocomplete" [displayWith]="autoListView">
+            <mat-option *ngFor="let option of materialItemList" [value]="option">
+              {{option?.name}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>QTY Type</mat-label>
+          <mat-select formControlName="qtyType">
+            <mat-option *ngFor="let item of qtyTypeList" [value]="item.id"> {{item.name}} </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Quantity</mat-label>
+          <input type="number" matInput formControlName="quantity">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Delivery Date</mat-label>
+          <input matInput formControlName="deliveryDate" [matDatepicker]="delivery">
+          <mat-datepicker-toggle matSuffix [for]="delivery"></mat-datepicker-toggle>
+          <mat-datepicker #delivery></mat-datepicker>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Amount</mat-label>
+          <input type="number" matInput formControlName="amount">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Amount Paid</mat-label>
+          <input type="number" matInput formControlName="amountPaid">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Paid Date</mat-label>
+          <input matInput formControlName="paidDate" [matDatepicker]="picker2">
+          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Betha</mat-label>
+          <input type="number" matInput formControlName="betha">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Betha Paid</mat-label>
+          <input type="number" matInput formControlName="bethaPaid">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Vehicle Charge</mat-label>
+          <input type="number" matInput formControlName="vehicleCahrge">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Narration</mat-label>
+          <input type="text" matInput formControlName="narration">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Total Amount</mat-label>
+          <input type="number" readonly matInput formControlName="totalAmount">
+        </mat-form-field>
+      </li>
+    </ul>
+  </section>
+  <footer>
+    <button class="add-button" [disabled]="!addVehicleExpenseForm.valid" mat-stroked-button color="primary"
+      (click)="postFormData();">
+      {{editMode.isActive ? 'Update' : 'Add' }}  Vehicle Expense
+    </button>
+    <button class="add-button" mat-stroked-button color="warn" (click)="closeDialogBox();"
+      [mat-dialog-close]="true">Completed !</button>
+  </footer>
+
+</div>
+
+<ems-loader></ems-loader>

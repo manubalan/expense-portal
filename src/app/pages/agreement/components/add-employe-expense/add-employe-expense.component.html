@@ -1,1 +1,95 @@
-<p>add-employe-expense works!</p>
+<div class="form-pop-up">
+  <header>
+    <h4>{{editMode.isActive ? 'Update' : 'Add New' }}  Employee Expense</h4>
+  </header>
+  <section>
+    <ul [formGroup]="addEmployeExpenseForm">
+      <li>
+        <mat-form-field>
+          <mat-label>Agreement</mat-label>
+          <input type="text" matInput formControlName="agreementNo" [matAutocomplete]="agreement">
+          <mat-autocomplete #agreement="matAutocomplete" [displayWith]="agreementOptionView">
+            <mat-option *ngFor="let option of agreementList" [value]="option">
+              {{option.agreement_number}} - {{option?.name}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Day Type</mat-label>
+          <mat-select formControlName="dayType">
+            <mat-option *ngFor="let item of dayTypeList" [value]="item.id"> {{item.name}} </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input type="text" matInput formControlName="employeeName" [matAutocomplete]="employee">
+          <mat-autocomplete #employee="matAutocomplete" [displayWith]="autoListView">
+            <mat-option *ngFor="let option of employeeList" [value]="option">
+              {{option?.name}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Work Type</mat-label>
+          <input type="text" matInput formControlName="workType" [matAutocomplete]="workType">
+          <mat-autocomplete #workType="matAutocomplete" [displayWith]="autoListView">
+            <mat-option *ngFor="let option of workTypeList" [value]="option">
+              {{option?.name}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Date</mat-label>
+          <input matInput formControlName="work_date" [matDatepicker]="work">
+          <mat-datepicker-toggle matSuffix [for]="work"></mat-datepicker-toggle>
+          <mat-datepicker #work></mat-datepicker>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Kooli</mat-label>
+          <input type="number" matInput formControlName="kooli">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Kooli Paid</mat-label>
+          <input type="number" matInput formControlName="kooliPaid">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Paid Date</mat-label>
+          <input matInput formControlName="paid_date" [matDatepicker]="kooli">
+          <mat-datepicker-toggle matSuffix [for]="kooli"></mat-datepicker-toggle>
+          <mat-datepicker #kooli></mat-datepicker>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Narration</mat-label>
+          <input type="text" matInput formControlName="narration">
+        </mat-form-field>
+      </li>
+    </ul>
+  </section>
+  <footer>
+    <button class="add-button" [disabled]="!addEmployeExpenseForm.valid" mat-stroked-button color="primary"
+      (click)="postFormData();">
+      {{editMode.isActive ? 'Update' : 'Add New'}} Employee Expense
+    </button>
+    <button class="add-button" mat-stroked-button color="warn" (click)="closeDialogBox();"
+      [mat-dialog-close]="true">Completed !</button>
+  </footer>
+
+</div>
+
+<ems-loader></ems-loader>

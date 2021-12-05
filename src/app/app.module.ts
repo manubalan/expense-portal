@@ -8,7 +8,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ErrorInterceptor } from './core/services/error.interceptor';
-import { AuthInterceptor } from './authentication/services/auth.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,7 +20,6 @@ import { AuthInterceptor } from './authentication/services/auth.interceptor';
   ],
   providers: [
 
-    // { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],

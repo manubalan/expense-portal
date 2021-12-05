@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from '../authentication';
 import { PagesComponent } from './pages.component';
 
 const routes: Routes = [
@@ -16,13 +17,21 @@ const routes: Routes = [
         path: 'agreement',
         loadChildren: () =>
           import('./agreement/agreement.module').then((m) => m.AgreementModule),
+        canActivate: [AuthGuard],
       },
       {
-        path: 'master',
+        path: 'master-data',
         loadChildren: () =>
           import('./master-data/master-data.module').then(
             (m) => m.MasterDataModule
           ),
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'reports',
+        loadChildren: () =>
+          import('./reports/reports.module').then((m) => m.ReportsModule),
+        canActivate: [AuthGuard],
       },
       {
         path: '**',
