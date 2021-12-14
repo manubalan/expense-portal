@@ -48,6 +48,7 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
   vehicleFilterForm: FormGroup;
   agreementList: any[] = [];
   materialList: any[] = [];
+  locationList: any[] = [];
   driverList: any[] = [];
 
   constructor(
@@ -62,10 +63,11 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
   ) {
     this.vehicleFilterForm = this.fBuilder.group({
       agreement: new FormControl(null),
-      vehicleType: new FormControl(null),
+      material: new FormControl(null),
+      location: new FormControl(null),
       driver: new FormControl(null),
       startDate: new FormControl(null),
-      endDate: new FormControl(null)
+      endDate: new FormControl(null),
     });
 
     this.setFilterLists();
@@ -159,11 +161,13 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
   setFilterLists(): void {
     this.setAgreementList();
     this.setMaterialList();
+    this.setLocationList();
     this.setDriverList();
     this.detectFilterForms();
   }
 
   setAgreementList(search?: string): void {
+    this.loaderService.show();
     const agreementSubs = this.agreementService
       .getAgreements(
         search !== null && search !== undefined
@@ -171,27 +175,13 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
           : undefined
       )
       .subscribe((data) => {
+        this.loaderService.hide();
         if (data && data.results) {
           this.agreementList = data.results;
         }
       });
 
     this.subscriptionArray.push(agreementSubs);
-  }
-
-  setDriverList(search?: string): void {
-    const empSubs = this.masterService
-      .getEmployeesList(
-        search !== null && search !== undefined
-          ? `?search=${search}`
-          : undefined
-      )
-      .subscribe((data) => {
-        if (data && data.results) {
-          this.driverList = data.results;
-        }
-      });
-    this.subscriptionArray.push(empSubs);
   }
 
   setMaterialList(search?: string): void {
@@ -210,6 +200,41 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
     this.subscriptionArray.push(vehicleSubs);
   }
 
+  setDriverList(search?: string): void {
+    this.loaderService.show();
+    const empSubs = this.masterService
+      .getEmployeesList(
+        search !== null && search !== undefined
+          ? `?search=${search}`
+          : undefined
+      )
+      .subscribe((data) => {
+        this.loaderService.hide();
+        if (data && data.results) {
+          this.driverList = data.results;
+        }
+      });
+    this.subscriptionArray.push(empSubs);
+  }
+
+  setLocationList(search?: string): void {
+    this.loaderService.show();
+    const vehicleSubs = this.masterService
+      .getLocationsList(
+        0,
+        search !== undefined && search !== null ? 'search=' + search : ''
+      )
+      .subscribe((data) => {
+        this.loaderService.hide();
+        if (data && data.results) {
+          this.locationList = data.results;
+        }
+      });
+
+    this.subscriptionArray.push(vehicleSubs);
+  }
+
+
   detectFilterForms(): void {
     const detectSubs = this.vehicleFilterForm
       .get('agreement')
@@ -220,21 +245,28 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
     if (detectSubs) this.subscriptionArray.push(detectSubs);
 
     const workSubs = this.vehicleFilterForm
+      .get('material')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (typeof value === 'string') this.setMaterialList(value);
+      });
+    if (workSubs) this.subscriptionArray.push(workSubs);
+
+    const matSubs = this.vehicleFilterForm
+    .get('location')
+    ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+    .subscribe((value: any) => {
+      if (typeof value === 'string') this.setLocationList(value);
+    });
+  if (matSubs) this.subscriptionArray.push(matSubs);
+
+    const empSubs = this.vehicleFilterForm
       .get('driver')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value: any) => {
         if (typeof value === 'string') this.setDriverList(value);
       });
-    if (workSubs) this.subscriptionArray.push(workSubs);
-
-    const empSubs = this.vehicleFilterForm
-    .get('materials')
-    ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
-    .subscribe((value: any) => {
-      if (typeof value === 'string') this.setMaterialList(value);
-    });
-  if (empSubs) this.subscriptionArray.push(empSubs);
-
+    if (empSubs) this.subscriptionArray.push(empSubs);
   }
 
   searchNow(): void {
@@ -265,6 +297,13 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
       this.vehicleFilterForm.value.driver.id
     ) {
       paramList.push(`driver_name=${this.vehicleFilterForm.value.driver.id}`);
+    }
+
+    if (
+      this.vehicleFilterForm.value.materialsFrom &&
+      this.vehicleFilterForm.value.materialsFrom.id
+    ) {
+      paramList.push(`materials_from=${this.vehicleFilterForm.value.materialsFrom.id}`);
     }
 
     if (

@@ -108,7 +108,7 @@
 
                 <ng-container matColumnDef="qty_type">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header> QTY Type </th>
-                  <td mat-cell *matCellDef="let row"> {{row?.qty_type}} </td>
+                  <td mat-cell *matCellDef="let row"> {{row?.si_unit_details?.name}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="quantity">
