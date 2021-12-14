@@ -116,3 +116,82 @@ export const MASTER_DATA_GRID: MasterDataGridModel[] = [
     },
   },
 ];
+
+export const MENU = [
+  {
+    name: 'Dashboard',
+    link: 'dashboard',
+    icon: 'grid_view',
+    hasAcess: [...ROLES],
+  },
+  {
+    name: 'Agreement',
+    link: 'agreement',
+    icon: 'list_alt',
+    hasAcess: [...ROLES],
+    children: [
+      {
+        name: 'Agreements Details',
+        link: '/dashboard/agreement/agreements-list',
+        icon: 'request_quote',
+      },
+      {
+        name: 'Vehicle Expense',
+        link: '/dashboard/agreement/vehicle-expenses',
+        icon: 'directions_car',
+      },
+      {
+        name: 'Employee Expense',
+        link: '/dashboard/agreement/exployee-expense',
+        icon: 'groups',
+      },
+    ],
+  },
+  {
+    name: 'Reports',
+    link: 'reports',
+    icon: 'assessment',
+    hasAcess: [...ROLES],
+    children: [
+      {
+        name: 'Employee Expense',
+        link: '/dashboard/reports/exployee-wise-expense',
+        icon: 'supervisor_account',
+      },
+      {
+        name: 'Employee Expense (Date Wise)',
+        link: '/dashboard/reports/exployee-expense',
+        icon: 'perm_contact_calendar',
+      },
+
+      {
+        name: 'Material Expense',
+        link: '/dashboard/reports/vehicle-expense',
+        icon: 'group_work',
+      },
+      {
+        name: 'Vehicle Expense',
+        link: '/dashboard/reports/driver-wise-expense',
+        icon: 'local_shipping',
+      },
+      {
+        name: 'Driver Expense',
+        link: '/dashboard/reports/driver-expense',
+        icon: 'commute',
+      },
+    ],
+  },
+  {
+    name: 'Master Data',
+    link: 'master-data',
+    icon: 'storage',
+    hasAcess: [ROLES[0], ROLES[1]],
+    children: [
+      {
+        name: 'View Master Data',
+        link: '/dashboard/master-data/view',
+        icon: 'table_chart',
+      },
+    ],
+  },
+];
