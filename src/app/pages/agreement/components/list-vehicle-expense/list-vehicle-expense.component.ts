@@ -300,18 +300,18 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
     }
 
     if (
-      this.vehicleFilterForm.value.materialsFrom &&
-      this.vehicleFilterForm.value.materialsFrom.id
+      this.vehicleFilterForm.value.location &&
+      this.vehicleFilterForm.value.location.id
     ) {
-      paramList.push(`materials_from=${this.vehicleFilterForm.value.materialsFrom.id}`);
+      paramList.push(`materials_from=${this.vehicleFilterForm.value.location.id}`);
     }
 
     if (
-      this.vehicleFilterForm.value.vehicleType &&
-      this.vehicleFilterForm.value.vehicleType.id
+      this.vehicleFilterForm.value.material &&
+      this.vehicleFilterForm.value.material.id
     ) {
       paramList.push(
-        `materials=${this.vehicleFilterForm.value.vehicleType.id}`
+        `materials=${this.vehicleFilterForm.value.material.id}`
       );
     }
 

@@ -3,6 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import {
   AddAgreementComponent,
   AddEmployeExpenseComponent,
+  AddFuelExpenseComponent,
+  AddJcbExpenseComponent,
   AddVehicleExpensesComponent,
 } from 'src/app/pages/agreement/components';
 @Component({
@@ -22,6 +24,10 @@ export class AddMenuComponent implements OnInit {
       this.dialog.open(AddVehicleExpensesComponent);
     } else if (addPage === 'employee-expense') {
       this.dialog.open(AddEmployeExpenseComponent);
+    } else if (addPage === 'fuel-expense') {
+      this.dialog.open(AddFuelExpenseComponent);
+    } else if (addPage === 'jcb-expense') {
+      this.dialog.open(AddJcbExpenseComponent);
     }
   }
 }

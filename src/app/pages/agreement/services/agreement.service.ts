@@ -21,6 +21,7 @@ export class AgreementService {
   agreementUpdated$ = new Subject<boolean>();
   vehicleExpUpdated$ = new Subject<boolean>();
   employExpUpdated$ = new Subject<boolean>();
+  fuelExpUpdated$ = new Subject<boolean>();
 
   constructor(private http: HttpClient) {}
 
@@ -141,5 +142,42 @@ export class AgreementService {
 
   deleteEmployeeExp(ID: number): Observable<any> {
     return this.http.delete(`${API_END_POINT.agreement.employee_expense}${ID}`);
+  }
+
+  // FUEL Expenses
+  postFuelExpense(
+    request: any,
+    editMode = false,
+    ID?: number
+  ): Observable<any> {
+    if (editMode && ID && ID > 0) {
+      return this.http.put<any>(
+        `${API_END_POINT.agreement.fuel_expense}${ID}/`,
+        request
+      );
+    } else {
+      return this.http.post<any>(
+        API_END_POINT.agreement.fuel_expense,
+        request
+      );
+    }
+  }
+
+  getFuelExpenses(param?: string): Observable<EmployeeExpenseResponseModel> {
+    return this.http.get<EmployeeExpenseResponseModel>(
+      `${API_END_POINT.agreement.fuel_expense}${
+        param !== undefined ? param : ''
+      }`
+    );
+  }
+
+  getFuelExpenseID(ID: number): Observable<EmployeeExpenseListResultModel> {
+    return this.http.get<EmployeeExpenseListResultModel>(
+      `${API_END_POINT.agreement.fuel_expense}${ID}`
+    );
+  }
+
+  deleteFuelExpense(ID: number): Observable<any> {
+    return this.http.delete(`${API_END_POINT.agreement.fuel_expense}${ID}`);
   }
 }

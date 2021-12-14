@@ -86,4 +86,20 @@ export class MasterDataService {
       `${API_END_POINT.masterData.workDayType}`
     );
   }
+
+  getVehicleNumberList(params?: string): Observable<MasterDataModel> {
+    return this.http.get<MasterDataModel>(
+      `${API_END_POINT.masterData.vehicleNumber}${
+        params !== undefined && params !== null ? params : ''
+      }`
+    );
+  }
+
+  getFuelTypeList(params?: string): Observable<MasterDataModel> {
+    return this.http.get<MasterDataModel>(
+      `${API_END_POINT.masterData.fuelType}${
+        params !== undefined && params !== null ? params : ''
+      }`
+    );
+  }
 }

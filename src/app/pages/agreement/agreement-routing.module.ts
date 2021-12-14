@@ -5,6 +5,7 @@ import {
   ListAgreementComponent,
   ListEmployeeExpenseComponent,
   ListVehicleExpenseComponent,
+  ListFuelExpenseComponent,
 } from './components';
 
 const routes: Routes = [
@@ -18,6 +19,7 @@ const routes: Routes = [
         component: ListVehicleExpenseComponent,
       },
       { path: 'exployee-expense', component: ListEmployeeExpenseComponent },
+      { path: 'fuel-expense', component: ListFuelExpenseComponent },
       { path: '', redirectTo: 'agreements-list' },
     ],
   },
