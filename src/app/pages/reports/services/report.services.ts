@@ -1,12 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { API_END_POINT } from 'src/app/core';
 import { GetResponseModel } from 'src/app/core/models/report-data.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class ReportService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   getEmployeeReport(params?: string): Observable<GetResponseModel> {
     return this.http.get<GetResponseModel>(
@@ -30,5 +33,43 @@ export class ReportService {
     return this.http.get<GetResponseModel>(
       API_END_POINT.reports.driver_expense + (params ? params : '')
     );
+  }
+
+  downloadReports(
+    type: 'driver' | 'employee' | 'employee_wise' | 'material' | 'vehicle',
+    params?: string
+  ): void {
+    let download = '';
+    let endPoint = '';
+    switch (type) {
+      case 'driver':
+        download = 'DriverExpenses';
+        endPoint = API_END_POINT.reports.driver_expense;
+        break;
+      case 'employee':
+        download = 'EmployeeExpenses';
+        endPoint = API_END_POINT.reports.employee_wise_expense;
+        break;
+      case 'employee_wise':
+        download = 'EmployeeExpensesDateWise';
+        endPoint = API_END_POINT.reports.employee_expense;
+        break;
+      case 'material':
+        download = 'MaterialExpense';
+        endPoint = API_END_POINT.reports.vehicle_expense;
+        break;
+      case 'vehicle':
+        download = 'VehicleExpense';
+        endPoint = API_END_POINT.reports.vehicle_expense;
+        break;
+    }
+    const URL = `${endPoint}/?${
+      params ? `${params}&`  : ''
+    }download=true&report_name=${download}`;
+
+    console.log('DOWNLOAD =>', URL);
+
+
+    window.open(URL, '_blank');
   }
 }

@@ -10,7 +10,7 @@ import {
   PAGE_ATTR_DATA,
 } from 'src/app/core';
 import { AgreementService } from 'src/app/pages/agreement/services';
-import { LoaderService } from 'src/app/shared';
+import { DialogBoxService, LoaderService, SnackBarService } from 'src/app/shared';
 import { ReportService } from '../../services/report.services';
 
 @Component({
@@ -31,13 +31,16 @@ export class VehicleDriverExpenseComponent implements OnInit, OnDestroy {
   pageAttributes: PageAttrModel = { ...PAGE_ATTR_DATA };
 
   subscriptionArray: Subscription[] = [];
+  filterCriteria = '';
 
   constructor(
     private resportService: ReportService,
     private loaderService: LoaderService,
     private fbuilder: FormBuilder,
     private agreementService: AgreementService,
-    private masterService: MasterDataService
+    private masterService: MasterDataService,
+    private dialogeService: DialogBoxService,
+    private snackBarService: SnackBarService
   ) {
     this.vehicleFilterForm = this.fbuilder.group({
       agreement: new FormControl(''),
@@ -132,19 +135,6 @@ export class VehicleDriverExpenseComponent implements OnInit, OnDestroy {
   searchNow(): void {
     const paramList = [];
     let paramUrl = '';
-    if (this.pageAttributes.pageSize > 0) {
-      paramList.push(`limit=${this.pageAttributes.pageSize}`);
-    }
-    if (this.pageAttributes.currentPage > 0) {
-      paramList.push(
-        `offset=${
-          this.pageAttributes.currentPage * this.pageAttributes.pageSize
-        }`
-      );
-    } else if (this.pageAttributes.currentPage === 0) {
-      paramList.push(`offset=${this.pageAttributes.currentPage}`);
-    }
-
     if (
       this.vehicleFilterForm.value.agreement &&
       this.vehicleFilterForm.value.agreement.id
@@ -174,6 +164,25 @@ export class VehicleDriverExpenseComponent implements OnInit, OnDestroy {
     }
     if (this.vehicleFilterForm.value.search) {
       paramList.push(`search=${this.vehicleFilterForm.value.search}`);
+    }
+
+    if (paramList.length > 0) {
+      paramList.map((par) => {
+        this.filterCriteria = this.filterCriteria + par + '&';
+      });
+    }
+
+    if (this.pageAttributes.pageSize > 0) {
+      paramList.push(`limit=${this.pageAttributes.pageSize}`);
+    }
+    if (this.pageAttributes.currentPage > 0) {
+      paramList.push(
+        `offset=${
+          this.pageAttributes.currentPage * this.pageAttributes.pageSize
+        }`
+      );
+    } else if (this.pageAttributes.currentPage === 0) {
+      paramList.push(`offset=${this.pageAttributes.currentPage}`);
     }
 
     if (paramList.length > 0) {
@@ -218,7 +227,17 @@ export class VehicleDriverExpenseComponent implements OnInit, OnDestroy {
   }
 
   downloadNow(): void {
-    return;
+    const ref = this.dialogeService.openDialog('Are sure want to Download ?');
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.resportService.downloadReports(
+          'vehicle',
+          this.filterCriteria.slice(0, -1)
+        );
+
+        this.filterCriteria = '';
+      }
+    });
   }
 
   ngOnDestroy(): void {
