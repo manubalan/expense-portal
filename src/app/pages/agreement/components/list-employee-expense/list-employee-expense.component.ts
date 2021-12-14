@@ -147,6 +147,7 @@ export class ListEmployeeExpenseComponent implements OnInit, OnDestroy {
   }
 
   setAgreementList(search?: string): void {
+    this.loaderService.show();
     const agreementSubs = this.agreementService
       .getAgreements(
         search !== null && search !== undefined
@@ -154,6 +155,7 @@ export class ListEmployeeExpenseComponent implements OnInit, OnDestroy {
           : undefined
       )
       .subscribe((data) => {
+        this.loaderService.hide();
         if (data && data.results) {
           this.agreementList = data.results;
         }
@@ -163,6 +165,7 @@ export class ListEmployeeExpenseComponent implements OnInit, OnDestroy {
   }
 
   setEmployeeList(search?: string): void {
+    this.loaderService.show();
     const empSubs = this.masterService
       .getEmployeesList(
         search !== null && search !== undefined
@@ -170,6 +173,7 @@ export class ListEmployeeExpenseComponent implements OnInit, OnDestroy {
           : undefined
       )
       .subscribe((data) => {
+        this.loaderService.hide();
         if (data && data.results) {
           this.employeeList = data.results;
         }
@@ -178,6 +182,7 @@ export class ListEmployeeExpenseComponent implements OnInit, OnDestroy {
   }
 
   setWorkTypeList(search?: string): void {
+    this.loaderService.show();
     const workSubs = this.masterService
       .getWorktypesList(
         search !== null && search !== undefined
@@ -185,6 +190,7 @@ export class ListEmployeeExpenseComponent implements OnInit, OnDestroy {
           : undefined
       )
       .subscribe((data) => {
+        this.loaderService.hide();
         if (data && data.results) {
           this.workTypeList = data.results;
         }

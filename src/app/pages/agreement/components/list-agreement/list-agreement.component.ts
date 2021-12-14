@@ -172,6 +172,7 @@ export class ListAgreementComponent implements OnInit, OnDestroy {
   }
 
   setEmployeeList(search?: string): void {
+    this.loaderService.show();
     const empSubs = this.masterService
       .getEmployeesList(
         search !== null && search !== undefined
@@ -179,6 +180,7 @@ export class ListAgreementComponent implements OnInit, OnDestroy {
           : undefined
       )
       .subscribe((data) => {
+        this.loaderService.hide();
         if (data && data.results) {
           this.nameList = data.results;
         }
@@ -187,12 +189,14 @@ export class ListAgreementComponent implements OnInit, OnDestroy {
   }
 
   setLocationList(search?: string): void {
+    this.loaderService.show();
     const empSubs = this.masterService
       .getLocationsList(
         0,
         search !== null && search !== undefined ? `search=${search}` : undefined
       )
       .subscribe((data) => {
+        this.loaderService.hide();
         if (data && data.results) {
           this.locationList = data.results;
         }

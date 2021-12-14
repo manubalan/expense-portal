@@ -30,9 +30,19 @@
 
           <mat-form-field>
             <mat-label>Materials</mat-label>
-            <input type="text" matInput formControlName="vehicleType" [matAutocomplete]="names">
+            <input type="text" matInput formControlName="material" [matAutocomplete]="names">
             <mat-autocomplete #names="matAutocomplete" [displayWith]="employeeOptionView">
               <mat-option *ngFor="let option of materialList" [value]="option">
+                {{option?.name}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>From Location</mat-label>
+            <input type="text" matInput formControlName="location" [matAutocomplete]="from">
+            <mat-autocomplete #from="matAutocomplete" [displayWith]="employeeOptionView">
+              <mat-option *ngFor="let option of locationList" [value]="option">
                 {{option?.name}}
               </mat-option>
             </mat-autocomplete>
