@@ -233,19 +233,6 @@ export class ListAgreementComponent implements OnInit, OnDestroy {
   searchNow(): void {
     const paramList = [];
     let paramUrl = '';
-    if (this.pageAttributes.pageSize > 0) {
-      paramList.push(`limit=${this.pageAttributes.pageSize}`);
-    }
-    if (this.pageAttributes.currentPage > 0) {
-      paramList.push(
-        `offset=${
-          this.pageAttributes.currentPage * this.pageAttributes.pageSize
-        }`
-      );
-    } else if (this.pageAttributes.currentPage === 0) {
-      paramList.push(`offset=${this.pageAttributes.currentPage}`);
-    }
-
     if (
       this.agreementFilterForm.value.agreement &&
       this.agreementFilterForm.value.agreement.id
@@ -260,6 +247,19 @@ export class ListAgreementComponent implements OnInit, OnDestroy {
       this.agreementFilterForm.value.location.id
     ) {
       paramList.push(`location=${this.agreementFilterForm.value.location.id}`);
+    }
+
+    if (this.pageAttributes.pageSize > 0) {
+      paramList.push(`limit=${this.pageAttributes.pageSize}`);
+    }
+    if (this.pageAttributes.currentPage > 0) {
+      paramList.push(
+        `offset=${
+          this.pageAttributes.currentPage * this.pageAttributes.pageSize
+        }`
+      );
+    } else if (this.pageAttributes.currentPage === 0) {
+      paramList.push(`offset=${this.pageAttributes.currentPage}`);
     }
 
     if (paramList.length > 0) {

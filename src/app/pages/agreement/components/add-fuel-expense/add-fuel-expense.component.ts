@@ -12,14 +12,13 @@ import { AgreementService } from '../../services';
 
 @Component({
   selector: 'ems-add-fuel-expense',
-  templateUrl: './add-fuel-expense.component.html',
-  styleUrls: ['./add-fuel-expense.component.scss'],
+  templateUrl: './add-fuel-expense.component.html'
 })
 export class AddFuelExpenseComponent implements OnInit {
   addFuelExpenseForm: FormGroup;
   editMode = {
     isActive: false,
-    agreementID: 0,
+    fuelExpenseID: 0,
   };
 
   driverList: any[] = [];
@@ -59,6 +58,7 @@ export class AddFuelExpenseComponent implements OnInit {
   ngOnInit(): void {
     this.setMasterdata();
     this.detectFormValueChange();
+    this.patchFormData();
   }
 
   setMasterdata(): void {
@@ -190,9 +190,7 @@ export class AddFuelExpenseComponent implements OnInit {
           ? this.addFuelExpenseForm.value.location.id
           : null,
       date: this.addFuelExpenseForm.value.date
-        ? moment(this.addFuelExpenseForm.value.date).format(
-          'YYYY-MM-DD'
-        )
+        ? moment(this.addFuelExpenseForm.value.date).format('YYYY-MM-DD')
         : null,
       fuel:
         typeof this.addFuelExpenseForm.value.fuel === 'object' &&
@@ -214,9 +212,14 @@ export class AddFuelExpenseComponent implements OnInit {
     };
 
     const add = this.agreementService
-      .postFuelExpense(requestBody)
+      .postFuelExpense(
+        requestBody,
+        this.editMode.isActive ? true : false,
+        this.editMode.fuelExpenseID ? this.editMode.fuelExpenseID : 0
+      )
       .subscribe((response) => {
         if (response) {
+          this.agreementService.fuelExpUpdated$.next(true);
           this.snackBarService.success(
             this.editMode.isActive
               ? 'Fuel Expense updated Successfully ! '
@@ -231,6 +234,43 @@ export class AddFuelExpenseComponent implements OnInit {
       });
 
     if (add) this.subscriptionsArray.push(add);
+  }
+
+  // UPDATE MODE
+  patchFormData(): void {
+    if (this.editMode.isActive) {
+      const agreementIDSub = this.agreementService
+        .getFuelExpenseID(this.editMode.fuelExpenseID)
+        .subscribe((data) => {
+          if (data) {
+            this.addFuelExpenseForm.patchValue({
+              driver_name: {
+                id: data?.driver_name,
+                name: data?.driver_name_details?.name,
+              },
+              vehicle_number: {
+                id: data?.vehicle_number,
+                name: data?.vehicle_number_details?.name,
+              },
+              location: {
+                id: data?.location,
+                name: data?.location_details?.name,
+              },
+              date: data?.date,
+              fuel: {
+                id: data?.fuel,
+                name: data?.fuel_details?.name,
+              },
+              unit_price: data?.unit_price,
+              quantity: data?.quantity,
+              total_amount: data?.total_amount,
+              narration: data?.narration,
+            });
+          }
+        });
+
+      this.subscriptionsArray.push(agreementIDSub);
+    }
   }
 
   ngOnDestroy(): void {

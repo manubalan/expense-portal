@@ -272,19 +272,6 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
   searchNow(): void {
     const paramList = [];
     let paramUrl = '';
-    if (this.pageAttributes.pageSize > 0) {
-      paramList.push(`limit=${this.pageAttributes.pageSize}`);
-    }
-    if (this.pageAttributes.currentPage > 0) {
-      paramList.push(
-        `offset=${
-          this.pageAttributes.currentPage * this.pageAttributes.pageSize
-        }`
-      );
-    } else if (this.pageAttributes.currentPage === 0) {
-      paramList.push(`offset=${this.pageAttributes.currentPage}`);
-    }
-
     if (
       this.vehicleFilterForm.value.agreement &&
       this.vehicleFilterForm.value.agreement.id
@@ -329,6 +316,19 @@ export class ListVehicleExpenseComponent implements OnInit, OnDestroy {
           'YYYY-MM-DD'
         )}`
       );
+    }
+
+    if (this.pageAttributes.pageSize > 0) {
+      paramList.push(`limit=${this.pageAttributes.pageSize}`);
+    }
+    if (this.pageAttributes.currentPage > 0) {
+      paramList.push(
+        `offset=${
+          this.pageAttributes.currentPage * this.pageAttributes.pageSize
+        }`
+      );
+    } else if (this.pageAttributes.currentPage === 0) {
+      paramList.push(`offset=${this.pageAttributes.currentPage}`);
     }
 
     if (paramList.length > 0) {

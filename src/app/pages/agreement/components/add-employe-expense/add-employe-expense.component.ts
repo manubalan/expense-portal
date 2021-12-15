@@ -58,7 +58,7 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
       paid_date: new FormControl(''),
       narration: new FormControl(''),
     });
-    this.dateAdapter.setLocale('en-GB'); 
+    this.dateAdapter.setLocale('en-GB');
   }
 
   ngOnInit(): void {
@@ -286,7 +286,7 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
           ? this.addEmployeExpenseForm.value.narration
           : '',
     };
-debugger
+
     const postDatSubs = this.agreementService
       .postEmployeeExpense(
         requestBody,

@@ -9,6 +9,7 @@ import {
   EmployeeExpenseListResultModel,
   EmployeeExpenseRequestModel,
   EmployeeExpenseResponseModel,
+  FuelExpenseResponseModel,
   ValidateAgreementResponseModel,
   VehicleExpenseListResultModel,
   VehicleExpenseResponseModel,
@@ -171,8 +172,8 @@ export class AgreementService {
     );
   }
 
-  getFuelExpenseID(ID: number): Observable<EmployeeExpenseListResultModel> {
-    return this.http.get<EmployeeExpenseListResultModel>(
+  getFuelExpenseID(ID: number): Observable<FuelExpenseResponseModel> {
+    return this.http.get<FuelExpenseResponseModel>(
       `${API_END_POINT.agreement.fuel_expense}${ID}`
     );
   }

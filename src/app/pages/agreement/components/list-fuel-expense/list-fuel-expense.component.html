@@ -15,7 +15,66 @@
             Filter Panel
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <div class="filter-box"></div>
+        <div class="filter-box" [formGroup]="fuelFilterForm">
+
+          <mat-form-field>
+            <mat-label>Driver</mat-label>
+            <input type="text" matInput formControlName="driver_name" [matAutocomplete]="driver">
+            <mat-autocomplete #driver="matAutocomplete" [displayWith]="employeeOptionView">
+              <mat-option *ngFor="let option of driverList" [value]="option">
+                {{option?.name}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Location</mat-label>
+            <input type="text" matInput formControlName="location" [matAutocomplete]="location">
+            <mat-autocomplete #location="matAutocomplete" [displayWith]="employeeOptionView">
+              <mat-option *ngFor="let option of locationList" [value]="option">
+                {{option?.name}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Vehicle</mat-label>
+            <input type="text" matInput formControlName="vehicle_number" [matAutocomplete]="vehicle">
+            <mat-autocomplete #vehicle="matAutocomplete" [displayWith]="employeeOptionView">
+              <mat-option *ngFor="let option of vehicleList" [value]="option">
+                {{option?.name}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Fuel</mat-label>
+            <input type="text" matInput formControlName="fuel" [matAutocomplete]="fuel">
+            <mat-autocomplete #fuel="matAutocomplete" [displayWith]="employeeOptionView">
+              <mat-option *ngFor="let option of fuelList" [value]="option">
+                {{option?.name}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>From Date</mat-label>
+            <input matInput formControlName="from_date" [matDatepicker]="fromdate">
+            <mat-datepicker-toggle matSuffix [for]="fromdate"></mat-datepicker-toggle>
+            <mat-datepicker #fromdate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>To Date</mat-label>
+            <input matInput formControlName="to_date" [matDatepicker]="todate">
+            <mat-datepicker-toggle matSuffix [for]="todate"></mat-datepicker-toggle>
+            <mat-datepicker #todate></mat-datepicker>
+          </mat-form-field>
+
+          <button mat-stroked-button color="primary" (click)="searchNow()">Search Now</button>
+          <button mat-stroked-button color="warn" (click)="resetSearch()">Reset</button>
+
+        </div>
       </mat-expansion-panel>
 
       <mat-expansion-panel hideToggle [expanded]="true">

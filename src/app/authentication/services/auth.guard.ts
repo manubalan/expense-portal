@@ -6,6 +6,7 @@ import {
   RouterStateSnapshot,
   CanLoad,
 } from '@angular/router';
+import { MENU, MenuModel } from 'src/app/core';
 
 import { AuthService } from './auth.service';
 
@@ -13,6 +14,7 @@ import { AuthService } from './auth.service';
 export class AuthGuard implements CanActivate {
   currentState: any;
   role: string = '';
+  pages: MenuModel[] = MENU;
   constructor(
     private router: Router,
     private authenticationService: AuthService
@@ -32,15 +34,17 @@ export class AuthGuard implements CanActivate {
         this.authenticationService?.activeUser?.user?.role_details?.name;
 
     if (this.authenticationService.isAuthenticated) {
-      // const navObj = MENU.filter(
-      //   (el) =>
-      //     el.link.toLowerCase().replace('/', '') ===
-      //     route.routeConfig?.path?.toLowerCase()
-      // );
-      // if (!(navObj.length > 0 && navObj[0]?.hasAcess.includes(this.role))) {
-      //   this.router.navigate(['/']);
-      //   return false;
-      // }
+      // if (this.authenticationService.activeUser.menu) this.pages = this.authenticationService.activeUser.menu;
+
+      const navObj = MENU.filter(
+        (el) =>
+          el.link.toLowerCase().replace('/', '') ===
+          route.routeConfig?.path?.toLowerCase()
+      );
+      if (!(navObj.length > 0 && navObj[0]?.hasAcess.includes(this.role))) {
+        this.router.navigate(['/']);
+        return false;
+      }
 
       return true;
     }

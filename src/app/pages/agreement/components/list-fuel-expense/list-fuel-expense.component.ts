@@ -1,14 +1,27 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { DateAdapter } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
+import * as moment from 'moment';
 import { Subscription } from 'rxjs';
-import { PageAttrEventModel, PageAttrModel, PAGE_ATTR_DATA } from 'src/app/core';
-import { LoaderService } from 'src/app/shared';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {
+  MasterDataService,
+  PageAttrEventModel,
+  PageAttrModel,
+  PAGE_ATTR_DATA,
+} from 'src/app/core';
+import {
+  DialogBoxService,
+  LoaderService,
+  SnackBarService,
+} from 'src/app/shared';
+import { AddFuelExpenseComponent } from '..';
 import { AgreementService } from '../../services';
 
 @Component({
   selector: 'ems-list-fuel-expense',
   templateUrl: './list-fuel-expense.component.html',
-  styleUrls: ['./list-fuel-expense.component.scss'],
 })
 export class ListFuelExpenseComponent implements OnInit {
   displayedColumns: string[] = [];
@@ -16,17 +29,38 @@ export class ListFuelExpenseComponent implements OnInit {
   pageAttributes: PageAttrModel = { ...PAGE_ATTR_DATA };
 
   subscriptionArray: Subscription[] = [];
-
+  fuelFilterForm: FormGroup;
   hasResult = false;
+
+  driverList: any[] = [];
+  locationList: any[] = [];
+  vehicleList: any[] = [];
+  fuelList: any[] = [];
 
   constructor(
     public dialog: MatDialog,
     private agreementService: AgreementService,
-    private loaderService: LoaderService
-  ) {}
+    private loaderService: LoaderService,
+    private dialogeService: DialogBoxService,
+    private snackBarService: SnackBarService,
+    private fBuilder: FormBuilder,
+    private masterDataService: MasterDataService,
+    private dateAdapter: DateAdapter<Date>
+  ) {
+    this.fuelFilterForm = this.fBuilder.group({
+      driver_name: new FormControl(null),
+      location: new FormControl(null),
+      vehicle_number: new FormControl(null),
+      fuel: new FormControl(null),
+      from_date: new FormControl(null),
+      to_date: new FormControl(null),
+    });
+
+    this.dateAdapter.setLocale('en-GB');
+  }
 
   ngOnInit(): void {
-    const subjectSubs = this.agreementService.vehicleExpUpdated$.subscribe(
+    const subjectSubs = this.agreementService.fuelExpUpdated$.subscribe(
       (update) => {
         if (update) {
           this.searchNow();
@@ -48,17 +82,8 @@ export class ListFuelExpenseComponent implements OnInit {
       'narration',
       'action',
     ];
-
+    this.setMasterData();
     this.searchNow();
-  }
-
-  // OPERATIONS
-  editFuelExpense(ID: number): void {
-    console.log(ID);
-  }
-
-  deleteFuelExpense(ID: number): void {
-    console.log(ID);
   }
 
   handlePage(event: PageAttrEventModel): void {
@@ -76,9 +101,164 @@ export class ListFuelExpenseComponent implements OnInit {
     this.searchNow();
   }
 
+  // FILTER Area
+  public employeeOptionView(option: any): string {
+    return option ? option.name : '';
+  }
+
+  setMasterData(): void {
+    this.setDriverList();
+    this.setVehicleList();
+    this.setLocationList();
+    this.setFuelTypeList();
+    this.detectFilterForms();
+  }
+
+  setDriverList(search?: string): void {
+    this.loaderService.show();
+    const employSubs = this.masterDataService
+      .getEmployeesList(
+        search !== undefined && search !== null ? '?search=' + search : ''
+      )
+      .subscribe((data) => {
+        this.loaderService.hide();
+        if (data && data.results) {
+          this.driverList = data.results;
+        }
+      });
+
+    this.subscriptionArray.push(employSubs);
+  }
+
+  setVehicleList(search?: string): void {
+    this.loaderService.show();
+    const employSubs = this.masterDataService
+      .getVehicleNumberList(
+        search !== undefined && search !== null ? '?search=' + search : ''
+      )
+      .subscribe((data) => {
+        this.loaderService.hide();
+        if (data && data.results) {
+          this.vehicleList = data.results;
+        }
+      });
+
+    this.subscriptionArray.push(employSubs);
+  }
+
+  setLocationList(search?: string): void {
+    this.loaderService.show();
+    const vehicleSubs = this.masterDataService
+      .getLocationsList(
+        0,
+        search !== undefined && search !== null ? 'search=' + search : ''
+      )
+      .subscribe((data) => {
+        this.loaderService.hide();
+        if (data && data.results) {
+          this.locationList = data.results;
+        }
+      });
+
+    this.subscriptionArray.push(vehicleSubs);
+  }
+
+  setFuelTypeList(search?: string): void {
+    this.loaderService.show();
+    const employSubs = this.masterDataService
+      .getFuelTypeList(
+        search !== undefined && search !== null ? '?search=' + search : ''
+      )
+      .subscribe((data) => {
+        this.loaderService.hide();
+        if (data && data.results) {
+          this.fuelList = data.results;
+        }
+      });
+
+    this.subscriptionArray.push(employSubs);
+  }
+
+  detectFilterForms(): void {
+    const detectSubs = this.fuelFilterForm
+      .get('driver_name')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (typeof value === 'string') this.setDriverList(value);
+      });
+    if (detectSubs) this.subscriptionArray.push(detectSubs);
+
+    const empSubs = this.fuelFilterForm
+      .get('location')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (typeof value === 'string') this.setLocationList(value);
+      });
+    if (empSubs) this.subscriptionArray.push(empSubs);
+
+    const workSubs = this.fuelFilterForm
+      .get('vehicle_number')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (typeof value === 'string') this.setVehicleList(value);
+      });
+    if (workSubs) this.subscriptionArray.push(workSubs);
+
+    const fuelSubs = this.fuelFilterForm
+      .get('fuel')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (typeof value === 'string') this.setFuelTypeList(value);
+      });
+    if (fuelSubs) this.subscriptionArray.push(fuelSubs);
+  }
+
   searchNow(): void {
     const paramList = [];
     let paramUrl = '';
+    if (
+      this.fuelFilterForm.value.driver_name &&
+      this.fuelFilterForm.value.driver_name.id
+    ) {
+      paramList.push(`driver_name=${this.fuelFilterForm.value.driver_name.id}`);
+    }
+
+    if (
+      this.fuelFilterForm.value.location &&
+      this.fuelFilterForm.value.location.id
+    ) {
+      paramList.push(`location=${this.fuelFilterForm.value.location.id}`);
+    }
+
+    if (
+      this.fuelFilterForm.value.vehicle_number &&
+      this.fuelFilterForm.value.vehicle_number.id
+    ) {
+      paramList.push(
+        `vehicle_number=${this.fuelFilterForm.value.vehicle_number.id}`
+      );
+    }
+
+    if (this.fuelFilterForm.value.fuel && this.fuelFilterForm.value.fuel.id) {
+      paramList.push(`fuel=${this.fuelFilterForm.value.fuel.id}`);
+    }
+
+    if (this.fuelFilterForm.value.from_date) {
+      paramList.push(
+        `from_date=${moment(this.fuelFilterForm.value.from_date).format(
+          'YYYY-MM-DD'
+        )}`
+      );
+    }
+
+    if (this.fuelFilterForm.value.to_date) {
+      paramList.push(
+        `to_date=${moment(this.fuelFilterForm.value.to_date).format(
+          'YYYY-MM-DD'
+        )}`
+      );
+    }
+
     if (this.pageAttributes.pageSize > 0) {
       paramList.push(`limit=${this.pageAttributes.pageSize}`);
     }
@@ -91,43 +271,6 @@ export class ListFuelExpenseComponent implements OnInit {
     } else if (this.pageAttributes.currentPage === 0) {
       paramList.push(`offset=${this.pageAttributes.currentPage}`);
     }
-
-    // if (
-    //   this.employeeFilterForm.value.agreement &&
-    //   this.employeeFilterForm.value.agreement.id
-    // ) {
-    //   paramList.push(`agreement=${this.employeeFilterForm.value.agreement.id}`);
-    // }
-
-    // if (
-    //   this.employeeFilterForm.value.employee &&
-    //   this.employeeFilterForm.value.employee.id
-    // ) {
-    //   paramList.push(`name=${this.employeeFilterForm.value.employee.id}`);
-    // }
-
-    // if (
-    //   this.employeeFilterForm.value.workType &&
-    //   this.employeeFilterForm.value.workType.id
-    // ) {
-    //   paramList.push(`work_type=${this.employeeFilterForm.value.workType.id}`);
-    // }
-
-    // if (this.employeeFilterForm.value.startDate) {
-    //   paramList.push(
-    //     `from_date=${moment(this.employeeFilterForm.value.startDate).format(
-    //       'YYYY-MM-DD'
-    //     )}`
-    //   );
-    // }
-
-    // if (this.employeeFilterForm.value.endDate) {
-    //   paramList.push(
-    //     `to_date=${moment(this.employeeFilterForm.value.endDate).format(
-    //       'YYYY-MM-DD'
-    //     )}`
-    //   );
-    // }
 
     if (paramList.length > 0) {
       paramList.map((par) => {
@@ -148,5 +291,50 @@ export class ListFuelExpenseComponent implements OnInit {
           if (data.count) this.pageAttributes.totalRecord = data.count;
         }
       });
+  }
+
+  resetSearch(): void {
+    this.fuelFilterForm.reset();
+    this.pageAttributes.pageSize = this.pageAttributes.pageSizeOpt[0];
+    this.pageAttributes.currentPage = 0;
+    this.searchNow();
+  }
+
+  // OPERATIONS
+  editFuelExpense(ID: number): void {
+    const instance = this.dialog.open(
+      AddFuelExpenseComponent
+    ).componentInstance;
+    instance.editMode = {
+      isActive: true,
+      fuelExpenseID: ID,
+    };
+  }
+
+  deleteFuelExpense(ID: number): void {
+    const ref = this.dialogeService.openDialog('Are sure want to delete ?');
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.loaderService.show();
+        const deletSubs = this.agreementService
+          .deleteFuelExpense(ID)
+          .subscribe((response) => {
+            this.agreementService.fuelExpUpdated$.next(true);
+            this.snackBarService.success(
+              'Agreement removed Successfully ! ',
+              'Done'
+            );
+            this.loaderService.hide();
+          });
+
+        this.subscriptionArray.push(deletSubs);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscriptionArray.length > 0) {
+      this.subscriptionArray.map((sub) => sub.unsubscribe());
+    }
   }
 }

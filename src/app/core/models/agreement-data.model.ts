@@ -170,3 +170,27 @@ export interface PageAttrEventModel {
   pageSize?: number;
   length?: number;
 }
+
+export interface FuelExpenseResponseModel {
+  id: number;
+  driver_name_details: DetailsModel;
+  vehicle_number_details: DetailsModel;
+  location_details: DetailsModel;
+  fuel_details: DetailsModel;
+  created_on: string;
+  updated_on: string;
+  date: string;
+  unit_price: number;
+  quantity: number;
+  total_amount: number;
+  narration: string;
+  user: number;
+  driver_name: number;
+  vehicle_number: number;
+  location: number;
+  fuel: number;
+}
+
+export interface DetailsModel {
+  name: string;
+}
