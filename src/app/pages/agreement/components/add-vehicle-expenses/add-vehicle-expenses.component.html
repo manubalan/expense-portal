@@ -16,8 +16,6 @@
         </mat-form-field>
       </li>
       <li>
-
-
         <mat-form-field>
           <mat-label>Vehicle Type</mat-label>
           <input type="text" matInput formControlName="vehicleType" [matAutocomplete]="vehicleType">
@@ -123,6 +121,14 @@
       </li>
       <li>
         <mat-form-field>
+          <mat-label>Betha Paid Date</mat-label>
+          <input matInput formControlName="betaPaidDate" [matDatepicker]="betapaid">
+          <mat-datepicker-toggle matSuffix [for]="betapaid"></mat-datepicker-toggle>
+          <mat-datepicker #betapaid></mat-datepicker>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
           <mat-label>Vehicle Charge</mat-label>
           <input type="number" matInput formControlName="vehicleCahrge">
         </mat-form-field>
@@ -144,7 +150,7 @@
   <footer>
     <button class="add-button" [disabled]="!addVehicleExpenseForm.valid" mat-stroked-button color="primary"
       (click)="postFormData();">
-      {{editMode.isActive ? 'Update' : 'Add' }}  Vehicle Expense
+      {{editMode.isActive ? 'Update' : 'Add' }} Vehicle Expense
     </button>
     <button class="add-button" mat-stroked-button color="warn" (click)="closeDialogBox();"
       [mat-dialog-close]="true">Completed !</button>

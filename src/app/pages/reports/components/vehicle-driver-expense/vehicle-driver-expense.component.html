@@ -141,6 +141,11 @@
                   <td mat-cell *matCellDef="let row"> {{row?.betha_paid}} </td>
                 </ng-container>
 
+                <ng-container matColumnDef="betha_paid_date">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Betha Paid Date</th>
+                  <td mat-cell *matCellDef="let row"> {{row?.betha_paid_date}} </td>
+                </ng-container>
+
                 <ng-container matColumnDef="vehicle_type_details">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header> Vehicle Type </th>
                   <td mat-cell *matCellDef="let row"> {{row?.vehicle_type_details?.name}} </td>

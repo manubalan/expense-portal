@@ -1,4 +1,4 @@
-import { endPoints } from 'src/environments/environment'
+import { endPoints } from 'src/environments/environment';
 
 const searchKey = '?search=';
 
@@ -18,7 +18,7 @@ export const API_END_POINT = {
     quantityType: `${endPoints.master_data_EndPoint}si-units/`,
     workDayType: `${endPoints.master_data_EndPoint}work-day-types/`,
     vehicleNumber: `${endPoints.master_data_EndPoint}vehicle-numbers/`,
-    fuelType: `${endPoints.master_data_EndPoint}fuels/`
+    fuelType: `${endPoints.master_data_EndPoint}fuels/`,
   },
   agreement: {
     data_operations: `${endPoints.base_api_EndPoint}agreements/`,
@@ -33,5 +33,6 @@ export const API_END_POINT = {
     employee_wise_expense: `${endPoints.base_api_EndPoint}employees-wise-expenses`,
     vehicle_expense: `${endPoints.base_api_EndPoint}vehicle-expenses`,
     driver_expense: `${endPoints.base_api_EndPoint}driver-wise-expense`,
-  }
+    fuel_expense: `${endPoints.base_api_EndPoint}fuel-expense`,
+  },
 };

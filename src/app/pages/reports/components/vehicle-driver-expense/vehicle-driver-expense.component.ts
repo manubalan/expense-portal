@@ -69,6 +69,7 @@ export class VehicleDriverExpenseComponent implements OnInit, OnDestroy {
       'driver_name',
       'betha',
       'betha_paid',
+      'betha_paid_date',
       'vechicle_charge',
       'total_amount',
     ];

@@ -119,6 +119,7 @@ export interface VehicleExpenseListResultModel {
   amount_date: string;
   betha: number;
   betha_paid: number;
+  betha_paid_date: string;
   vechicle_charge: number;
   narration: string;
   total_amount: number;

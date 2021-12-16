@@ -63,6 +63,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
       paidDate: new FormControl(''),
       betha: new FormControl(0),
       bethaPaid: new FormControl(0),
+      betaPaidDate: new FormControl(''),
       vehicleCahrge: new FormControl(0),
       narration: new FormControl(''),
       totalAmount: new FormControl(0),
@@ -130,6 +131,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
               paidDate: data.amount_date,
               betha: data.betha,
               bethaPaid: data.betha_paid,
+              betaPaidDate: data.betha_paid_date,
               vehicleCahrge: data.vechicle_charge,
               narration: data.narration,
               totalAmount: data.total_amount,
@@ -401,6 +403,13 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
         this.addVehicleExpenseForm.value.bethaPaid
           ? this.addVehicleExpenseForm.value.bethaPaid
           : 0,
+      betha_paid_date:
+        this.addVehicleExpenseForm.value &&
+        this.addVehicleExpenseForm.value.betaPaidDate
+          ? moment(this.addVehicleExpenseForm.value.betaPaidDate).format(
+              'YYYY-MM-DD'
+            )
+          : null,
       vechicle_charge:
         this.addVehicleExpenseForm.value &&
         this.addVehicleExpenseForm.value.vehicleCahrge

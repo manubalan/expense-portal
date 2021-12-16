@@ -1,15 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
 import { API_END_POINT } from 'src/app/core';
 import { GetResponseModel } from 'src/app/core/models/report-data.model';
-import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class ReportService {
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient) {}
 
   getEmployeeReport(params?: string): Observable<GetResponseModel> {
     return this.http.get<GetResponseModel>(
@@ -36,7 +33,13 @@ export class ReportService {
   }
 
   downloadReports(
-    type: 'driver' | 'employee' | 'employee_wise' | 'material' | 'vehicle',
+    type:
+      | 'driver'
+      | 'employee'
+      | 'employee_wise'
+      | 'material'
+      | 'vehicle'
+      | 'fuel',
     params?: string
   ): void {
     let download = '';
@@ -62,14 +65,33 @@ export class ReportService {
         download = 'VehicleExpense';
         endPoint = API_END_POINT.reports.vehicle_expense;
         break;
+      case 'fuel':
+        download = 'FuelExpense';
+        endPoint = API_END_POINT.reports.fuel_expense;
+        break;
     }
+
     const URL = `${endPoint}/?${
-      params ? `${params}&`  : ''
+      params ? `${params}&` : ''
     }download=true&report_name=${download}`;
 
-    console.log('DOWNLOAD =>', URL);
+    this.downloadFile(URL);
+  }
 
-
-    window.open(URL, '_blank');
+  downloadFile(baseUrl: string, filename: string = ''): void {
+    this.http
+      .get(baseUrl, { responseType: 'blob' as 'json' })
+      .subscribe((response: any) => {
+        let dataType = response.type;
+        let binaryData = [];
+        binaryData.push(response);
+        let downloadLink = document.createElement('a');
+        downloadLink.href = window.URL.createObjectURL(
+          new Blob(binaryData, { type: dataType })
+        );
+        if (filename) downloadLink.setAttribute('download', filename);
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+      });
   }
 }
