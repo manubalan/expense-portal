@@ -51,6 +51,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatAutocompleteModule,
     MatSnackBarModule,
     MatTooltipModule,
+    MatInputModule
   ],
   exports: [
     LoaderComponent,

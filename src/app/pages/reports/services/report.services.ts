@@ -1,11 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import { API_END_POINT } from 'src/app/core';
 import { GetResponseModel } from 'src/app/core/models/report-data.model';
 
 @Injectable()
 export class ReportService {
+  currentDate = new Date();
   constructor(private http: HttpClient) {}
 
   getEmployeeReport(params?: string): Observable<GetResponseModel> {
@@ -32,6 +34,18 @@ export class ReportService {
     );
   }
 
+  getFuelExpenseReport(params?: string): Observable<GetResponseModel> {
+    return this.http.get<GetResponseModel>(
+      API_END_POINT.reports.fuel_expense + (params ? params : '')
+    );
+  }
+
+  getJcbExpenseReport(params?: string): Observable<GetResponseModel> {
+    return this.http.get<GetResponseModel>(
+      API_END_POINT.reports.jcbl_expense + (params ? params : '')
+    );
+  }
+
   downloadReports(
     type:
       | 'driver'
@@ -39,7 +53,8 @@ export class ReportService {
       | 'employee_wise'
       | 'material'
       | 'vehicle'
-      | 'fuel',
+      | 'fuel'
+      | 'jcb',
     params?: string
   ): void {
     let download = '';
@@ -69,16 +84,24 @@ export class ReportService {
         download = 'FuelExpense';
         endPoint = API_END_POINT.reports.fuel_expense;
         break;
+      case 'jcb':
+        debugger;
+        download = 'JcbExpense';
+        endPoint = API_END_POINT.reports.jcbl_expense;
+        break;
     }
 
     const URL = `${endPoint}/?${
       params ? `${params}&` : ''
     }download=true&report_name=${download}`;
 
-    this.downloadFile(URL);
+    this.downloadFile(
+      URL,
+      `${download}_${moment(this.currentDate).format('DD-MM-YYYY_h-mm-ss')}`
+    );
   }
 
-  downloadFile(baseUrl: string, filename: string = ''): void {
+  downloadFile(baseUrl: string, filename: string): void {
     this.http
       .get(baseUrl, { responseType: 'blob' as 'json' })
       .subscribe((response: any) => {

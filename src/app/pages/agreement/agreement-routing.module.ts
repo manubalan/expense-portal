@@ -7,6 +7,7 @@ import {
   ListVehicleExpenseComponent,
   ListFuelExpenseComponent,
 } from './components';
+import { ListJcbExpenseComponent } from './components/list-jcb-expense/list-jcb-expense.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,7 @@ const routes: Routes = [
       },
       { path: 'exployee-expense', component: ListEmployeeExpenseComponent },
       { path: 'fuel-expense', component: ListFuelExpenseComponent },
+      { path: 'jcb-expense', component: ListJcbExpenseComponent },
       { path: '', redirectTo: 'agreements-list' },
     ],
   },

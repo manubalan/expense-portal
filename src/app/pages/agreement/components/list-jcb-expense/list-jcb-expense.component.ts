@@ -1,41 +1,41 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {
-  MasterDataService,
-  PageAttrEventModel,
   PageAttrModel,
   PAGE_ATTR_DATA,
+  MasterDataService,
+  PageAttrEventModel,
+  JCBExpenseResultModel,
 } from 'src/app/core';
 import {
-  DialogBoxService,
   LoaderService,
+  DialogBoxService,
   SnackBarService,
 } from 'src/app/shared';
-import { AddFuelExpenseComponent } from '..';
+import { AddJcbExpenseComponent } from '..';
 import { AgreementService } from '../../services';
 
 @Component({
-  selector: 'ems-list-fuel-expense',
-  templateUrl: './list-fuel-expense.component.html',
+  selector: 'ems-list-jcb-expense',
+  templateUrl: './list-jcb-expense.component.html',
 })
-export class ListFuelExpenseComponent implements OnInit {
+export class ListJcbExpenseComponent implements OnInit {
   displayedColumns: string[] = [];
-  dataSource: any;
+  dataSource: JCBExpenseResultModel[] = [];
   pageAttributes: PageAttrModel = { ...PAGE_ATTR_DATA };
 
   subscriptionArray: Subscription[] = [];
-  fuelFilterForm: FormGroup;
+  jcbFilterForm: FormGroup;
   hasResult = false;
 
-  driverList: any[] = [];
+  operatorList: any[] = [];
   locationList: any[] = [];
-  vehicleList: any[] = [];
-  fuelList: any[] = [];
+  agreementList: any[] = [];
 
   constructor(
     public dialog: MatDialog,
@@ -47,20 +47,18 @@ export class ListFuelExpenseComponent implements OnInit {
     private masterDataService: MasterDataService,
     private dateAdapter: DateAdapter<Date>
   ) {
-    this.fuelFilterForm = this.fBuilder.group({
-      driver_name: new FormControl(null),
+    this.jcbFilterForm = this.fBuilder.group({
+      date: new FormControl(null),
+      operator: new FormControl(null),
       location: new FormControl(null),
-      vehicle_number: new FormControl(null),
-      fuel: new FormControl(null),
-      from_date: new FormControl(null),
-      to_date: new FormControl(null),
+      agreement: new FormControl(null),
     });
 
     this.dateAdapter.setLocale('en-GB');
   }
 
   ngOnInit(): void {
-    const subjectSubs = this.agreementService.fuelExpUpdated$.subscribe(
+    const subjectSubs = this.agreementService.jcbExpUpdated$.subscribe(
       (update) => {
         if (update) {
           this.searchNow();
@@ -71,15 +69,16 @@ export class ListFuelExpenseComponent implements OnInit {
     this.subscriptionArray.push(subjectSubs);
 
     this.displayedColumns = [
-      'driver_name_details',
-      'vehicle_number_details',
-      'location_details',
       'date',
-      'fuel_details',
-      'unit_price',
-      'quantity',
+      'name',
+      'location',
+      'starting_reading',
+      'closing_reading',
+      'hours',
+      'amount',
+      'bata',
       'total_amount',
-      'narration',
+      'grant_total',
       'action',
     ];
     this.setMasterData();
@@ -107,43 +106,10 @@ export class ListFuelExpenseComponent implements OnInit {
   }
 
   setMasterData(): void {
-    this.setDriverList();
-    this.setVehicleList();
     this.setLocationList();
-    this.setFuelTypeList();
+    this.setAgreementList();
+    this.setOperatorList();
     this.detectFilterForms();
-  }
-
-  setDriverList(search?: string): void {
-    this.loaderService.show();
-    const employSubs = this.masterDataService
-      .getEmployeesList(
-        search !== undefined && search !== null ? '?search=' + search : ''
-      )
-      .subscribe((data) => {
-        this.loaderService.hide();
-        if (data && data.results) {
-          this.driverList = data.results;
-        }
-      });
-
-    this.subscriptionArray.push(employSubs);
-  }
-
-  setVehicleList(search?: string): void {
-    this.loaderService.show();
-    const employSubs = this.masterDataService
-      .getVehicleNumberList(
-        search !== undefined && search !== null ? '?search=' + search : ''
-      )
-      .subscribe((data) => {
-        this.loaderService.hide();
-        if (data && data.results) {
-          this.vehicleList = data.results;
-        }
-      });
-
-    this.subscriptionArray.push(employSubs);
   }
 
   setLocationList(search?: string): void {
@@ -163,16 +129,33 @@ export class ListFuelExpenseComponent implements OnInit {
     this.subscriptionArray.push(vehicleSubs);
   }
 
-  setFuelTypeList(search?: string): void {
+  setAgreementList(search?: string): void {
     this.loaderService.show();
-    const employSubs = this.masterDataService
-      .getFuelTypeList(
+    this.agreementList = [];
+    const agreementSubs = this.agreementService
+      .getAgreements(
         search !== undefined && search !== null ? '?search=' + search : ''
       )
       .subscribe((data) => {
         this.loaderService.hide();
         if (data && data.results) {
-          this.fuelList = data.results;
+          this.agreementList = data.results;
+        }
+      });
+
+    this.subscriptionArray.push(agreementSubs);
+  }
+
+  setOperatorList(search?: string): void {
+    this.loaderService.show();
+    const employSubs = this.masterDataService
+      .getEmployeesList(
+        search !== undefined && search !== null ? '?search=' + search : ''
+      )
+      .subscribe((data) => {
+        this.loaderService.hide();
+        if (data && data.results) {
+          this.operatorList = data.results;
         }
       });
 
@@ -180,15 +163,15 @@ export class ListFuelExpenseComponent implements OnInit {
   }
 
   detectFilterForms(): void {
-    const detectSubs = this.fuelFilterForm
-      .get('driver_name')
+    const detectSubs = this.jcbFilterForm
+      .get('operator')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value: any) => {
-        if (typeof value === 'string') this.setDriverList(value);
+        if (typeof value === 'string') this.setOperatorList(value);
       });
     if (detectSubs) this.subscriptionArray.push(detectSubs);
 
-    const empSubs = this.fuelFilterForm
+    const empSubs = this.jcbFilterForm
       .get('location')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value: any) => {
@@ -196,67 +179,43 @@ export class ListFuelExpenseComponent implements OnInit {
       });
     if (empSubs) this.subscriptionArray.push(empSubs);
 
-    const workSubs = this.fuelFilterForm
-      .get('vehicle_number')
+    const workSubs = this.jcbFilterForm
+      .get('agreement')
       ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value: any) => {
-        if (typeof value === 'string') this.setVehicleList(value);
+        if (typeof value === 'string') this.setAgreementList(value);
       });
     if (workSubs) this.subscriptionArray.push(workSubs);
-
-    const fuelSubs = this.fuelFilterForm
-      .get('fuel')
-      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
-      .subscribe((value: any) => {
-        if (typeof value === 'string') this.setFuelTypeList(value);
-      });
-    if (fuelSubs) this.subscriptionArray.push(fuelSubs);
   }
 
   searchNow(): void {
     const paramList = [];
     let paramUrl = '';
-    if (
-      this.fuelFilterForm.value.driver_name &&
-      this.fuelFilterForm.value.driver_name.id
-    ) {
-      paramList.push(`driver_name=${this.fuelFilterForm.value.driver_name.id}`);
-    }
-
-    if (
-      this.fuelFilterForm.value.location &&
-      this.fuelFilterForm.value.location.id
-    ) {
-      paramList.push(`location=${this.fuelFilterForm.value.location.id}`);
-    }
-
-    if (
-      this.fuelFilterForm.value.vehicle_number &&
-      this.fuelFilterForm.value.vehicle_number.id
-    ) {
+    if (this.jcbFilterForm.value.date) {
       paramList.push(
-        `vehicle_number=${this.fuelFilterForm.value.vehicle_number.id}`
+        `date=${moment(this.jcbFilterForm.value.date).format('YYYY-MM-DD')}`
       );
     }
 
-    if (this.fuelFilterForm.value.fuel && this.fuelFilterForm.value.fuel.id) {
-      paramList.push(`fuel=${this.fuelFilterForm.value.fuel.id}`);
+    if (
+      this.jcbFilterForm.value.operator &&
+      this.jcbFilterForm.value.operator.id
+    ) {
+      paramList.push(`operator_name=${this.jcbFilterForm.value.operator.id}`);
     }
 
-    if (this.fuelFilterForm.value.from_date) {
-      paramList.push(
-        `from_date=${moment(this.fuelFilterForm.value.from_date).format(
-          'YYYY-MM-DD'
-        )}`
-      );
+    if (
+      this.jcbFilterForm.value.location &&
+      this.jcbFilterForm.value.location.id
+    ) {
+      paramList.push(`location=${this.jcbFilterForm.value.location.id}`);
     }
 
-    if (this.fuelFilterForm.value.to_date) {
-      paramList.push(
-        `to_date=${moment(this.fuelFilterForm.value.to_date).format(
-          'YYYY-MM-DD'
-        )}`
-      );
+    if (
+      this.jcbFilterForm.value.agreement &&
+      this.jcbFilterForm.value.agreement.id
+    ) {
+      paramList.push(`agreement=${this.jcbFilterForm.value.agreement.id}`);
     }
 
     if (this.pageAttributes.pageSize > 0) {
@@ -280,7 +239,7 @@ export class ListFuelExpenseComponent implements OnInit {
 
     this.loaderService.show();
     this.agreementService
-      .getFuelExpenses(`?` + paramUrl.slice(0, -1))
+      .getJcbExpenses(`?` + paramUrl.slice(0, -1))
       .subscribe((data) => {
         this.loaderService.hide();
         if (data && data.results) {
@@ -292,17 +251,15 @@ export class ListFuelExpenseComponent implements OnInit {
   }
 
   resetSearch(): void {
-    this.fuelFilterForm.reset();
+    this.jcbFilterForm.reset();
     this.pageAttributes.pageSize = this.pageAttributes.pageSizeOpt[0];
     this.pageAttributes.currentPage = 0;
     this.searchNow();
   }
 
   // OPERATIONS
-  editFuelExpense(ID: number): void {
-    const instance = this.dialog.open(
-      AddFuelExpenseComponent
-    ).componentInstance;
+  editJcbExpense(ID: number): void {
+    const instance = this.dialog.open(AddJcbExpenseComponent).componentInstance;
     instance.editMode = {
       isActive: true,
       fuelExpenseID: ID,
@@ -315,9 +272,9 @@ export class ListFuelExpenseComponent implements OnInit {
       if (confirmed) {
         this.loaderService.show();
         const deletSubs = this.agreementService
-          .deleteFuelExpense(ID)
+          .deleteJcbExpense(ID)
           .subscribe(() => {
-            this.agreementService.fuelExpUpdated$.next(true);
+            this.agreementService.jcbExpUpdated$.next(true);
             this.snackBarService.success(
               'Agreement removed Successfully ! ',
               'Done'

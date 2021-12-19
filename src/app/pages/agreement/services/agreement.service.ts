@@ -10,6 +10,8 @@ import {
   EmployeeExpenseRequestModel,
   EmployeeExpenseResponseModel,
   FuelExpenseResponseModel,
+  JCBExpenseResponseModel,
+  JCBExpenseResultModel,
   ValidateAgreementResponseModel,
   VehicleExpenseListResultModel,
   VehicleExpenseResponseModel,
@@ -23,6 +25,7 @@ export class AgreementService {
   vehicleExpUpdated$ = new Subject<boolean>();
   employExpUpdated$ = new Subject<boolean>();
   fuelExpUpdated$ = new Subject<boolean>();
+jcbExpUpdated$ = new Subject<boolean>();
 
   constructor(private http: HttpClient) {}
 
@@ -181,4 +184,41 @@ export class AgreementService {
   deleteFuelExpense(ID: number): Observable<any> {
     return this.http.delete(`${API_END_POINT.agreement.fuel_expense}${ID}`);
   }
+
+    // JCB Expenses
+    postJcblExpense(
+      request: any,
+      editMode = false,
+      ID?: number
+    ): Observable<any> {
+      if (editMode && ID && ID > 0) {
+        return this.http.put<any>(
+          `${API_END_POINT.agreement.jcb_expense}${ID}/`,
+          request
+        );
+      } else {
+        return this.http.post<any>(
+          API_END_POINT.agreement.jcb_expense,
+          request
+        );
+      }
+    }
+
+    getJcbExpenses(param?: string): Observable<JCBExpenseResponseModel> {
+      return this.http.get<JCBExpenseResponseModel>(
+        `${API_END_POINT.agreement.jcb_expense}${
+          param !== undefined ? param : ''
+        }`
+      );
+    }
+
+    getJcbExpenseID(ID: number): Observable<JCBExpenseResultModel> {
+      return this.http.get<JCBExpenseResultModel>(
+        `${API_END_POINT.agreement.jcb_expense}${ID}`
+      );
+    }
+
+    deleteJcbExpense(ID: number): Observable<any> {
+      return this.http.delete(`${API_END_POINT.agreement.jcb_expense}${ID}`);
+    }
 }

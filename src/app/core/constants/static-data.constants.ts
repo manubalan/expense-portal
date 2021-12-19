@@ -115,6 +115,18 @@ export const MASTER_DATA_GRID: MasterDataGridModel[] = [
       type: 'select',
     },
   },
+  {
+    gridTitle: 'Fuels',
+    apiEnd: 'fuels',
+    fieldLabels: ['Fuels'],
+    fields: ['name'],
+  },
+  {
+    gridTitle: 'Vehicle',
+    apiEnd: 'vehicle-numbers',
+    fieldLabels: ['Vehicle Numbers'],
+    fields: ['name'],
+  },
 ];
 
 export const MENU = [

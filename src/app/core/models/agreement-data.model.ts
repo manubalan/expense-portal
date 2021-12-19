@@ -195,3 +195,54 @@ export interface FuelExpenseResponseModel {
 export interface DetailsModel {
   name: string;
 }
+
+export interface JCBFormModel {
+  date: string;
+  name: string;
+  starting_reading: number;
+  closing_reading: number;
+  per_hour_charge: number;
+  bata: number;
+  tipper_rent: number;
+  old_balance: number;
+  other_charge: number;
+  narration: string;
+  location: string;
+  agreement: string;
+  operator: string;
+}
+
+export interface JCBExpenseResponseModel {
+  count: number;
+  next: string;
+  previous: null;
+  results: JCBExpenseResultModel[];
+}
+
+
+export interface JCBExpenseResultModel {
+  id: number;
+  agreement_details: any;
+  operator_details: DetailsModel;
+  location_details: DetailsModel;
+  hours: number;
+  amount: number;
+  total_amount: number;
+  grand_total: number;
+  created_on: string;
+  updated_on: string;
+  date: string;
+  name: string;
+  starting_reading: number;
+  closing_reading: number;
+  per_hour_charge: number;
+  bata: number;
+  tipper_rent: number;
+  old_balance: number;
+  other_charge: number;
+  narration: string;
+  user: number;
+  location: number;
+  agreement: any;
+  operator: number;
+}

@@ -11,19 +11,19 @@ import {
   PageAttrModel,
   PAGE_ATTR_DATA,
 } from 'src/app/core';
+import { AgreementService } from 'src/app/pages/agreement/services';
 import {
-  DialogBoxService,
   LoaderService,
+  DialogBoxService,
   SnackBarService,
 } from 'src/app/shared';
-import { AddFuelExpenseComponent } from '..';
-import { AgreementService } from '../../services';
+import { ReportService } from '../../services/report.services';
 
 @Component({
-  selector: 'ems-list-fuel-expense',
-  templateUrl: './list-fuel-expense.component.html',
+  selector: 'ems-fuel-expense',
+  templateUrl: './fuel-expense.component.html',
 })
-export class ListFuelExpenseComponent implements OnInit {
+export class FuelExpenseComponent implements OnInit {
   displayedColumns: string[] = [];
   dataSource: any;
   pageAttributes: PageAttrModel = { ...PAGE_ATTR_DATA };
@@ -37,15 +37,16 @@ export class ListFuelExpenseComponent implements OnInit {
   vehicleList: any[] = [];
   fuelList: any[] = [];
 
+  filterCriteria = '';
+
   constructor(
     public dialog: MatDialog,
-    private agreementService: AgreementService,
+    private resportService: ReportService,
     private loaderService: LoaderService,
-    private dialogeService: DialogBoxService,
-    private snackBarService: SnackBarService,
     private fBuilder: FormBuilder,
     private masterDataService: MasterDataService,
-    private dateAdapter: DateAdapter<Date>
+    private dateAdapter: DateAdapter<Date>,
+    private dialogeService: DialogBoxService,
   ) {
     this.fuelFilterForm = this.fBuilder.group({
       driver_name: new FormControl(null),
@@ -60,16 +61,6 @@ export class ListFuelExpenseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const subjectSubs = this.agreementService.fuelExpUpdated$.subscribe(
-      (update) => {
-        if (update) {
-          this.searchNow();
-        }
-      }
-    );
-
-    this.subscriptionArray.push(subjectSubs);
-
     this.displayedColumns = [
       'driver_name_details',
       'vehicle_number_details',
@@ -79,8 +70,6 @@ export class ListFuelExpenseComponent implements OnInit {
       'unit_price',
       'quantity',
       'total_amount',
-      'narration',
-      'action',
     ];
     this.setMasterData();
     this.searchNow();
@@ -259,6 +248,13 @@ export class ListFuelExpenseComponent implements OnInit {
       );
     }
 
+    if (paramList.length > 0) {
+      paramList.map((par) => {
+        this.filterCriteria = this.filterCriteria + par + '&';
+      });
+    }
+
+    // PAGINATION
     if (this.pageAttributes.pageSize > 0) {
       paramList.push(`limit=${this.pageAttributes.pageSize}`);
     }
@@ -279,8 +275,8 @@ export class ListFuelExpenseComponent implements OnInit {
     }
 
     this.loaderService.show();
-    this.agreementService
-      .getFuelExpenses(`?` + paramUrl.slice(0, -1))
+    this.resportService
+      .getFuelExpenseReport(`?` + paramUrl.slice(0, -1))
       .subscribe((data) => {
         this.loaderService.hide();
         if (data && data.results) {
@@ -298,34 +294,16 @@ export class ListFuelExpenseComponent implements OnInit {
     this.searchNow();
   }
 
-  // OPERATIONS
-  editFuelExpense(ID: number): void {
-    const instance = this.dialog.open(
-      AddFuelExpenseComponent
-    ).componentInstance;
-    instance.editMode = {
-      isActive: true,
-      fuelExpenseID: ID,
-    };
-  }
-
-  deleteFuelExpense(ID: number): void {
-    const ref = this.dialogeService.openDialog('Are sure want to delete ?');
+  downloadNow(): void {
+    const ref = this.dialogeService.openDialog('Are sure want to Download ?');
     ref.afterClosed().subscribe((confirmed: boolean) => {
       if (confirmed) {
-        this.loaderService.show();
-        const deletSubs = this.agreementService
-          .deleteFuelExpense(ID)
-          .subscribe(() => {
-            this.agreementService.fuelExpUpdated$.next(true);
-            this.snackBarService.success(
-              'Agreement removed Successfully ! ',
-              'Done'
-            );
-            this.loaderService.hide();
-          });
+        this.resportService.downloadReports(
+          'fuel',
+          this.filterCriteria.slice(0, -1)
+        );
 
-        this.subscriptionArray.push(deletSubs);
+        this.filterCriteria = '';
       }
     });
   }

@@ -1,1 +1,138 @@
-<p>add-jcb-expense works!</p>
+<div class="form-pop-up">
+  <header>
+    <h4>{{editMode.isActive ? 'Update' : 'Add New' }} JCB Expense</h4>
+  </header>
+  <section>
+    <div class="error-messages"><span *ngIf="calculation.error.hasError">{{calculation.error.message}}</span></div>
+    <ul [formGroup]="addJcbExpenseForm">
+      <li>
+        <mat-form-field>
+          <mat-label>Date *</mat-label>
+          <input matInput formControlName="date" [matDatepicker]="picker">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker touchUi #picker></mat-datepicker>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Name *</mat-label>
+          <input type="text" matInput formControlName="name" placeholder="Enter Name">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Starting Reading *</mat-label>
+          <input type="text" matInput formControlName="starting_reading" placeholder="Enter Starting Reading">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Closing Reading *</mat-label>
+          <input type="text" matInput formControlName="closing_reading" placeholder="Enter Closing Reading">
+        </mat-form-field>
+      </li>
+      <li>
+        <div class="display-block">
+          <label>Hours</label>
+          <span> {{calculation.hours}} </span>
+        </div>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Charge/Hour *</mat-label>
+          <input type="text" matInput formControlName="per_hour_charge" placeholder="Enter Charge/Hour">
+        </mat-form-field>
+      </li>
+      <li>
+        <div class="display-block">
+          <label>Amount</label>
+          <span> {{calculation.amount}} </span>
+        </div>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Beta</mat-label>
+          <input type="text" matInput formControlName="bata" placeholder="Enter Beta">
+        </mat-form-field>
+      </li>
+      <li>
+        <div class="display-block">
+          <label>Total Amount</label>
+          <span> {{calculation.total}} </span>
+        </div>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Tipper Rent</mat-label>
+          <input type="text" matInput formControlName="tipper_rent" placeholder="Enter Tipper Rent">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Old Balance</mat-label>
+          <input type="text" matInput formControlName="old_balance" placeholder="Enter Old Balance">
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Other Charges</mat-label>
+          <input type="text" matInput formControlName="other_charge" placeholder="Enter Other Charges">
+        </mat-form-field>
+      </li>
+      <li>
+        <div class="display-block">
+          <label>Grant Total</label>
+          <span> {{calculation.grantTotal}} </span>
+        </div>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Narration</mat-label>
+          <input type="text" matInput formControlName="narration" placeholder="Enter Narration">
+        </mat-form-field>
+      </li>
+      <li></li>
+      <li>
+        <mat-form-field>
+          <mat-label>Location</mat-label>
+          <input type="text" matInput formControlName="location" [matAutocomplete]="location">
+          <mat-autocomplete #location="matAutocomplete" [displayWith]="locationListOptionView">
+            <mat-option *ngFor="let option of locationList" [value]="option">
+              {{option?.name}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Agreement</mat-label>
+          <input type="text" matInput formControlName="agreement" [matAutocomplete]="agreement">
+          <mat-autocomplete #agreement="matAutocomplete" [displayWith]="agreementOptionView">
+            <mat-option *ngFor="let option of agreementList" [value]="option">
+              {{option.agreement_number}} - {{option?.name}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </li>
+      <li>
+        <mat-form-field>
+          <mat-label>Operator Name *</mat-label>
+          <input type="text" matInput formControlName="operator" [matAutocomplete]="driver">
+          <mat-autocomplete #driver="matAutocomplete" [displayWith]="locationListOptionView">
+            <mat-option *ngFor="let option of operatorList" [value]="option">
+              {{option?.name}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </li>
+    </ul>
+  </section>
+  <footer>
+    <button class="add-button" [disabled]="!addJcbExpenseForm.valid" mat-stroked-button color="primary"
+      (click)="postFormData();">
+      {{editMode.isActive ? 'Update' : 'Add New'}} JCB Expense
+    </button>
+    <button class="add-button" mat-stroked-button color="warn" [mat-dialog-close]="true"
+      [mat-dialog-close]="true">Completed !</button>
+  </footer>
+</div>

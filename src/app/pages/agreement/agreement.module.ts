@@ -18,6 +18,7 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { AddFuelExpenseComponent } from './components/add-fuel-expense/add-fuel-expense.component';
 import { AddJcbExpenseComponent } from './components/add-jcb-expense/add-jcb-expense.component';
 import { ListFuelExpenseComponent } from './components/list-fuel-expense/list-fuel-expense.component';
+import { ListJcbExpenseComponent } from './components/list-jcb-expense/list-jcb-expense.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { ListFuelExpenseComponent } from './components/list-fuel-expense/list-fu
     ListVehicleExpenseComponent,
     AddFuelExpenseComponent,
     AddJcbExpenseComponent,
-    ListFuelExpenseComponent
+    ListFuelExpenseComponent,
+    ListJcbExpenseComponent
   ],
   imports: [
     CommonModule,

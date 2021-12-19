@@ -13,6 +13,8 @@ import { ReportService } from './services/report.services';
 import { ReactiveFormsModule } from '@angular/forms';
 import { EmployeeWiseExpenseComponent } from './components/employee-wise-expense/employee-wise-expense.component';
 import { VehicleDriverExpenseComponent } from './components/vehicle-driver-expense/vehicle-driver-expense.component';
+import { FuelExpenseComponent } from './components/fuel-expense/fuel-expense.component';
+import { JcbExpenseComponent } from './components/jcb-expense/jcb-expense.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +24,8 @@ import { VehicleDriverExpenseComponent } from './components/vehicle-driver-expen
     DriverExpenseComponent,
     EmployeeWiseExpenseComponent,
     VehicleDriverExpenseComponent,
+    FuelExpenseComponent,
+    JcbExpenseComponent,
   ],
   imports: [CommonModule, ReportsRoutingModule, MaterialModule, ReactiveFormsModule],
   providers: [ReportService],

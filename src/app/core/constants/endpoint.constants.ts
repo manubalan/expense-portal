@@ -26,7 +26,7 @@ export const API_END_POINT = {
     vehicle_expense: `${endPoints.base_api_EndPoint}vehicle-expenses/`,
     employee_expense: `${endPoints.base_api_EndPoint}employees-expenses/`,
     fuel_expense: `${endPoints.base_api_EndPoint}fuel-expense/`,
-    jcb_expense: `${endPoints.base_api_EndPoint}jcb-expenses/`,
+    jcb_expense: `${endPoints.base_api_EndPoint}jcb-expense/`,
   },
   reports: {
     employee_expense: `${endPoints.base_api_EndPoint}employees-expenses`,
@@ -34,5 +34,6 @@ export const API_END_POINT = {
     vehicle_expense: `${endPoints.base_api_EndPoint}vehicle-expenses`,
     driver_expense: `${endPoints.base_api_EndPoint}driver-wise-expense`,
     fuel_expense: `${endPoints.base_api_EndPoint}fuel-expense`,
+    jcbl_expense: `${endPoints.base_api_EndPoint}jcb-expense`,
   },
 };

@@ -12,7 +12,7 @@ import { AgreementService } from '../../services';
 
 @Component({
   selector: 'ems-add-fuel-expense',
-  templateUrl: './add-fuel-expense.component.html'
+  templateUrl: './add-fuel-expense.component.html',
 })
 export class AddFuelExpenseComponent implements OnInit {
   addFuelExpenseForm: FormGroup;
@@ -58,6 +58,7 @@ export class AddFuelExpenseComponent implements OnInit {
   ngOnInit(): void {
     this.setMasterdata();
     this.detectFormValueChange();
+    // this.detectFieldsCalculations();
     this.patchFormData();
   }
 
@@ -170,6 +171,64 @@ export class AddFuelExpenseComponent implements OnInit {
         if (typeof value === 'string') this.setFuelTypeList(value);
       });
     if (fuel) this.subscriptionsArray.push(fuel);
+  }
+
+  detectFieldsCalculations(): void {
+    const detectUnit = this.addFuelExpenseForm
+      .get('unit_price')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (typeof value === 'string') {
+          this.caliculateAmount();
+
+        }
+      });
+    if (detectUnit) this.subscriptionsArray.push(detectUnit);
+
+    const detectQty = this.addFuelExpenseForm
+      .get('quantity')
+      ?.valueChanges.pipe(debounceTime(500),distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (typeof value === 'string') {
+          this.caliculateAmount();
+        }
+      });
+    if (detectQty) this.subscriptionsArray.push(detectQty);
+
+    const detectTotal = this.addFuelExpenseForm
+      .get('total_amount')
+      ?.valueChanges.pipe(debounceTime(500),distinctUntilChanged())
+      .subscribe((value: any) => {
+        if (typeof value === 'string') {
+          this.caliculateAmount();
+        }
+      });
+    if (detectTotal) this.subscriptionsArray.push(detectTotal);
+  }
+
+  caliculateAmount(): void {
+    this.addFuelExpenseForm.updateValueAndValidity();
+    let unit = this.addFuelExpenseForm.value.unit_price
+      ? this.addFuelExpenseForm.value.unit_price
+      : 0;
+    let qty = this.addFuelExpenseForm.value.quantity
+      ? this.addFuelExpenseForm.value.quantity
+      : 0;
+    let total = this.addFuelExpenseForm.value.total_amount
+      ? this.addFuelExpenseForm.value.total_amount
+      : 0;
+
+    if (unit > 0 && qty > 0) {
+      this.addFuelExpenseForm.get('total_amount')?.setValue(unit * qty);
+    }
+
+    if (qty > 0 && total > 0) {
+      this.addFuelExpenseForm.get('unit_price')?.setValue(total / qty);
+    }
+
+    if (total > 0 && unit > 0) {
+      this.addFuelExpenseForm.get('quantity')?.setValue(total / unit);
+    }
   }
 
   postFormData(): void {
