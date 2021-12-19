@@ -86,7 +86,7 @@ export class ReportService {
         break;
       case 'jcb':
         debugger;
-        download = 'JcbExpense';
+        download = 'JCBExpenses';
         endPoint = API_END_POINT.reports.jcbl_expense;
         break;
     }

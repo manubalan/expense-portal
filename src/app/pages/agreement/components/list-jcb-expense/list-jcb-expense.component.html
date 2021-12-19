@@ -18,17 +18,10 @@
         <div class="filter-box" [formGroup]="jcbFilterForm">
 
           <mat-form-field>
-            <mat-label>Date</mat-label>
-            <input matInput formControlName="date" [matDatepicker]="fromdate">
-            <mat-datepicker-toggle matSuffix [for]="fromdate"></mat-datepicker-toggle>
-            <mat-datepicker #fromdate></mat-datepicker>
-          </mat-form-field>
-
-          <mat-form-field>
-            <mat-label>Operator</mat-label>
-            <input type="text" matInput formControlName="operator" [matAutocomplete]="driver">
-            <mat-autocomplete #driver="matAutocomplete" [displayWith]="employeeOptionView">
-              <mat-option *ngFor="let option of operatorList" [value]="option">
+            <mat-label>Agreement</mat-label>
+            <input type="text" matInput formControlName="agreement" [matAutocomplete]="vehicle">
+            <mat-autocomplete #vehicle="matAutocomplete" [displayWith]="employeeOptionView">
+              <mat-option *ngFor="let option of agreementList" [value]="option">
                 {{option?.name}}
               </mat-option>
             </mat-autocomplete>
@@ -45,13 +38,32 @@
           </mat-form-field>
 
           <mat-form-field>
-            <mat-label>Agreement</mat-label>
-            <input type="text" matInput formControlName="agreement" [matAutocomplete]="vehicle">
-            <mat-autocomplete #vehicle="matAutocomplete" [displayWith]="employeeOptionView">
-              <mat-option *ngFor="let option of agreementList" [value]="option">
+            <mat-label>Operator</mat-label>
+            <input type="text" matInput formControlName="operator" [matAutocomplete]="driver">
+            <mat-autocomplete #driver="matAutocomplete" [displayWith]="employeeOptionView">
+              <mat-option *ngFor="let option of operatorList" [value]="option">
                 {{option?.name}}
               </mat-option>
             </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>From Date</mat-label>
+            <input matInput formControlName="from_date" [matDatepicker]="fromdate">
+            <mat-datepicker-toggle matSuffix [for]="fromdate"></mat-datepicker-toggle>
+            <mat-datepicker #fromdate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>To Date</mat-label>
+            <input matInput formControlName="to_date" [matDatepicker]="to_date">
+            <mat-datepicker-toggle matSuffix [for]="to_date"></mat-datepicker-toggle>
+            <mat-datepicker #to_date></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Search</mat-label>
+            <input type="text" matInput formControlName="search" placeholder="Enter Name">
           </mat-form-field>
 
           <button mat-stroked-button color="primary" (click)="searchNow()">Search Now</button>
@@ -140,12 +152,14 @@
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
+          </div>
 
+          <footer class="card-footer">
             <mat-paginator [length]="pageAttributes.totalRecord" [pageIndex]="pageAttributes.currentPage"
               [pageSize]="pageAttributes.pageSize" [pageSizeOptions]="pageAttributes.pageSizeOpt"
               [showFirstLastButtons]="pageAttributes.firstLastEnable" (page)="handlePage($event)">
             </mat-paginator>
-          </div>
+          </footer>
         </ng-container>
 
         <ng-template #elseTemplate>

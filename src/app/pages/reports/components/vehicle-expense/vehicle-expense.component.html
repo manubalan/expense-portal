@@ -179,19 +179,18 @@
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
               </table>
-
-              <footer class="card-footer">
-                <button mat-stroked-button color="primary" (click)="downloadNow()">Download <mat-icon>download
-                  </mat-icon>
-                </button>
-                <div class="gap"></div>
-                <mat-paginator [length]="pageAttributes.totalRecord" [pageIndex]="pageAttributes.currentPage"
-                  [pageSize]="pageAttributes.pageSize" [pageSizeOptions]="pageAttributes.pageSizeOpt"
-                  [showFirstLastButtons]="pageAttributes.firstLastEnable" (page)="handlePage($event)">
-                </mat-paginator>
-              </footer>
-
             </div>
+
+            <footer class="card-footer">
+              <button mat-stroked-button color="primary" (click)="downloadNow()">Download <mat-icon>download
+                </mat-icon>
+              </button>
+              <div class="gap"></div>
+              <mat-paginator [length]="pageAttributes.totalRecord" [pageIndex]="pageAttributes.currentPage"
+                [pageSize]="pageAttributes.pageSize" [pageSizeOptions]="pageAttributes.pageSizeOpt"
+                [showFirstLastButtons]="pageAttributes.firstLastEnable" (page)="handlePage($event)">
+              </mat-paginator>
+            </footer>
           </mat-card-content>
         </ng-container>
         <ng-template #elseTemplate>

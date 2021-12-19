@@ -5,7 +5,7 @@
 $nav-height: 70px;
 
 $small: 480px;
-$medium: 900px;
+$medium: 720px;
 
 :root {
   --#{$variable-prefix}-font-family: #{inspect($font-family-sans-serif)};
@@ -251,6 +251,12 @@ ems-root {
     flex-wrap: wrap;
     column-gap: 30px;
 
+    @media screen and (max-width: $medium) {
+      button {
+        padding: 5px;
+      }
+    }
+
     .add-button {
       min-width: 150px;
     }
@@ -258,16 +264,32 @@ ems-root {
 
   section {
     padding: 25px 0;
+
     ul {
       display: flex;
-      flex-wrap: wrap;
-      column-gap: 30px;
       list-style: none;
       padding: 0;
 
-      li {
-        width: calc(33.3333% - 30px);
+      @media screen and (min-width: ( $medium + 1)) {
+        flex-wrap: wrap;
+        column-gap: 30px;
 
+        li {
+          width: calc(33.3333% - 30px);
+        }
+      }
+
+      @media screen and (max-width: $medium) {
+        flex-direction: column;
+        max-height: 65vh;
+        overflow: auto;
+
+        li {
+          width: 100%;
+        }
+      }
+
+      li {
         mat-form-field {
           width: 100%;
           margin-left: 0 !important;
@@ -305,7 +327,7 @@ ems-root {
   }
 }
 
-.mat-expansion-panel-header-title{
+.mat-expansion-panel-header-title {
   font-size: 18px;
   border-bottom: 1px solid #ccc;
   padding: 10px 0;
@@ -319,7 +341,7 @@ ems-root {
   flex-direction: column;
   row-gap: 10px;
 
-  mat-icon{
+  mat-icon {
     color: #ccc;
     font-size: 72px;
     height: 72px;
@@ -337,19 +359,47 @@ ems-root .card-footer .mat-button-base .mat-button-wrapper {
   height: 40px;
 }
 
-.card-footer{
+.card-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  .gap{
+  @media (max-width: $medium) {
+    flex-direction: column;
+    row-gap: 10px;
+    padding-top: 15px;
+
+    .mat-paginator-container {
+      display: flex;
+      justify-content: center;
+      row-gap: 10px;
+    }
+  }
+
+  .gap {
     display: flex;
     flex: 1;
   }
 }
 
-// .table-container {
-//   max-height: calc(100vh - 180px);
-//   max-width: 100%;
-//   overflow: auto;
-// }
+.table-container {
+  th.mat-header-cell,
+  td.mat-cell {
+    padding: 0 10px;
+  }
+
+  @media (max-width: $medium) {
+    width: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+
+    td.mat-cell {
+      border-right: 1px solid rgb(224, 224, 224);
+    }
+
+    td.mat-column-action {
+      border-right: 0px solid transparent;
+    }
+  }
+}

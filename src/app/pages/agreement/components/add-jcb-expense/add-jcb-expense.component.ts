@@ -175,7 +175,7 @@ export class AddJcbExpenseComponent implements OnInit {
       const end = values.closing_reading;
       if (start && end)
         if (Number(end) > Number(start)) {
-          this.calculation.hours = end - start;
+          this.calculation.hours = Number((end - start).toFixed(2));
           this.calculation.error = {
             hasError: false,
             message: '',

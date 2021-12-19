@@ -48,10 +48,12 @@ export class ListJcbExpenseComponent implements OnInit {
     private dateAdapter: DateAdapter<Date>
   ) {
     this.jcbFilterForm = this.fBuilder.group({
-      date: new FormControl(null),
-      operator: new FormControl(null),
-      location: new FormControl(null),
       agreement: new FormControl(null),
+      search: new FormControl(null),
+      location: new FormControl(null),
+      operator: new FormControl(null),
+      from_date: new FormControl(null),
+      to_date: new FormControl(null),
     });
 
     this.dateAdapter.setLocale('en-GB');
@@ -191,17 +193,22 @@ export class ListJcbExpenseComponent implements OnInit {
   searchNow(): void {
     const paramList = [];
     let paramUrl = '';
-    if (this.jcbFilterForm.value.date) {
-      paramList.push(
-        `date=${moment(this.jcbFilterForm.value.date).format('YYYY-MM-DD')}`
-      );
+    if (
+      this.jcbFilterForm.value.agreement &&
+      this.jcbFilterForm.value.agreement.id
+    ) {
+      paramList.push(`agreement=${this.jcbFilterForm.value.agreement.id}`);
+    }
+
+    if (this.jcbFilterForm.value.search && this.jcbFilterForm.value.search) {
+      paramList.push(`search=${this.jcbFilterForm.value.search}`);
     }
 
     if (
       this.jcbFilterForm.value.operator &&
       this.jcbFilterForm.value.operator.id
     ) {
-      paramList.push(`operator_name=${this.jcbFilterForm.value.operator.id}`);
+      paramList.push(`operator=${this.jcbFilterForm.value.operator.id}`);
     }
 
     if (
@@ -211,13 +218,23 @@ export class ListJcbExpenseComponent implements OnInit {
       paramList.push(`location=${this.jcbFilterForm.value.location.id}`);
     }
 
-    if (
-      this.jcbFilterForm.value.agreement &&
-      this.jcbFilterForm.value.agreement.id
-    ) {
-      paramList.push(`agreement=${this.jcbFilterForm.value.agreement.id}`);
+    if (this.jcbFilterForm.value.from_date) {
+      paramList.push(
+        `from_date=${moment(this.jcbFilterForm.value.from_date).format(
+          'YYYY-MM-DD'
+        )}`
+      );
     }
 
+    if (this.jcbFilterForm.value.to_date) {
+      paramList.push(
+        `to_date=${moment(this.jcbFilterForm.value.to_date).format(
+          'YYYY-MM-DD'
+        )}`
+      );
+    }
+
+    // PAGINATION
     if (this.pageAttributes.pageSize > 0) {
       paramList.push(`limit=${this.pageAttributes.pageSize}`);
     }

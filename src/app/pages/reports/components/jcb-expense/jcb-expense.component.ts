@@ -12,10 +12,7 @@ import {
   PageAttrEventModel,
 } from 'src/app/core';
 import { AgreementService } from 'src/app/pages/agreement/services';
-import {
-  LoaderService,
-  DialogBoxService,
-} from 'src/app/shared';
+import { LoaderService, DialogBoxService } from 'src/app/shared';
 import { ReportService } from '../../services/report.services';
 
 @Component({
@@ -45,13 +42,15 @@ export class JcbExpenseComponent implements OnInit {
     private fBuilder: FormBuilder,
     private masterDataService: MasterDataService,
     private dateAdapter: DateAdapter<Date>,
-    private dialogeService: DialogBoxService,
+    private dialogeService: DialogBoxService
   ) {
     this.jcbFilterForm = this.fBuilder.group({
-      date: new FormControl(null),
-      operator: new FormControl(null),
-      location: new FormControl(null),
       agreement: new FormControl(null),
+      search: new FormControl(null),
+      location: new FormControl(null),
+      operator: new FormControl(null),
+      from_date: new FormControl(null),
+      to_date: new FormControl(null),
     });
 
     this.dateAdapter.setLocale('en-GB');
@@ -60,15 +59,20 @@ export class JcbExpenseComponent implements OnInit {
   ngOnInit(): void {
     this.displayedColumns = [
       'date',
-      'name',
       'location',
-      'starting_reading',
-      'closing_reading',
+      'name',
+      'starting',
+      'closing',
       'hours',
+      'charge/h',
       'amount',
       'bata',
       'total_amount',
-      'grant_total',
+      'tipper_rent',
+      'old_balance',
+      'other_charge',
+      'grand_total',
+      'operator',
     ];
     this.setMasterData();
     this.searchNow();
@@ -180,17 +184,22 @@ export class JcbExpenseComponent implements OnInit {
   searchNow(): void {
     const paramList = [];
     let paramUrl = '';
-    if (this.jcbFilterForm.value.date) {
-      paramList.push(
-        `date=${moment(this.jcbFilterForm.value.date).format('YYYY-MM-DD')}`
-      );
+    if (
+      this.jcbFilterForm.value.agreement &&
+      this.jcbFilterForm.value.agreement.id
+    ) {
+      paramList.push(`agreement=${this.jcbFilterForm.value.agreement.id}`);
+    }
+
+    if (this.jcbFilterForm.value.search && this.jcbFilterForm.value.search) {
+      paramList.push(`search=${this.jcbFilterForm.value.search}`);
     }
 
     if (
       this.jcbFilterForm.value.operator &&
       this.jcbFilterForm.value.operator.id
     ) {
-      paramList.push(`operator_name=${this.jcbFilterForm.value.operator.id}`);
+      paramList.push(`operator=${this.jcbFilterForm.value.operator.id}`);
     }
 
     if (
@@ -200,13 +209,23 @@ export class JcbExpenseComponent implements OnInit {
       paramList.push(`location=${this.jcbFilterForm.value.location.id}`);
     }
 
-    if (
-      this.jcbFilterForm.value.agreement &&
-      this.jcbFilterForm.value.agreement.id
-    ) {
-      paramList.push(`agreement=${this.jcbFilterForm.value.agreement.id}`);
+    if (this.jcbFilterForm.value.from_date) {
+      paramList.push(
+        `from_date=${moment(this.jcbFilterForm.value.from_date).format(
+          'YYYY-MM-DD'
+        )}`
+      );
     }
 
+    if (this.jcbFilterForm.value.to_date) {
+      paramList.push(
+        `to_date=${moment(this.jcbFilterForm.value.to_date).format(
+          'YYYY-MM-DD'
+        )}`
+      );
+    }
+
+    // DOWNLOAD filter
     if (paramList.length > 0) {
       paramList.map((par) => {
         this.filterCriteria = this.filterCriteria + par + '&';

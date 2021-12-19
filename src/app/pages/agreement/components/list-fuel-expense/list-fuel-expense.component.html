@@ -152,12 +152,14 @@
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
+          </div>
 
+          <footer class="card-footer">
             <mat-paginator [length]="pageAttributes.totalRecord" [pageIndex]="pageAttributes.currentPage"
               [pageSize]="pageAttributes.pageSize" [pageSizeOptions]="pageAttributes.pageSizeOpt"
               [showFirstLastButtons]="pageAttributes.firstLastEnable" (page)="handlePage($event)">
             </mat-paginator>
-          </div>
+          </footer>
         </ng-container>
 
         <ng-template #elseTemplate>
