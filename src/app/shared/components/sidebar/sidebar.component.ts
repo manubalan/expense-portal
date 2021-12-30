@@ -30,14 +30,13 @@ export class SidebarComponent {
   constructor(private authService: AuthService) {
     this.selectedPage = 0;
     this.selectedChild = -1;
-    if (this.authService.activeUser.menu) this.pages = this.authService.activeUser.menu;
-
-    // let role = '';
-    // if (this.authService.activeUser.user?.role_details.name)
-    //   role = this.authService?.activeUser?.user?.role_details?.name
-    //     ? this.authService?.activeUser?.user?.role_details?.name
-    //     : '';
-    // if (role) this.pages = MENU.filter((item) => item.hasAcess.includes(role));
+    if (this.authService.activeUser.menu) {
+      this.pages = this.authService.activeUser.menu;
+      this.pages.map((el) => {
+        if (el && el.children)
+          el.hasChildren = el.children.length > 0 ? true : false;
+      });
+    }
   }
 
   baseUrl = environment.BASE_URL;

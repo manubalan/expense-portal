@@ -11,6 +11,7 @@ export interface MenuModel {
   icon: string;
   link: string;
   order?: number;
+  hasChildren?: boolean;
   children?: MenuModel[];
 }
 

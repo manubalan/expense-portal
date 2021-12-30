@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from 'src/app/authentication';
 import { DriverExpenseComponent } from './components/driver-expense/driver-expense.component';
 import { EmployeeExpenseComponent } from './components/employee-expense/employee-expense.component';
 import { EmployeeWiseExpenseComponent } from './components/employee-wise-expense/employee-wise-expense.component';
@@ -13,6 +14,7 @@ const routes: Routes = [
   {
     path: '',
     component: ReportsComponent,
+    canActivateChild: [AuthGuard],
     children: [
       { path: 'exployee-expense', component: EmployeeExpenseComponent },
       {

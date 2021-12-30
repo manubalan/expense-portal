@@ -10,24 +10,8 @@
 </button>
 
 <mat-menu #menu="matMenu" xPosition="before">
-  <button mat-menu-item (click)="openDialog('agreement')">
-    <mat-icon>description</mat-icon>
-    <span>Agreement</span>
-  </button>
-  <button mat-menu-item (click)="openDialog('vehicle-expense')">
-    <mat-icon>local_shipping</mat-icon>
-    <span>Vehicle Expense</span>
-  </button>
-  <button mat-menu-item (click)="openDialog('employee-expense')">
-    <mat-icon>face</mat-icon>
-    <span>Employee Expense</span>
-  </button>
-  <button mat-menu-item (click)="openDialog('fuel-expense')">
-    <mat-icon>local_gas_station</mat-icon>
-    <span>Fuel Expense</span>
-  </button>
-  <button mat-menu-item (click)="openDialog('jcb-expense')">
-    <mat-icon>agriculture</mat-icon>
-    <span>JCB Expense</span>
+  <button mat-menu-item (click)="openDialog(menu?.link ? menu.link : '')" *ngFor="let menu of addMenu">
+    <mat-icon>{{menu?.icon}} </mat-icon>
+    <span>{{menu?.name}} </span>
   </button>
 </mat-menu>

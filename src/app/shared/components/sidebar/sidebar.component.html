@@ -10,9 +10,9 @@
         <mat-icon>{{ page?.icon }}</mat-icon>
         <label class="menu-label">{{ page?.name }}</label>
       </a>
-      <ul class="sub-menu">
-        <li *ngFor="let child of page.children; let j = index" [ngClass]="{'active': j === selectedChild}">
-          <a [href]="child.link" [routerLink]="child.link" (click)="setChildIndex(j)" matTooltip={{child?.name}}
+      <ul class="sub-menu" *ngIf="page?.hasChildren">
+        <li *ngFor="let child of page?.children; let j = index" [ngClass]="{'active': j === selectedChild}">
+          <a [href]="child?.link" [routerLink]="child?.link" (click)="setChildIndex(j)" matTooltip={{child?.name}}
             [matTooltipPosition]="'right'">
             <mat-icon>{{child?.icon}}</mat-icon>
             <label class="menu-label"> {{ child?.name }}</label>

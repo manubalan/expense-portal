@@ -237,34 +237,28 @@ export class AddJcbExpenseComponent implements OnInit {
         : null,
       bata: this.addJcbExpenseForm.value.bata
         ? this.addJcbExpenseForm.value.bata
-        : null,
+        : 0,
       tipper_rent: this.addJcbExpenseForm.value.tipper_rent
         ? this.addJcbExpenseForm.value.tipper_rent
-        : null,
+        : 0,
       old_balance: this.addJcbExpenseForm.value.old_balance
         ? this.addJcbExpenseForm.value.old_balance
-        : null,
+        : 0,
       other_charge: this.addJcbExpenseForm.value.other_charge
         ? this.addJcbExpenseForm.value.other_charge
-        : null,
+        : 0,
       narration: this.addJcbExpenseForm.value.narration
         ? this.addJcbExpenseForm.value.narration
         : '',
-      location:
-        typeof this.addJcbExpenseForm.value.location === 'object' &&
-        this.addJcbExpenseForm.value.location.id
-          ? this.addJcbExpenseForm.value.location.id
-          : null,
-      agreement:
-        typeof this.addJcbExpenseForm.value.agreement === 'object' &&
-        this.addJcbExpenseForm.value.agreement.id
-          ? this.addJcbExpenseForm.value.agreement.id
-          : null,
-      operator:
-        typeof this.addJcbExpenseForm.value.operator === 'object' &&
-        this.addJcbExpenseForm.value.operator.id
-          ? this.addJcbExpenseForm.value.operator.id
-          : null,
+      location: this.addJcbExpenseForm.value?.location?.id
+        ? this.addJcbExpenseForm.value.location.id
+        : null,
+      agreement: this.addJcbExpenseForm.value?.agreement?.id
+        ? this.addJcbExpenseForm.value.agreement.id
+        : null,
+      operator: this.addJcbExpenseForm.value?.operator?.id
+        ? this.addJcbExpenseForm.value.operator.id
+        : null,
     };
 
     const add = this.agreementService
@@ -283,8 +277,16 @@ export class AddJcbExpenseComponent implements OnInit {
             'Done'
           );
 
-          if (this.editMode.isActive) this.dialogRef.close();
           this.addJcbExpenseForm.reset();
+          this.calculation = {
+            hours: 0,
+            amount: 0,
+            total: 0,
+            grantTotal: 0,
+            error: { hasError: false, message: '' },
+          };
+
+          if (this.editMode.isActive) this.dialogRef.close();
         }
         this.loaderService.hide();
       });

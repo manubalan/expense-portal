@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from 'src/app/authentication';
 import { AgreementComponent } from './agreement.component';
 import {
   ListAgreementComponent,
@@ -13,6 +14,7 @@ const routes: Routes = [
   {
     path: '',
     component: AgreementComponent,
+    canActivateChild: [AuthGuard],
     children: [
       { path: 'agreements-list', component: ListAgreementComponent },
       {

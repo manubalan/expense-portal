@@ -29,6 +29,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
   vehicleTypeList: ResultDataModel[] = [];
   materialItemList: ResultDataModel[] = [];
   qtyTypeList: ConstantDataModel[] = [];
+  vehicleNumberList: any[] = [];
   employeeList: any;
   locationList: any;
 
@@ -75,6 +76,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     this.patchFormData();
     this.setAgreementList();
     this.setVehicleTypeList();
+    this.setVehicleList();
     this.setMaterialList();
     this.setEmployeeList();
     this.setLocationList();
@@ -160,8 +162,28 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     this.subscriptionsArray.push(agreementSubs);
   }
 
+  setVehicleList(search?: string): void {
+    this.loaderService.show();
+    const employSubs = this.masterDataService
+      .getVehicleNumberList(
+        search !== undefined && search !== null ? '?search=' + search : ''
+      )
+      .subscribe((data) => {
+        this.loaderService.hide();
+        if (data && data.results) {
+          this.vehicleNumberList = data.results;
+        }
+      });
+
+    this.subscriptionsArray.push(employSubs);
+  }
+
   public agreementOptionView(option: any): string {
     return option ? `${option.agreement_number} - ${option.name}` : '';
+  }
+
+  public locationListOptionView(option: any): any {
+    return option ? `${option.name}` : '';
   }
 
   setQuantityType(): void {
@@ -355,9 +377,8 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
   postFormData(): void {
     const requestBody = {
       vehicle_details:
-        this.addVehicleExpenseForm.value &&
-        this.addVehicleExpenseForm.value.vehicleDetails
-          ? this.addVehicleExpenseForm.value.vehicleDetails
+        this.addVehicleExpenseForm.value?.vehicleDetails?.name
+          ? this.addVehicleExpenseForm.value.vehicleDetails?.name
           : '',
       si_unit:
         this.addVehicleExpenseForm.value &&
