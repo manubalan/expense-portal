@@ -30,9 +30,9 @@
         <mat-form-field>
           <mat-label>Vehicle Details</mat-label>
           <input type="text" matInput formControlName="vehicleDetails" [matAutocomplete]="vehicle">
-          <mat-autocomplete #vehicle="matAutocomplete" [displayWith]="locationListOptionView">
+          <mat-autocomplete #vehicle="matAutocomplete">
             <mat-option *ngFor="let option of vehicleNumberList" [value]="option">
-              {{option?.name}}
+              {{option}}
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>

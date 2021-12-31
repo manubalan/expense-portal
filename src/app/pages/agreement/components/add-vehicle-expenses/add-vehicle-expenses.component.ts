@@ -171,7 +171,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
         this.loaderService.hide();
         if (data && data.results) {
-          this.vehicleNumberList = data.results;
+          this.vehicleNumberList = data.results.map((el) => el.name);
         }
       });
 
@@ -269,6 +269,7 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     this.detectDriverName();
     this.detectLocation();
     this.detectMaterial();
+    this.detectVehicleDetails();
   }
 
   detectAgreement(): void {
@@ -308,6 +309,17 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
 
         if (typeof value === 'object')
           this.addVehicleExpenseForm.get('vehicleType')?.clearValidators();
+      });
+  }
+
+  detectVehicleDetails(): void {
+    this.addVehicleExpenseForm
+      .get('vehicleDetails')
+      ?.valueChanges.pipe(distinctUntilChanged(), debounceTime(1000))
+      .subscribe((value: any) => {
+        if (typeof value === 'string') {
+          this.setVehicleList(value);
+        }
       });
   }
 
@@ -376,10 +388,9 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
 
   postFormData(): void {
     const requestBody = {
-      vehicle_details:
-        this.addVehicleExpenseForm.value?.vehicleDetails?.name
-          ? this.addVehicleExpenseForm.value.vehicleDetails?.name
-          : '',
+      vehicle_details: this.addVehicleExpenseForm.value?.vehicleDetails
+        ? this.addVehicleExpenseForm.value.vehicleDetails
+        : '',
       si_unit:
         this.addVehicleExpenseForm.value &&
         this.addVehicleExpenseForm.value.qtyType

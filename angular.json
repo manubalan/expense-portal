@@ -37,7 +37,7 @@
           },
           "configurations": {
             "production": {
-              "outputPath": "dist/8000",
+              "outputPath": "dist/8000/dist",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -65,7 +65,7 @@
               ]
             },
             "staging": {
-              "outputPath": "dist/5000",
+              "outputPath": "dist/5000/dist",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
