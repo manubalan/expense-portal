@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import * as moment from 'moment';
@@ -38,14 +38,14 @@ export class AddFuelExpenseComponent implements OnInit {
     private dateAdapter: DateAdapter<Date>
   ) {
     this.addFuelExpenseForm = this.fbuilder.group({
-      driver_name: new FormControl(null),
-      vehicle_number: new FormControl(null),
+      driver_name: new FormControl(null, [Validators.required]),
+      vehicle_number: new FormControl(null, [Validators.required]),
       location: new FormControl(null),
-      date: new FormControl(null),
-      fuel: new FormControl(null),
-      unit_price: new FormControl(null),
-      quantity: new FormControl(null),
-      total_amount: new FormControl(null),
+      date: new FormControl(null, [Validators.required]),
+      fuel: new FormControl(null, [Validators.required]),
+      unit_price: new FormControl(null, [Validators.required]),
+      quantity: new FormControl(null, [Validators.required]),
+      total_amount: new FormControl(null, [Validators.required]),
       narration: new FormControl(null),
     });
     this.dateAdapter.setLocale('en-GB');

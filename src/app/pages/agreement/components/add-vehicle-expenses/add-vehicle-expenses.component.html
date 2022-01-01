@@ -1,6 +1,10 @@
 <div class="form-pop-up">
   <header>
-    <h4>{{editMode.isActive ? 'Update' : 'Add New' }} Vehicle Expense</h4>
+    <h4>{{editMode.isActive ? 'Update' : 'Add' }} Vehicle Expense</h4>
+
+    <button mat-icon-button color="warn" [mat-dialog-close]="true">
+      <mat-icon>close</mat-icon>
+    </button>
   </header>
   <section>
     <ul [formGroup]="addVehicleExpenseForm">
@@ -157,8 +161,6 @@
       (click)="postFormData();">
       {{editMode.isActive ? 'Update' : 'Add' }} Vehicle Expense
     </button>
-    <button class="add-button" mat-stroked-button color="warn" (click)="closeDialogBox();"
-      [mat-dialog-close]="true">Completed !</button>
   </footer>
 
 </div>

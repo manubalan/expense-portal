@@ -522,8 +522,6 @@ export class AddVehicleExpensesComponent implements OnInit, OnDestroy {
     }
   }
 
-  closeDialogBox(): void {}
-
   ngOnDestroy(): void {
     if (this.subscriptionsArray.length > 0) {
       this.subscriptionsArray.map((subs) => {

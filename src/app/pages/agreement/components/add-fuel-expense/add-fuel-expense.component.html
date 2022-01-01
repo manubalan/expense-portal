@@ -1,12 +1,16 @@
 <div class="form-pop-up">
   <header>
     <h4>{{editMode.isActive ? 'Update' : 'Add New' }} Fuel Expense</h4>
+
+    <button mat-icon-button color="warn" [mat-dialog-close]="true" [mat-dialog-close]="true">
+      <mat-icon>close</mat-icon>
+    </button>
   </header>
   <section>
     <ul [formGroup]="addFuelExpenseForm">
       <li>
         <mat-form-field>
-          <mat-label>Driver Name</mat-label>
+          <mat-label>Driver Name *</mat-label>
           <input type="text" matInput formControlName="driver_name" [matAutocomplete]="driver">
           <mat-autocomplete #driver="matAutocomplete" [displayWith]="locationListOptionView">
             <mat-option *ngFor="let option of driverList" [value]="option">
@@ -17,7 +21,7 @@
       </li>
       <li>
         <mat-form-field>
-          <mat-label>Vehicle Number</mat-label>
+          <mat-label>Vehicle Number *</mat-label>
           <input type="text" matInput formControlName="vehicle_number" [matAutocomplete]="vehicle">
           <mat-autocomplete #vehicle="matAutocomplete" [displayWith]="locationListOptionView">
             <mat-option *ngFor="let option of vehicleNumberList" [value]="option">
@@ -39,7 +43,7 @@
       </li>
       <li>
         <mat-form-field>
-          <mat-label>Date</mat-label>
+          <mat-label>Date *</mat-label>
           <input matInput formControlName="date" [matDatepicker]="picker">
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
@@ -47,7 +51,7 @@
       </li>
       <li>
         <mat-form-field>
-          <mat-label>Fuel Type</mat-label>
+          <mat-label>Fuel Type *</mat-label>
           <input type="text" matInput formControlName="fuel" [matAutocomplete]="fuel">
           <mat-autocomplete #fuel="matAutocomplete" [displayWith]="locationListOptionView">
             <mat-option *ngFor="let option of fuelList" [value]="option">
@@ -58,19 +62,19 @@
       </li>
       <li>
         <mat-form-field>
-          <mat-label>Unit Price</mat-label>
+          <mat-label>Unit Price *</mat-label>
           <input type="text" matInput formControlName="unit_price" placeholder="Unit Price">
         </mat-form-field>
       </li>
       <li>
         <mat-form-field>
-          <mat-label>Quantity</mat-label>
+          <mat-label>Quantity *</mat-label>
           <input type="text" matInput formControlName="quantity" placeholder="Quantity">
         </mat-form-field>
       </li>
       <li>
         <mat-form-field>
-          <mat-label>Total Amount</mat-label>
+          <mat-label>Total Amount *</mat-label>
           <input type="text" matInput formControlName="total_amount" placeholder="Total Amount">
         </mat-form-field>
       </li>
@@ -87,7 +91,5 @@
       (click)="postFormData();">
       {{editMode.isActive ? 'Update' : 'Add New'}} Fuel Expense
     </button>
-    <button class="add-button" mat-stroked-button color="warn" [mat-dialog-close]="true"
-      [mat-dialog-close]="true">Completed !</button>
   </footer>
 </div>

@@ -1,6 +1,10 @@
 <div class="form-pop-up">
   <header>
     <h4>{{editMode.isActive ? 'Update' : 'Add New' }} JCB Expense</h4>
+
+    <button mat-icon-button color="warn" [mat-dialog-close]="true">
+      <mat-icon>close</mat-icon>
+    </button>
   </header>
   <section>
     <div class="error-messages"><span *ngIf="calculation.error.hasError">{{calculation.error.message}}</span></div>
@@ -130,9 +134,7 @@
   <footer>
     <button class="add-button" [disabled]="!addJcbExpenseForm.valid" mat-stroked-button color="primary"
       (click)="postFormData();">
-      {{editMode.isActive ? 'Update' : 'Add New'}} JCB Expense
+      {{editMode.isActive ? 'Update' : 'Add'}} JCB Expense
     </button>
-    <button class="add-button" mat-stroked-button color="warn" [mat-dialog-close]="true"
-      [mat-dialog-close]="true">Completed !</button>
   </footer>
 </div>

@@ -242,6 +242,9 @@ ems-root {
   header {
     border-bottom: 1.5px solid var(--gray-200);
     padding-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+align-items: center;
   }
 
   footer {
@@ -250,6 +253,7 @@ ems-root {
     display: flex;
     flex-wrap: wrap;
     column-gap: 30px;
+    justify-content: space-between;
 
     @media screen and (max-width: $medium) {
       button {
@@ -258,7 +262,7 @@ ems-root {
     }
 
     .add-button {
-      min-width: 150px;
+      min-width: 105px;
     }
   }
 
@@ -281,7 +285,7 @@ ems-root {
 
       @media screen and (max-width: $medium) {
         flex-direction: column;
-        max-height: 65vh;
+        max-height: 55vh;
         overflow: auto;
 
         li {
@@ -403,3 +407,8 @@ ems-root .card-footer .mat-button-base .mat-button-wrapper {
     }
   }
 }
+
+// .cdk-overlay-pane {
+//   max-width: 90vw !important;
+//   width: 90vw;
+// }

@@ -317,8 +317,6 @@ export class AddEmployeExpenseComponent implements OnInit, OnDestroy {
     this.subscriptionsArray.push(postDatSubs);
   }
 
-  closeDialogBox(): void {}
-
   ngOnDestroy(): void {
     if (this.subscriptionsArray.length > 0) {
       this.subscriptionsArray.map((subs) => {
